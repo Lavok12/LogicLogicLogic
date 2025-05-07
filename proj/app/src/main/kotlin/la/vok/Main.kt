@@ -1,8 +1,6 @@
 package la.vok
 import processing.core.PApplet
 
-fun main(args: Array<String>) {
-    print("Hello, World!")
+fun main() {
     PApplet.main("la.vok.App")
-    
 }
