@@ -13,7 +13,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var transferModel: TransferModel
     var languageController: LanguageController
     var spriteLoader: SpriteLoader
-    
+
     init {
         if (isClient) initClient()
         if (isServer) initServer()

@@ -19,7 +19,7 @@ open class JsonDataLoader {
             }
         }
     }
-
+    
     fun getString(key: String): String {
         return data[key] ?: key
     }
