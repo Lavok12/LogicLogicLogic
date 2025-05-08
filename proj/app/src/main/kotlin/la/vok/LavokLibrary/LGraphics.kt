@@ -46,7 +46,7 @@ class LGraphics {
         pg.text(txt, (disW2 + xPos) * M, (disH2 - yPos) * M)
     }
 
-    fun setAlign(x: Int, y: Int) {
+    fun setTextAlign(x: Int, y: Int) {
         when {
             x == 0 && y == 0 -> pg.textAlign(PApplet.CENTER, PApplet.CENTER)
             x == -1 && y == 0 -> pg.textAlign(PApplet.LEFT, PApplet.CENTER)

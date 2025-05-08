@@ -23,7 +23,7 @@ object initializeAll {
         Functions.parent = Storage.main;
         Storage.main.frameRate(60f)
         Storage.main.noiseSeed(Functions.rand(0, 255000000).toLong())
-        Storage.GameController = GameController(Settings.isClient, Settings.isServer, Settings.isLocal);
+        Storage.gameController = GameController(Settings.isClient, Settings.isServer, Settings.isLocal);
     }
 
     fun updateResolution() {

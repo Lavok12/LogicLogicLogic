@@ -2,6 +2,7 @@ package la.vok.LoadData
 
 import la.vok.LavokLibrary.Functions
 import la.vok.Storages.Storage
+import la.vok.Storages.Settings
 import processing.core.PApplet
 import processing.core.PImage
 
@@ -67,7 +68,8 @@ class SpritesData() : JsonDataLoader() {
     }
 
     fun loadData() {
-        val patch = Functions.resourceDir("Strites")
+        var spritePatch = Settings.spritePatch;
+        val patch = Functions.resourceDir("$spritePatch/")
         loadDataFromFolder(patch)
     }
 }

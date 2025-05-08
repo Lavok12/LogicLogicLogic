@@ -7,6 +7,7 @@ open class JsonDataLoader {
 
     open fun loadDataFromFolder(patch: String) {
         val filesList = Functions.scanDir(patch)
+        println("Загружаю JSON файлы из '$patch'")
         for (file in filesList) {
             try {
                 val json = Functions.loadJSONObject("$patch/$file")

@@ -23,6 +23,12 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         spriteLoader = SpriteLoader();
     }
 
+    fun MainRender() {
+        if (isClient) {
+            clientController.mainRender()
+        }
+    }
+
     internal fun initClient() {
         clientController = ClientController()
     }

@@ -2,6 +2,7 @@ package la.vok.LoadData
 
 import la.vok.LavokLibrary.Functions
 import la.vok.LoadData.LanguageData
+import la.vok.Storages.Settings
 import processing.data.JSONObject
 
 
@@ -48,7 +49,8 @@ class LanguageData(var lang: String) : JsonDataLoader() {
     }
 
     fun loadData() {
-        val patch = Functions.resourceDir("lang/$lang")
+        var langPatch = Settings.languagePath;
+        val patch = Functions.resourceDir("$langPatch/$lang")
         loadDataFromFolder(patch)
     }
 }

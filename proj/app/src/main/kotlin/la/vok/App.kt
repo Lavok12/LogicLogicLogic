@@ -16,7 +16,12 @@ class App : PApplet() {
     }
     
     override fun draw() {
+        if (frameCount % 60 == 0) {
+            println("FPS: $frameRate")
+        }
+        
         updateMouseCoordinates()
+        Storage.gameController.MainRender()
     }
 
     fun updateMouseCoordinates() {
