@@ -5,6 +5,8 @@ import la.vok.GameController.Server.ServerController
 import la.vok.GameController.TransferModel.TransferModel
 import la.vok.LoadData.LanguageController
 import la.vok.LoadData.SpriteLoader
+import la.vok.LoadData.UILoader
+import la.vok.LoadData.LoadUIList
 import la.vok.Storages.Settings
 
 class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: Boolean = false) {
@@ -13,17 +15,23 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var transferModel: TransferModel
     var languageController: LanguageController
     var spriteLoader: SpriteLoader
+    var UILoader: UILoader
+    var loadUIList: LoadUIList
 
     init {
-        if (isClient) initClient()
-        if (isServer) initServer()
         initTransferModel();
+        if (isServer) initServer()
+        if (isClient) initClient()
+        
+        UILoader = UILoader(this)
+        languageController = LanguageController(Settings.language, this);
+        spriteLoader = SpriteLoader(this);
+        loadUIList = LoadUIList(this)
 
-        languageController = LanguageController(Settings.language);
-        spriteLoader = SpriteLoader();
+        
     }
 
-    fun MainRender() {
+    fun mainRender() {
         if (isClient) {
             clientController.mainRender()
         }

@@ -7,4 +7,5 @@ object Settings {
     var language: String = "eng"
     var languagePath: String = "lang"
     var spritePatch: String = "sprites"
+    var UIPatch: String = "ui"
 }

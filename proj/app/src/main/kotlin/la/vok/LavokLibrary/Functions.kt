@@ -10,6 +10,7 @@ import java.io.PrintWriter
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import java.net.URL
+import java.awt.Color
 import processing.core.*
 import processing.data.JSONObject
 import la.vok.App
@@ -87,11 +88,55 @@ object Functions {
             ?: emptyList()       // Возвращаем пустой список, если listFiles вернул null
     }
 
+    
+    fun scanDirRecursive(directoryPath: String): List<String> {
+        val directory = File(directoryPath)
+        if (!directory.exists() || !directory.isDirectory) {
+            println("null")
+            return emptyList()
+        }
+
+        return scanDirectory(directory)
+    }
+
+    private fun scanDirectory(dir: File): List<String> {
+        val result = mutableListOf<String>()
+        val files = dir.listFiles() ?: return result
+
+        for (file in files) {
+            if (file.isFile) {
+                result.add(file.absolutePath) // можно заменить на file.name если нужен только файл без пути
+            } else if (file.isDirectory) {
+                result.addAll(scanDirectory(file)) // рекурсивный вызов для поддиректорий
+            }
+        }
+
+        return result
+    }
+
+    fun getNameFromPath(path: String): String {
+        return path.substringAfterLast(File.separator)
+    }
+
     fun resourceDir(resourcePath: String): String {
         return parent.dataPath(resourcePath);
     }
 
     fun loadJSONObject(filePath: String): JSONObject {
-        return parent.loadJSONObject(filePath);
+        val json = parent.loadJSONObject(filePath)
+        return json;
+    }
+
+    fun getColorFromJSON(json: JSONObject, key: String, default: Color): Color {
+        return if (json.hasKey(key)) {
+            val arr = json.getJSONArray(key)
+            val r = arr.getInt(0)
+            val g = arr.getInt(1)
+            val b = arr.getInt(2)
+            val a = if (arr.size() > 3) arr.getInt(3) else 255
+            Color(r, g, b, a)
+        } else {
+            default
+        }
     }
 }

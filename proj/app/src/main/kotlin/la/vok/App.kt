@@ -21,7 +21,7 @@ class App : PApplet() {
         }
         
         updateMouseCoordinates()
-        Storage.gameController.MainRender()
+        Storage.gameController.mainRender()
     }
 
     fun updateMouseCoordinates() {

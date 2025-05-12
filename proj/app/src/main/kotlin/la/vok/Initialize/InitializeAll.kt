@@ -17,6 +17,7 @@ object initializeAll {
         Storage.lg = LGraphics()
         Storage.main.noStroke()
         updateResolution()
+        Storage.gameController.clientController.initRender();
     }
 
     fun initializeGame() {

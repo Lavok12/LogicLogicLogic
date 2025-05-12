@@ -1,0 +1,15 @@
+{
+    "width": 100,
+    "height": 100,
+    "x": 0,
+    "y": 0,
+    "type": "LPanel",
+    "tag": "22",
+    "panelColor": [
+        150,
+        120,
+        80,
+        255
+    ],
+    "imageKey": "key"
+}

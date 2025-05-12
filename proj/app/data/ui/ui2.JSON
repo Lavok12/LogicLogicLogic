@@ -1,0 +1,48 @@
+{
+    "tag": "endButton",
+    "x": 0,
+    "y": 0,
+    "alignY": 0,
+    "type": "LPanel",
+    "height": 120,
+    "width": 450,
+    "panelColor": [
+        120,
+        120,
+        120
+    ],
+    "childs": [
+        {
+            "debug": "1",
+            "extends": [
+                "block.JSON"
+            ],
+            "tag": "type1",
+            "x": -165
+        },
+        {
+            "debug": "2",
+            "extends": [
+                "block.JSON"
+            ],
+            "tag": "type2",
+            "x": -55
+        },
+        {
+            "debug": "2",
+            "extends": [
+                "block.JSON"
+            ],
+            "tag": "type3",
+            "x": 55
+        },
+        {
+            "debug": "3",
+            "extends": [
+                "block.JSON"
+            ],
+            "tag": "type4",
+            "x": 165
+        }
+    ]
+}

@@ -4,9 +4,9 @@ import la.vok.LavokLibrary.Functions
 import la.vok.LoadData.LanguageData
 import la.vok.Storages.Settings
 import processing.data.JSONObject
+import la.vok.GameController.GameController;
 
-
-class LanguageController(var lang: String = "eng") {
+class LanguageController(var lang: String = "eng", var gameController: GameController) {
     var langData = HashMap<String, LanguageData>(); 
 
     init {

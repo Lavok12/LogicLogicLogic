@@ -1,5 +1,9 @@
 package la.vok.Render
 
+import la.vok.GameController.GameController
+import la.vok.Storages.Storage
+import la.volk.Render.Elements.LElement
+
 class LCanvas(
     var posX: Float = 0f,
     var posY: Float = 0f,
@@ -8,7 +12,26 @@ class LCanvas(
     var scaleX: Float = 1f,
     var scaleY: Float = 1f,
     var textScale: Float = 1f,
+    var gameController: GameController = Storage.gameController
+    
 ) {
+    var elements = ArrayList<LElement>();
+
+    fun renderElements() {
+        for (LElement in elements) {
+            LElement.render(gameController.clientController.mainRender)
+        }
+    }
+
+    fun addChild(el: LElement, tag: String = "") {
+        el.tag = tag;
+        el.parentCanvas = this;
+        elements += el;
+    }
+    fun addChild(key: String, tag: String = "") {
+        gameController.loadUIList.addChilds(key, this, tag)
+    }
+
     fun applyCanvasPosX(x: Float, align: Float = 0f): Float {
         return (x + posX + align * width/2) / scaleX
     }

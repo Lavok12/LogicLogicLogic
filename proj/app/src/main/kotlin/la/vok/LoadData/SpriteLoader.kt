@@ -5,18 +5,19 @@ import la.vok.Storages.Storage
 import la.vok.Storages.Settings
 import processing.core.PApplet
 import processing.core.PImage
+import la.vok.GameController.GameController;
 
-class SpriteLoader {
-    var SpritesData: SpritesData
+class SpriteLoader(var gameController: GameController) {
+    var spritesData: SpritesData
     var sprites: HashMap<String, LSprite> = HashMap()
 
     init {
-        SpritesData = SpritesData()
-        SpritesData.loadData()
+        spritesData = SpritesData()
+        spritesData.loadData()
     }
 
     fun getPatch(key: String): String {
-        return SpritesData.getString(key)
+        return spritesData.getString(key)
     }
 
     fun getSprite(key: String): LSprite? {
@@ -41,10 +42,10 @@ class SpriteLoader {
 class LSprite(var key: String, var SpriteLoader: SpriteLoader) {
     var img: PImage? = null
     get() {
-        if (img == null) {
+        if (field == null) {
             loadSprite()
         }
-        return img
+        return field
     }
     
     var lastCalled: Int = 0;

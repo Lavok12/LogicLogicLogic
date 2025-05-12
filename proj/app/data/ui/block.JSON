@@ -1,0 +1,15 @@
+{
+    "width": 100,
+    "height": 100,
+    "type": "LPanel",
+    "borderRadius": 10,
+    "panelColor": [
+        80,
+        80,
+        80,
+        255
+    ],
+    "childs": [
+        "part.JSON"
+    ]
+}

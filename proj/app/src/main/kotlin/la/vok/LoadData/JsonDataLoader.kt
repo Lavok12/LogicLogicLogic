@@ -3,14 +3,14 @@ package la.vok.LoadData
 import la.vok.LavokLibrary.Functions
 
 open class JsonDataLoader {
-    protected val data = HashMap<String, String>()
+    open val data = HashMap<String, String>()
 
     open fun loadDataFromFolder(patch: String) {
-        val filesList = Functions.scanDir(patch)
+        val filesList = Functions.scanDirRecursive(patch)
         println("Загружаю JSON файлы из '$patch'")
         for (file in filesList) {
             try {
-                val json = Functions.loadJSONObject("$patch/$file")
+                val json = Functions.loadJSONObject("$file")
                 for (key in json.keys()) {
                     data[key as String] = json.getString(key)
                     println("key: $key, value: ${json.getString(key)}, file: $file")
