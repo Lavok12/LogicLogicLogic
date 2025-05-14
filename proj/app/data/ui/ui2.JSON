@@ -4,45 +4,23 @@
     "y": 0,
     "alignY": 0,
     "type": "LPanel",
-    "height": 120,
+    "height": 450,
     "width": 450,
     "panelColor": [
         120,
         120,
-        120
+        120,
+        255
     ],
-    "childs": [
-        {
-            "debug": "1",
-            "extends": [
-                "block.JSON"
-            ],
-            "tag": "type1",
-            "x": -165
-        },
-        {
-            "debug": "2",
-            "extends": [
-                "block.JSON"
-            ],
-            "tag": "type2",
-            "x": -55
-        },
-        {
-            "debug": "2",
-            "extends": [
-                "block.JSON"
-            ],
-            "tag": "type3",
-            "x": 55
-        },
-        {
-            "debug": "3",
-            "extends": [
-                "block.JSON"
-            ],
-            "tag": "type4",
-            "x": 165
-        }
-    ]
+    "whileChilds": {
+        "varName": "&i",
+        "iterations": 16,
+        "debug": "&i",
+        "extends": [
+            "block.JSON"
+        ],
+        "tag": "type_&i",
+        "alignX": "<&i%4/2-1+0.25>",
+        "alignY": "<math.floor(&i/4)/2-1+0.25>"
+    }
 }

@@ -17,7 +17,7 @@ class LPanel(
     height: Float = 100f, // Высота панели
     alignX: Float = 0f, // Выравнивание по X
     alignY: Float = 0f, // Выравнивание по Y
-    parentCanvas: LCanvas = Storage.gameController.clientController.mainRender.mainCanvas, // Канва родителя
+    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas, // Канва родителя
     var panelColor: Color = Color(100, 100, 100, 255), // Цвет панели
     var imageKey: String = "", // Ключ изображения панели
     var scaleX: Float = 1f, // Масштаб по ширине

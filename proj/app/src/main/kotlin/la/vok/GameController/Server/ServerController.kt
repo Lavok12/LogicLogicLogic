@@ -1,4 +1,6 @@
 package la.vok.GameController.Server
 
-class ServerController {
+import la.vok.GameController.GameController;
+
+class ServerController(gameController: GameController) {
 }

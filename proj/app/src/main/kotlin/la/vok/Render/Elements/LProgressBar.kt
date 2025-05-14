@@ -19,7 +19,7 @@ class LProgressBar(
     height: Float = 40f,
     alignX: Float = 0f,
     alignY: Float = 0f,
-    parentCanvas: LCanvas = Storage.gameController.clientController.mainRender.mainCanvas,
+    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas,
     var progress: Float = 0f,
     var smooth: Boolean = true,
     var steps: Int = 10,

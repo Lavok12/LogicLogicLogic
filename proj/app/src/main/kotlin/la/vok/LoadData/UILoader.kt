@@ -13,6 +13,8 @@ class UILoader(var gameController: GameController) {
 
     init {
         UIData = UIData()
+    }
+    fun loadData() {
         UIData.loadData()
     }
 

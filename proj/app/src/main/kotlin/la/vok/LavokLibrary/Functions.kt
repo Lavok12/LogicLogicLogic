@@ -42,7 +42,9 @@ fun ByteArray.decompress(): String? {
 }
 
 object Functions {
-    lateinit var parent: App
+    val parent: App
+        get() = Storage.main
+
     fun r(num: Float): Int {
         return PApplet.round(num)
     }

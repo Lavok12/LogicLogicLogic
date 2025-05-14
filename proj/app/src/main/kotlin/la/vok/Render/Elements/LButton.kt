@@ -18,7 +18,7 @@ class LButton(
     height: Float = 100f, // Height of the button
     alignX: Float = 0f, // X alignment of the button (-1 = left, 1 = right, 0.0 = center)
     alignY: Float = 0f, // Y alignment of the button (-1 = top, 1 = bottom, 0.0 = center)
-    parentCanvas: LCanvas = Storage.gameController.clientController.mainRender.mainCanvas, // Parent canvas for the button
+    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas, // Parent canvas for the button
     var text: String = "Button", // Text to be displayed on the button
     var textAlignX: Int = 0, // X alignment of the text (-1 = left, 1 = right, 0 = center)
     var textAlignY: Int = 0, // Y alignment of the text (-1 = top, 1 = bottom, 0 = center)
@@ -155,7 +155,7 @@ class LButton(
             width = SX*scaleX,
             height = SY*scaleY,
             borderRadius = buttonRadius,
-            mainRender = Storage.gameController.clientController.mainRender,
+            mainRender = Storage.gameController.mainRender,
             image = if (isHover) hoverButtonSprite?.img else buttonSprite?.img,
             clr = currentButtonColor
         )

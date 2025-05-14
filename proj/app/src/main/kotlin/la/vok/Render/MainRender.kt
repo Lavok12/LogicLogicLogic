@@ -5,14 +5,14 @@ import la.vok.LavokLibrary.LGraphics
 import la.volk.Render.Elements.*
 import java.awt.Button
 import java.awt.Color
+import la.vok.GameController.GameController
 
-class MainRender {
+class MainRender(gameController: GameController) {
     lateinit var lg: LGraphics
     var mainCanvas: LCanvas
     
     init {
-        mainCanvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f);
-        mainCanvas.addChild("ui2.JSON")
+        mainCanvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f, gameController = gameController);
     }
     fun startRender() {
         Storage.lg.beginDraw();

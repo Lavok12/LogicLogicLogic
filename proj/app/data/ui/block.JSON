@@ -1,6 +1,6 @@
 {
-    "width": 100,
-    "height": 100,
+    "percentWidth": 0.22,
+    "percentHeight": 0.22,
     "type": "LPanel",
     "borderRadius": 10,
     "panelColor": [

@@ -9,7 +9,7 @@ import la.vok.GameController.GameController;
 class LanguageController(var lang: String = "eng", var gameController: GameController) {
     var langData = HashMap<String, LanguageData>(); 
 
-    init {
+    fun loadData() {
         addLang(lang);
     }
 

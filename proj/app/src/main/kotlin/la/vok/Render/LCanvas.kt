@@ -19,7 +19,7 @@ class LCanvas(
 
     fun renderElements() {
         for (LElement in elements) {
-            LElement.render(gameController.clientController.mainRender)
+            LElement.render(gameController.mainRender)
         }
     }
 

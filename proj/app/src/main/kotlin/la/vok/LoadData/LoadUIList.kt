@@ -15,6 +15,7 @@ fun JSONObject.add(obj: JSONObject) {
             is String -> this.setString(key, value)
             is Int -> this.setInt(key, value)
             is Float -> this.setFloat(key, value)
+            is Double -> this.setDouble(key, value)
             is Boolean -> this.setBoolean(key, value)
             is JSONArray -> this.setJSONArray(key, value)
             else -> this.setJSONObject(key, value as JSONObject)
@@ -42,8 +43,6 @@ class LoadUIList(private val gameController: GameController) {
                 val extendJson = loadData(extendsArray.getString(i))
                 println("${extendsArray.getString(i)}");
                 extendJson.remove("extends")
-                extendJson.remove("tag")
-                extendJson.remove("name")
                 newJson.add(extendJson)
             }
         }
@@ -67,7 +66,7 @@ class LoadUIList(private val gameController: GameController) {
     private fun resolveVariables(json: JSONObject) {
         for (jKey in json.keys()) {
             val value = json.get(jKey as String)
-            if (value is String && value.startsWith("$")) {
+            if (value is String && value.startsWith("%")) {
                 val varKey = value.substring(1)
                 val varJson = loadData(varKey)
                 if (varJson.hasKey("value")) {
@@ -76,6 +75,7 @@ class LoadUIList(private val gameController: GameController) {
                         is String -> json.setString(jKey, resolvedValue)
                         is Int -> json.setInt(jKey, resolvedValue)
                         is Float -> json.setFloat(jKey, resolvedValue)
+                        is Double -> json.setDouble(jKey, resolvedValue)
                         is Boolean -> json.setBoolean(jKey, resolvedValue)
                         is JSONArray -> json.setJSONArray(jKey, resolvedValue)
                         else -> json.setJSONObject(jKey, resolvedValue as JSONObject)

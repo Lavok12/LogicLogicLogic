@@ -1,6 +1,6 @@
 {
-    "width": 100,
-    "height": 100,
+    "percentWidth": 1.0,
+    "percentHeight": 1.0,
     "x": 0,
     "y": 0,
     "type": "LPanel",

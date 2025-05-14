@@ -13,6 +13,8 @@ class SpriteLoader(var gameController: GameController) {
 
     init {
         spritesData = SpritesData()
+    }
+    fun loadData() {
         spritesData.loadData()
     }
 

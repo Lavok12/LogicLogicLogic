@@ -8,23 +8,25 @@ import la.vok.LavokLibrary.Functions
 import la.vok.GameController.GameController
 
 object initializeAll {
-    fun initialize() {
+    fun initializeClient() {
         initializeGame()
         initializeGraphics()
+        Storage.gameController.mainRender.mainCanvas.addChild("ui2.JSON")
     }
 
     fun initializeGraphics() {
         Storage.lg = LGraphics()
         Storage.main.noStroke()
         updateResolution()
-        Storage.gameController.clientController.initRender();
     }
 
     fun initializeGame() {
-        Functions.parent = Storage.main;
+        Storage.gameController = GameController(Settings.isClient, Settings.isServer, Settings.isLocal);
+        Storage.gameController.startInit(); 
+        Storage.gameController.initLoaders();
         Storage.main.frameRate(60f)
         Storage.main.noiseSeed(Functions.rand(0, 255000000).toLong())
-        Storage.gameController = GameController(Settings.isClient, Settings.isServer, Settings.isLocal);
+        Storage.gameController.initMenuController();
     }
 
     fun updateResolution() {

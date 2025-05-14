@@ -15,7 +15,7 @@ class LText(
     height: Float = 100f,
     alignX: Float = 0f,
     alignY: Float = 0f,
-    parentCanvas: LCanvas = Storage.gameController.clientController.mainRender.mainCanvas,
+    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas,
     var text: String = "Text",
     var textAlignX: Int = 0,
     var textAlignY: Int = 0,

@@ -16,7 +16,7 @@ object RenderElements {
         height: Float, 
         clr: Color, 
         borderRadius: Float = 0f,
-        mainRender: MainRender = Storage.gameController.clientController.mainRender,
+        mainRender: MainRender = Storage.gameController.mainRender,
         image: PImage? = null
         ) {
         var lg: LGraphics = mainRender.lg
@@ -32,7 +32,7 @@ object RenderElements {
             lg.setImage(image, posX, posY, width, height)
         }
     }
-    fun renderElement(element: LElement, mainRender: MainRender = Storage.gameController.clientController.mainRender) {
+    fun renderElement(element: LElement, mainRender: MainRender = Storage.gameController.mainRender) {
         element.render(mainRender);
     }
 }

@@ -1,17 +1,8 @@
 package la.vok.GameController.Client
 
 import la.vok.Render.MainRender
+import la.vok.GameController.GameController;
 
-class ClientController {
-    lateinit var mainRender: MainRender
-    init {
-        
-    }
+class ClientController(gameController: GameController) {
 
-    fun initRender() {
-        mainRender = MainRender()
-    }
-    fun mainRender() {
-        mainRender.render()
-    }
 }

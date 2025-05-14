@@ -4,13 +4,14 @@ import la.vok.Render.MainRender
 import la.vok.Render.RenderElements.RenderElements
 import la.vok.Render.LCanvas
 import la.vok.Storages.Storage
-import la.vok.LoadData.LSprite
-import la.vok.LoadData.LoadUIList
+import la.vok.LoadData.*
 import la.vok.GameController.GameController
-import java.awt.Color
+import org.luaj.vm2.*
+import org.luaj.vm2.lib.jse.JsePlatform
 import processing.core.PApplet
 import processing.data.JSONObject
-
+import processing.data.JSONArray
+import la.vok.LavokLibrary.*
 
 open class LElement(
     var x: Float = 0f,
@@ -19,7 +20,7 @@ open class LElement(
     var height: Float = 100f,
     var alignX: Float = 0f,
     var alignY: Float = 0f,
-    var parentCanvas: LCanvas = Storage.gameController.clientController.mainRender.mainCanvas,
+    var parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas,
     var percentWidth: Float = -1f,
     var percentHeight: Float = -1f,
     var offsetByWidth: Float = 0f,
@@ -39,20 +40,54 @@ open class LElement(
 
     open var gameController: GameController = Storage.gameController;
 
+    open fun replacePlaceholders(text: String, i: Int, varName: String, eval: (String) -> LuaValue = LuaEvaluator::eval): String {
+        var result1 = text.replace(varName, i.toString())
+        var result = result1.replace("\\", "")
+    
+        val regex = "<(.*?)>".toRegex()
+        result = regex.replace(result) { matchResult ->
+            val code = matchResult.groupValues[1]
+            println("code $code")
+            eval(code).toString()
+        }
+    
+        println("res $result")
+        return result
+    }
+    
+
     open fun checkChilds(json: JSONObject) {
         if (json.hasKey("childs")) {
             val childs = json.getJSONArray("childs")
             for (i in 0 until childs.size()) {
-                if (childs[i] is JSONObject) {
-                    gameController.loadUIList.addChilds(childs.getJSONObject(i), elementCanvas)
-                } else if (childs[i] is String) {
-                    gameController.loadUIList.addChilds(childs.getString(i), elementCanvas)
+                when (val child = childs[i]) {
+                    is JSONObject -> gameController.loadUIList.addChilds(child, elementCanvas)
+                    is String -> gameController.loadUIList.addChilds(child, elementCanvas)
                 }
+            }
+        }
+
+        if (json.hasKey("whileChilds")) {
+            var wc = json.getJSONObject("whileChilds")
+            var iterations = if (wc.hasKey("iterations")) wc.getInt("iterations") else 1
+            var varName = if (wc.hasKey("varName")) wc.getString("varName") else "&i"
+
+            iterations -= 1
+
+            for (i in 0..iterations) {
+                var iwcs = wc.toString()
+                iwcs = replacePlaceholders(iwcs, i, varName) { code ->
+                    val engine = JsePlatform.standardGlobals()  // Загружаем Lua среду
+                    val compiledCode = engine.load("return " + code)  // Компилируем Lua-выражение
+                    compiledCode.call()  // Выполняем
+                }
+                var wci = JSONObject.parse(iwcs)
+                gameController.loadUIList.addChilds(wci, elementCanvas)
             }
         }
     }
 
-    companion object {   
+    companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LElement {
             val x = if (json.hasKey("x")) json.getFloat("x") else 0f
             val y = if (json.hasKey("y")) json.getFloat("y") else 0f
@@ -69,7 +104,7 @@ open class LElement(
             val minWidth = if (json.hasKey("minWidth")) json.getFloat("minWidth") else 0f
             val minHeight = if (json.hasKey("minHeight")) json.getFloat("minHeight") else 0f
             val tag = if (json.hasKey("tag")) json.getString("tag") else ""
-    
+
             var ret = LElement(
                 x, y, width, height, alignX, alignY, parentCanvas,
                 percentWidth, percentHeight,
@@ -84,21 +119,19 @@ open class LElement(
         }
     }
 
+    open fun updateSprites() {}
 
-    open fun updateSprites() {
-
-    }
     open fun updateVisuals() {
         PX = parentCanvas.applyCanvasPosX(x, alignX)
         PY = parentCanvas.applyCanvasPosY(y, alignY)
-    
+
         SX = if (percentWidth != -1f)
-            parentCanvas.applyCanvasSizeX(width + parentCanvas.canvasSizePercentX(percentWidth))
+            parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
         else
             parentCanvas.applyCanvasSizeX(width)
-    
+
         SY = if (percentHeight != -1f)
-            parentCanvas.applyCanvasSizeY(height + parentCanvas.canvasSizePercentY(percentHeight))
+            parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
         else
             parentCanvas.applyCanvasSizeY(height)
 
@@ -114,7 +147,7 @@ open class LElement(
         if (minHeight != 0f && SY < minHeight) {
             SY = minHeight
         }
-        
+
         PX += offsetByWidth * SX
         PY += offsetByHeight * SY
 
@@ -123,7 +156,7 @@ open class LElement(
         elementCanvas.width = SX
         elementCanvas.height = SY
     }
-    
+
     open fun render(mainRender: MainRender) {
         elementCanvas.renderElements();
     }
