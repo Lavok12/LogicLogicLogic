@@ -1,14 +1,13 @@
-package la.volk.Render.Elements
+package la.volk.UI.Elements
 
-import la.vok.Render.MainRender
-import la.vok.Render.RenderElements.RenderElements
+import la.vok.UI.*
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
 import java.awt.Color
 import processing.core.PApplet
 import processing.data.JSONObject
-import la.vok.Render.LCanvas
-import la.vok.LavokLibrary.Functions
+import la.vok.UI.LCanvas
+import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 
 class LButton(
@@ -18,7 +17,7 @@ class LButton(
     height: Float = 100f, // Height of the button
     alignX: Float = 0f, // X alignment of the button (-1 = left, 1 = right, 0.0 = center)
     alignY: Float = 0f, // Y alignment of the button (-1 = top, 1 = bottom, 0.0 = center)
-    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas, // Parent canvas for the button
+    parentCanvas: LCanvas = Storage.gameController.getCanvas(), // Parent canvas for the button
     var text: String = "Button", // Text to be displayed on the button
     var textAlignX: Int = 0, // X alignment of the text (-1 = left, 1 = right, 0 = center)
     var textAlignY: Int = 0, // Y alignment of the text (-1 = top, 1 = bottom, 0 = center)
@@ -36,6 +35,8 @@ class LButton(
     var textPosAlignY: Float = 0f, // Y alignment of the text position (-1 = top, 1 = bottom, 0.0 = center)
     var scaleX: Float = 1f, // Scale factor for the button width
     var scaleY: Float = 1f, // Scale factor for the button height
+    var postImageKey: String = "", // Key for the button post image
+    var postHoverImageKey: String = "", // Key for the button post hover image
     offsetByWidth: Float = 0f, // Offset for the button position based on width
     offsetByHeight: Float = 0f, // Offset for the button position based on height
     percentWidth: Float = -1f, // Percentage width of the button (-1 = no percentage, 0.0 = 0%, 1.0 = 100%)
@@ -52,6 +53,7 @@ class LButton(
 ) {
     var buttonSprite: LSprite? = null
     var hoverButtonSprite: LSprite? = null
+    var postSprite: LSprite? = null
     var isHover: Boolean = false
 
     var TPX: Float = 0f
@@ -64,60 +66,64 @@ class LButton(
 
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LButton {
-            val x = if (json.hasKey("x")) json.getFloat("x") else 0f
-            val y = if (json.hasKey("y")) json.getFloat("y") else 0f
-            val width = if (json.hasKey("width")) json.getFloat("width") else 200f
-            val height = if (json.hasKey("height")) json.getFloat("height") else 100f
-            val alignX = if (json.hasKey("alignX")) json.getFloat("alignX") else 0f
-            val alignY = if (json.hasKey("alignY")) json.getFloat("alignY") else 0f
-            val percentWidth = if (json.hasKey("percentWidth")) json.getFloat("percentWidth") else -1f
-            val percentHeight = if (json.hasKey("percentHeight")) json.getFloat("percentHeight") else -1f
-            val offsetByWidth = if (json.hasKey("offsetByWidth")) json.getFloat("offsetByWidth") else 0f
-            val offsetByHeight = if (json.hasKey("offsetByHeight")) json.getFloat("offsetByHeight") else 0f
-            val maxWidth = if (json.hasKey("maxWidth")) json.getFloat("maxWidth") else 0f
-            val maxHeight = if (json.hasKey("maxHeight")) json.getFloat("maxHeight") else 0f
-            val minWidth = if (json.hasKey("minWidth")) json.getFloat("minWidth") else 0f
-            val minHeight = if (json.hasKey("minHeight")) json.getFloat("minHeight") else 0f
-            val tag = if (json.hasKey("tag")) json.getString("tag") else ""
-    
-            val text = if (json.hasKey("text")) json.getString("text") else "Button"
-            val textAlignX = if (json.hasKey("textAlignX")) json.getInt("textAlignX") else 0
-            val textAlignY = if (json.hasKey("textAlignY")) json.getInt("textAlignY") else 0
-            val fontSize = if (json.hasKey("fontSize")) json.getFloat("fontSize") else 30f
-            val buttonRadius = if (json.hasKey("buttonRadius")) json.getFloat("buttonRadius") else 10f
-            val imageKey = if (json.hasKey("imageKey")) json.getString("imageKey") else ""
-            val hoverImageKey = if (json.hasKey("hoverImageKey")) json.getString("hoverImageKey") else ""
-            val textDeltaX = if (json.hasKey("textDeltaX")) json.getFloat("textDeltaX") else 0f
-            val textDeltaY = if (json.hasKey("textDeltaY")) json.getFloat("textDeltaY") else 0f
-            val textPosAlignX = if (json.hasKey("textPosAlignX")) json.getFloat("textPosAlignX") else 0f
-            val textPosAlignY = if (json.hasKey("textPosAlignY")) json.getFloat("textPosAlignY") else 0f
-            val scaleX = if (json.hasKey("scaleX")) json.getFloat("scaleX") else 1f
-            val scaleY = if (json.hasKey("scaleY")) json.getFloat("scaleY") else 1f
-    
-            val buttonColor = Functions.getColorFromJSON(json, "buttonColor", Color(150, 120, 100))
-            val hoverColor = Functions.getColorFromJSON(json, "hoverColor", Color(140, 110, 90, 200))
-            val textColor = Functions.getColorFromJSON(json, "textColor", Color(255, 255, 255))
-            val hoverTextColor =
-                if (json.hasKey("hoverTextColor")) Functions.getColorFromJSON(json, "hoverTextColor", textColor) else null
-            
-            
-            var ret = LButton(
-                x, y, width, height, alignX, alignY, parentCanvas,
-                text, textAlignX, textAlignY, fontSize,
-                buttonRadius, buttonColor, hoverColor,
-                textColor, hoverTextColor,
-                imageKey, hoverImageKey,
-                textDeltaX, textDeltaY,
-                textPosAlignX, textPosAlignY,
-                scaleX, scaleY,
-                offsetByWidth, offsetByHeight,
-                percentWidth, percentHeight,
-                maxWidth, maxHeight,
-                minWidth, minHeight,
-                tag
-            )
+            val x = json.LgetFloat("x", 0f)
+        val y = json.LgetFloat("y", 0f)
+        val width = json.LgetFloat("width", 200f)
+        val height = json.LgetFloat("height", 100f)
+        val alignX = json.LgetFloat("alignX", 0f)
+        val alignY = json.LgetFloat("alignY", 0f)
+        val percentWidth = json.LgetFloat("percentWidth", -1f)
+        val percentHeight = json.LgetFloat("percentHeight", -1f)
+        val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
+        val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
+        val maxWidth = json.LgetFloat("maxWidth", 0f)
+        val maxHeight = json.LgetFloat("maxHeight", 0f)
+        val minWidth = json.LgetFloat("minWidth", 0f)
+        val minHeight = json.LgetFloat("minHeight", 0f)
+        val tag = json.LgetString("tag", "")
+
+        val text = json.LgetString("text", "Button")
+        val textAlignX = json.LgetInt("textAlignX", 0)
+        val textAlignY = json.LgetInt("textAlignY", 0)
+        val fontSize = json.LgetFloat("fontSize", 30f)
+        val buttonRadius = json.LgetFloat("buttonRadius", 10f)
+        val imageKey = json.LgetString("imageKey", "")
+        val hoverImageKey = json.LgetString("hoverImageKey", "")
+        val postImageKey = json.LgetString("postImageKey", "")
+        val postHoverImageKey = json.LgetString("postHoverImageKey", "")
+
+        val textDeltaX = json.LgetFloat("textDeltaX", 0f)
+        val textDeltaY = json.LgetFloat("textDeltaY", 0f)
+        val textPosAlignX = json.LgetFloat("textPosAlignX", 0f)
+        val textPosAlignY = json.LgetFloat("textPosAlignY", 0f)
+        val scaleX = json.LgetFloat("scaleX", 1f)
+        val scaleY = json.LgetFloat("scaleY", 1f)
+
+        val buttonColor = Functions.getColorFromJSON(json, "buttonColor", Color(150, 120, 100))
+        val hoverColor = Functions.getColorFromJSON(json, "hoverColor", Color(140, 110, 90, 200))
+        val textColor = Functions.getColorFromJSON(json, "textColor", Color(255, 255, 255))
+        val hoverTextColor = Functions.getColorFromJSON(json, "hoverTextColor",  Color(255, 255, 255))
+        
+                
+        var ret = LButton(
+            x, y, width, height, alignX, alignY, parentCanvas,
+            text, textAlignX, textAlignY, fontSize,
+            buttonRadius, buttonColor, hoverColor,
+            textColor, hoverTextColor,
+            imageKey, hoverImageKey,
+            textDeltaX, textDeltaY,
+            textPosAlignX, textPosAlignY,
+            scaleX, scaleY,
+            postImageKey, postHoverImageKey,
+            offsetByWidth, offsetByHeight,
+            percentWidth, percentHeight,
+            maxWidth, maxHeight,
+            minWidth, minHeight,
+            tag
+        )
             ret.gameController = gameController;
             ret.checkChilds(json);
+            ret.setEvents(json)
             return ret;
         }
     }
@@ -129,6 +135,9 @@ class LButton(
         }
         if (hoverImageKey != "") {
             hoverButtonSprite = Storage.gameController.spriteLoader.getSprite(hoverImageKey)
+        }
+        if (postImageKey != "") {
+            postSprite = Storage.gameController.spriteLoader.getSprite(postImageKey)
         }
     }
 
@@ -142,8 +151,8 @@ class LButton(
     }
     
     
-    override fun render(mainRender: MainRender) {
-        updateVisuals();
+    override fun renderElement(mainRender: MainRender) {
+        updateVisuals()
         val lg = mainRender.lg
 
         val currentButtonColor = if (isHover) hoverColor ?: buttonColor else buttonColor
@@ -164,6 +173,17 @@ class LButton(
         lg.pg.fill(currentTextColor.red.toFloat(), currentTextColor.green.toFloat(), currentTextColor.blue.toFloat(), currentTextColor.alpha.toFloat())
         lg.setText(text, TPX, TPY, textSize)
 
-        super.render(mainRender);
+        if (postSprite != null) {
+            RenderElements.renderBlock(
+                posX = PX,
+                posY = PY,
+                width = SX*scaleX,
+                height = SY*scaleY,
+                borderRadius = buttonRadius,
+                mainRender = Storage.gameController.mainRender,
+                image = if (isHover) Storage.gameController.spriteLoader.getSprite(postHoverImageKey)?.img else postSprite?.img,
+                clr = currentButtonColor
+            )
+        }
     }
 }

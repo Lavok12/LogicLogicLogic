@@ -1,0 +1,39 @@
+{
+    "tag": "endButton",
+    "x": 0,
+    "y": 0,
+    "alignY": 0,
+    "type": "LPanel",
+    "height": 860,
+    "width": 1560,
+    "panelColor": [
+        120,
+        120,
+        120,
+        255
+    ],
+    "childs": [
+        {
+            "extends": [
+                "button"
+            ],
+            "tag": "b1",
+            "y": 160
+        },
+        {
+            "extends": [
+                "button"
+            ],
+            "tag": "b2",
+            "y": -160
+        },
+        {
+            "extends": [
+                "black"
+            ],
+            "tag": "b3",
+            "y": -160,
+            "x": 100
+        }
+    ]
+}

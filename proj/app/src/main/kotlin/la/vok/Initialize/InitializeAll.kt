@@ -11,7 +11,8 @@ object initializeAll {
     fun initializeClient() {
         initializeGame()
         initializeGraphics()
-        Storage.gameController.mainRender.mainCanvas.addChild("ui2.JSON")
+        //Storage.gameController.initClient()
+        Storage.gameController.getCanvas().addChild("ui2")
     }
 
     fun initializeGraphics() {

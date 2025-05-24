@@ -18,7 +18,7 @@ class SpriteLoader(var gameController: GameController) {
         spritesData.loadData()
     }
 
-    fun getPatch(key: String): String {
+    fun getPath(key: String): String {
         return spritesData.getString(key)
     }
 
@@ -53,8 +53,8 @@ class LSprite(var key: String, var SpriteLoader: SpriteLoader) {
     var lastCalled: Int = 0;
 
     fun loadSprite() {
-        var patch = SpriteLoader.getPatch(key)
-        img = Storage.main.loadImage(patch)
+        var path = SpriteLoader.getPath(key)
+        img = Storage.main.loadImage(path)
     }
     fun removeSprite() {
         lastCalled = Storage.main.millis();
@@ -65,14 +65,14 @@ class LSprite(var key: String, var SpriteLoader: SpriteLoader) {
 }
 
 class SpritesData() : JsonDataLoader() {
-    override fun loadDataFromFolder(patch: String) {
+    override fun loadDataFromFolder(path: String) {
         data.clear()
-        super.loadDataFromFolder(patch)
+        super.loadDataFromFolder(path)
     }
 
     fun loadData() {
-        var spritePatch = Settings.spritePatch;
-        val patch = Functions.resourceDir("$spritePatch/")
-        loadDataFromFolder(patch)
+        var spritePath = Settings.spritePath;
+        val path = Functions.resourceDir("$spritePath/")
+        loadDataFromFolder(path)
     }
 }

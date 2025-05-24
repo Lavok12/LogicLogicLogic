@@ -1,10 +1,10 @@
-package la.vok.Render
+package la.vok.UI
 
 import la.vok.GameController.GameController
 import la.vok.Storages.Storage
-import la.volk.Render.Elements.LElement
+import la.volk.UI.Elements.LElement
 
-class LCanvas(
+class LCanvas (
     var posX: Float = 0f,
     var posY: Float = 0f,
     var width: Float = 100f,
@@ -17,6 +17,15 @@ class LCanvas(
 ) {
     var elements = ArrayList<LElement>();
 
+    fun tick(mx: Float, my: Float): Boolean {
+        for (i in elements.size - 1 downTo 0) {
+            if (elements[i].tick(mx, my)) {
+                return true
+            }
+        }
+        return false
+    }
+    
     fun renderElements() {
         for (LElement in elements) {
             LElement.render(gameController.mainRender)

@@ -23,8 +23,7 @@ class App : PApplet() {
         updateMouseCoordinates()
         Storage.gameController.mainRender()
 
-        Storage.gameController.mainRender.mainCanvas.elements[0].width = mouseX.toFloat();
-        Storage.gameController.mainRender.mainCanvas.elements[0].height = mouseY.toFloat();
+        Storage.gameController.UITick()
     }
 
     fun updateMouseCoordinates() {

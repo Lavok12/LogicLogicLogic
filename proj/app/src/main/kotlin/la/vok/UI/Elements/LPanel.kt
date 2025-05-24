@@ -1,13 +1,12 @@
-package la.volk.Render.Elements
+package la.volk.UI.Elements
 
-import la.vok.Render.MainRender
-import la.vok.Render.RenderElements.RenderElements
+import la.vok.UI.*
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
-import la.vok.Render.LCanvas
+import la.vok.UI.LCanvas
 import java.awt.Color
 import processing.data.JSONObject
-import la.vok.LavokLibrary.Functions
+import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 
 class LPanel(
@@ -17,7 +16,7 @@ class LPanel(
     height: Float = 100f, // Высота панели
     alignX: Float = 0f, // Выравнивание по X
     alignY: Float = 0f, // Выравнивание по Y
-    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas, // Канва родителя
+    parentCanvas: LCanvas = Storage.gameController.getCanvas(), // Канва родителя
     var panelColor: Color = Color(100, 100, 100, 255), // Цвет панели
     var imageKey: String = "", // Ключ изображения панели
     var scaleX: Float = 1f, // Масштаб по ширине
@@ -42,26 +41,27 @@ class LPanel(
 
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LPanel {
-            val x = if (json.hasKey("x")) json.getFloat("x") else 0f
-            val y = if (json.hasKey("y")) json.getFloat("y") else 0f
-            val width = if (json.hasKey("width")) json.getFloat("width") else 200f
-            val height = if (json.hasKey("height")) json.getFloat("height") else 100f
-            val alignX = if (json.hasKey("alignX")) json.getFloat("alignX") else 0f
-            val alignY = if (json.hasKey("alignY")) json.getFloat("alignY") else 0f
-            val percentWidth = if (json.hasKey("percentWidth")) json.getFloat("percentWidth") else -1f
-            val percentHeight = if (json.hasKey("percentHeight")) json.getFloat("percentHeight") else -1f
-            val offsetByWidth = if (json.hasKey("offsetByWidth")) json.getFloat("offsetByWidth") else 0f
-            val offsetByHeight = if (json.hasKey("offsetByHeight")) json.getFloat("offsetByHeight") else 0f
-            val maxWidth = if (json.hasKey("maxWidth")) json.getFloat("maxWidth") else 0f
-            val maxHeight = if (json.hasKey("maxHeight")) json.getFloat("maxHeight") else 0f
-            val minWidth = if (json.hasKey("minWidth")) json.getFloat("minWidth") else 0f
-            val minHeight = if (json.hasKey("minHeight")) json.getFloat("minHeight") else 0f
-            val tag = if (json.hasKey("tag")) json.getString("tag") else ""
-            val imageKey = if (json.hasKey("imageKey")) json.getString("imageKey") else ""
+            val x = json.LgetFloat("x", 0f)
+            val y = json.LgetFloat("y", 0f)
+            val width = json.LgetFloat("width", 200f)
+            val height = json.LgetFloat("height", 100f)
+            val alignX = json.LgetFloat("alignX", 0f)
+            val alignY = json.LgetFloat("alignY", 0f)
+            val percentWidth = json.LgetFloat("percentWidth", -1f)
+            val percentHeight = json.LgetFloat("percentHeight", -1f)
+            val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
+            val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
+            val maxWidth = json.LgetFloat("maxWidth", 0f)
+            val maxHeight = json.LgetFloat("maxHeight", 0f)
+            val minWidth = json.LgetFloat("minWidth", 0f)
+            val minHeight = json.LgetFloat("minHeight", 0f)
+            val tag = json.LgetString("tag", "")
+            val imageKey = json.LgetString("imageKey", "")
             val panelColor = Functions.getColorFromJSON(json, "panelColor", Color(100, 100, 100, 255))
-            val scaleX = if (json.hasKey("scaleX")) json.getFloat("scaleX") else 1f
-            val scaleY = if (json.hasKey("scaleY")) json.getFloat("scaleY") else 1f
-            val borderRadius = if (json.hasKey("borderRadius")) json.getFloat("borderRadius") else 0f
+            val scaleX = json.LgetFloat("scaleX", 1f)
+            val scaleY = json.LgetFloat("scaleY", 1f)
+            val borderRadius = json.LgetFloat("borderRadius", 0f)
+
             
             var ret = LPanel(
                 x = x,
@@ -88,6 +88,7 @@ class LPanel(
             )
             ret.gameController = gameController;
             ret.checkChilds(json);
+            ret.setEvents(json)
             return ret;
         }
     }
@@ -102,7 +103,7 @@ class LPanel(
         }
     }
 
-    override fun render(mainRender: MainRender) {
+    override fun renderElement(mainRender: MainRender) {
         updateVisuals()
 
         RenderElements.renderBlock(
@@ -115,7 +116,5 @@ class LPanel(
             image = panelSprite?.img,
             clr = panelColor
         )
-
-        super.render(mainRender);
     }
 }

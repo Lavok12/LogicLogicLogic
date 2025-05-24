@@ -6,6 +6,8 @@ object Settings {
     var isClient: Boolean = true
     var language: String = "eng"
     var languagePath: String = "lang"
-    var spritePatch: String = "sprites"
-    var UIPatch: String = "ui"
+    var spritePath: String = "sprites"
+    var UIPath: String = "ui"
+    var scriptPath: String = "scripts"
+    var scenePath: String = "scenes"
 }

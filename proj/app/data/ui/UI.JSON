@@ -1,0 +1,14 @@
+{
+    "button": {
+        "path": "resources/button.JSON",
+        "addData": []
+    },
+    "ui2": {
+        "path": "resources/ui2.JSON",
+        "addData": []
+    },
+    "black": {
+        "path": "resources/black.JSON",
+        "addData": []
+    }
+}

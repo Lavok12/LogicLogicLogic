@@ -15,6 +15,7 @@ import processing.core.*
 import processing.data.JSONObject
 import la.vok.App
 import la.vok.Storages.Storage
+import la.vok.LavokLibrary.*
 
 fun String.compress(): ByteArray? {
     return try {
@@ -61,10 +62,10 @@ object Functions {
     }
     
     fun tap(xPos: Float, yPos: Float, xSize: Float, ySize: Float): Boolean {
-        return tapPos(xPos, yPos, xSize, ySize, Storage.moux, Storage.mouy)
+        return tap(xPos, yPos, xSize, ySize, Storage.moux, Storage.mouy)
     }
     
-    fun tapPos(xPos: Float, yPos: Float, xSize: Float, ySize: Float, mx: Float, my: Float): Boolean {
+    fun tap(xPos: Float, yPos: Float, xSize: Float, ySize: Float, mx: Float, my: Float): Boolean {
         return (mx > xPos - xSize / 2 && mx < xPos + xSize / 2) &&
         (my > yPos - ySize / 2 && my < yPos + ySize / 2)
     }
@@ -132,13 +133,23 @@ object Functions {
     fun getColorFromJSON(json: JSONObject, key: String, default: Color): Color {
         return if (json.hasKey(key)) {
             val arr = json.getJSONArray(key)
-            val r = arr.getInt(0)
-            val g = arr.getInt(1)
-            val b = arr.getInt(2)
-            val a = if (arr.size() > 3) arr.getInt(3) else 255
+            val r = arr.LgetInt(0, 0)
+            val g = arr.LgetInt(1, 0)
+            val b = arr.LgetInt(2, 0)
+            val a = if (arr.size() > 3) arr.LgetInt(3, 255) else 255
             Color(r, g, b, a)
         } else {
             default
         }
+    }
+
+    fun loadFile(filePath: String): String {
+        var path = parent.dataPath(filePath);
+        val file = File(path)
+        if (!file.exists()) {
+            println("File not found: $filePath")
+            return ""
+        }
+        return file.readText()
     }
 }

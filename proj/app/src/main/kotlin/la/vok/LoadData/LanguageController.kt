@@ -43,14 +43,14 @@ class LanguageController(var lang: String = "eng", var gameController: GameContr
 
 
 class LanguageData(var lang: String) : JsonDataLoader() {
-    override fun loadDataFromFolder(patch: String) {
+    override fun loadDataFromFolder(path: String) {
         data.clear()
-        super.loadDataFromFolder(patch)
+        super.loadDataFromFolder(path)
     }
 
     fun loadData() {
-        var langPatch = Settings.languagePath;
-        val patch = Functions.resourceDir("$langPatch/$lang")
-        loadDataFromFolder(patch)
+        var langPath = Settings.languagePath;
+        val path = Functions.resourceDir("$langPath/$lang")
+        loadDataFromFolder(path)
     }
 }

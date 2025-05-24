@@ -1,8 +1,8 @@
-package la.volk.Render.Elements
+package la.volk.UI.Elements
 
-import la.vok.Render.MainRender
-import la.vok.Render.RenderElements.RenderElements
-import la.vok.Render.LCanvas
+import la.vok.UI.MainRender
+import la.vok.UI.*
+import la.vok.UI.LCanvas
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
 import java.awt.Color
@@ -19,7 +19,7 @@ class LProgressBar(
     height: Float = 40f,
     alignX: Float = 0f,
     alignY: Float = 0f,
-    parentCanvas: LCanvas = Storage.gameController.mainRender.mainCanvas,
+    parentCanvas: LCanvas = Storage.gameController.getCanvas(),
     var progress: Float = 0f,
     var smooth: Boolean = true,
     var steps: Int = 10,
@@ -34,6 +34,7 @@ class LProgressBar(
     var paddingY: Float = 4f, // ← новый параметр отступа по Y
     var scaleX: Float = 1f, // Scale factor for the progress bar width
     var scaleY: Float = 1f, // Scale factor for the progress bar height
+    var postImageKey: String = "",
     offsetByWidth: Float = 0f,
     offsetByHeight: Float = 0f,
     percentWidth: Float = -1f,
@@ -54,38 +55,40 @@ class LProgressBar(
 
     var fillSprite: LSprite? = null
     var backgroundSprite: LSprite? = null
+    var postSprite: LSprite? = null
 
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LProgressBar {
-            val x = if (json.hasKey("x")) json.getFloat("x") else 0f
-            val y = if (json.hasKey("y")) json.getFloat("y") else 0f
-            val width = if (json.hasKey("width")) json.getFloat("width") else 200f
-            val height = if (json.hasKey("height")) json.getFloat("height") else 40f
-            val alignX = if (json.hasKey("alignX")) json.getFloat("alignX") else 0f
-            val alignY = if (json.hasKey("alignY")) json.getFloat("alignY") else 0f
-            val progress = if (json.hasKey("progress")) json.getFloat("progress") else 0f
-            val smooth = if (json.hasKey("smooth")) json.getBoolean("smooth") else true
-            val steps = if (json.hasKey("steps")) json.getInt("steps") else 10
+            val x = json.LgetFloat("x", 0f)
+            val y = json.LgetFloat("y", 0f)
+            val width = json.LgetFloat("width", 200f)
+            val height = json.LgetFloat("height", 40f)
+            val alignX = json.LgetFloat("alignX", 0f)
+            val alignY = json.LgetFloat("alignY", 0f)
+            val progress = json.LgetFloat("progress", 0f)
+            val smooth = json.LgetBoolean("smooth", true)
+            val steps = json.LgetInt("steps", 10)
             val fillColor = Functions.getColorFromJSON(json, "fillColor", Color(255, 0, 0))
             val gradientColor = if (json.hasKey("gradientColor")) Functions.getColorFromJSON(json, "gradientColor", Color(0, 255, 0)) else null
             val backgroundColor = Functions.getColorFromJSON(json, "backgroundColor", Color(50, 50, 50))
-            val borderRadius = if (json.hasKey("borderRadius")) json.getFloat("borderRadius") else 10f
-            val fillImageKey = if (json.hasKey("fillImageKey")) json.getString("fillImageKey") else ""
-            val backgroundImageKey = if (json.hasKey("backgroundImageKey")) json.getString("backgroundImageKey") else ""
-            val imagePadding = if (json.hasKey("imagePadding")) json.getFloat("imagePadding") else 2f
-            val paddingX = if (json.hasKey("paddingX")) json.getFloat("paddingX") else 4f
-            val paddingY = if (json.hasKey("paddingY")) json.getFloat("paddingY") else 4f
-            val scaleX = if (json.hasKey("scaleX")) json.getFloat("scaleX") else 1f
-            val scaleY = if (json.hasKey("scaleY")) json.getFloat("scaleY") else 1f
-            val offsetByWidth = if (json.hasKey("offsetByWidth")) json.getFloat("offsetByWidth") else 0f
-            val offsetByHeight = if (json.hasKey("offsetByHeight")) json.getFloat("offsetByHeight") else 0f
-            val percentWidth = if (json.hasKey("percentWidth")) json.getFloat("percentWidth") else -1f
-            val percentHeight = if (json.hasKey("percentHeight")) json.getFloat("percentHeight") else -1f
-            val maxWidth = if (json.hasKey("maxWidth")) json.getFloat("maxWidth") else 0f
-            val maxHeight = if (json.hasKey("maxHeight")) json.getFloat("maxHeight") else 0f
-            val minWidth = if (json.hasKey("minWidth")) json.getFloat("minWidth") else 0f
-            val minHeight = if (json.hasKey("minHeight")) json.getFloat("minHeight") else 0f
-            val tag = if (json.hasKey("tag")) json.getString("tag") else ""
+            val borderRadius = json.LgetFloat("borderRadius", 10f)
+            val fillImageKey = json.LgetString("fillImageKey", "")
+            val backgroundImageKey = json.LgetString("backgroundImageKey", "")
+            val imagePadding = json.LgetFloat("imagePadding", 2f)
+            val paddingX = json.LgetFloat("paddingX", 4f)
+            val paddingY = json.LgetFloat("paddingY", 4f)
+            val scaleX = json.LgetFloat("scaleX", 1f)
+            val scaleY = json.LgetFloat("scaleY", 1f)
+            val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
+            val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
+            val percentWidth = json.LgetFloat("percentWidth", -1f)
+            val percentHeight = json.LgetFloat("percentHeight", -1f)
+            val maxWidth = json.LgetFloat("maxWidth", 0f)
+            val maxHeight = json.LgetFloat("maxHeight", 0f)
+            val minWidth = json.LgetFloat("minWidth", 0f)
+            val minHeight = json.LgetFloat("minHeight", 0f)
+            val tag = json.LgetString("tag", "")
+            val postImageKey = json.LgetString("postImageKey", "")
     
             var ret = LProgressBar(
                 x, y, width, height,
@@ -96,6 +99,7 @@ class LProgressBar(
                 fillImageKey, backgroundImageKey,
                 imagePadding, paddingX, paddingY,
                 scaleX, scaleY,
+                postImageKey,
                 offsetByWidth, offsetByHeight,
                 percentWidth, percentHeight,
                 maxWidth, maxHeight,
@@ -104,6 +108,7 @@ class LProgressBar(
             )
             ret.gameController = gameController;
             ret.checkChilds(json);
+            ret.setEvents(json)
             return ret;
         }
     }
@@ -121,9 +126,12 @@ class LProgressBar(
         if (backgroundImageKey.isNotEmpty()) {
             backgroundSprite = Storage.gameController.spriteLoader.getSprite(backgroundImageKey)
         }
+        if (postImageKey.isNotEmpty()) {
+            postSprite = Storage.gameController.spriteLoader.getSprite(postImageKey)
+        }
     }
     
-    override fun render(mainRender: MainRender) {
+    override fun renderElement(mainRender: MainRender) {
         updateVisuals()
         val lg = mainRender.lg
 
@@ -185,6 +193,15 @@ class LProgressBar(
                 fillSprite?.img
             )
         }
-        super.render(mainRender);
+        // 3. пост-изображение
+        if (postSprite != null) {
+            RenderElements.renderBlock(
+                PX, PY, SX * scaleX, SY * scaleY,
+                backgroundColor,
+                borderRadius,
+                mainRender,
+                postSprite?.img
+            )
+        }
     }
 }

@@ -1,12 +1,12 @@
-package la.vok.Render.RenderElements;
+package la.vok.UI;
 
 import java.awt.Color
-import la.vok.Render.MainRender
+import la.vok.UI.MainRender
 import la.vok.Storages.Storage
 import processing.core.PImage
 import la.vok.LavokLibrary.Functions
 import la.vok.LavokLibrary.LGraphics
-import la.volk.Render.Elements.LElement
+import la.volk.UI.Elements.LElement
 
 object RenderElements {
     fun renderBlock(

@@ -1,11 +1,12 @@
 package la.vok.LoadData
 
-import la.vok.LavokLibrary.Functions
+import la.vok.LavokLibrary.*
 import la.vok.Storages.Storage
 import la.vok.Storages.Settings
 import processing.core.PApplet
 import processing.core.PImage
-import la.vok.Render.LCanvas
+import processing.data.JSONObject
+import la.vok.UI.LCanvas
 import la.vok.GameController.GameController
 
 class UILoader(var gameController: GameController) {
@@ -18,31 +19,56 @@ class UILoader(var gameController: GameController) {
         UIData.loadData()
     }
 
-    fun getPatch(key: String): String {
+    fun getJson(key: String): JSONObject {
         if (hasKey(key)) {
-            return UIData.getString(key)
+            return UIData.UIData[key]?.loadJson() ?: JSONObject()
         }
-        return ""
+        return JSONObject()
     }
     fun hasKey(key: String): Boolean {
-        return UIData.data.containsKey(key);
+        return UIData.UIData.containsKey(key);
     }
 }
 
 class UIData() : JsonDataLoader() {
-    override fun loadDataFromFolder(patch: String) {
-        data.clear()
-        val filesList = Functions.scanDirRecursive(patch)
+    var UIData = HashMap<String, UIDataElement>()
+
+    override fun loadDataFromFolder(path: String) {
+        UIData.clear()
+        val filesList = Functions.scanDirRecursive(path)
         
         for (file in filesList) {
-            println(Functions.getNameFromPath(file) + " " + file);
-            data[Functions.getNameFromPath(file)] = file
+            val json = Functions.loadJSONObject("$file")
+            println("file $file")
+            for (key in json.keys()) {
+                val ljson = json.getJSONObject(key as String);
+                val path1 = ljson.getString("path")
+                val jsonArray = ljson.getJSONArray("addData")
+                val addData = ArrayList<String>()
+                if (jsonArray != null) {
+                    for (i in 0 until jsonArray.size()) {
+                        addData.add(jsonArray.getString(i))
+                    }
+                }
+                println("   key $key addData $addData path $path1")
+                UIData[key as String] = UIDataElement(path1, addData)
+            }
         }
     }
 
     fun loadData() {
-        var UIPatch = Settings.UIPatch;
-        val patch = Functions.resourceDir("$UIPatch/")
-        loadDataFromFolder(patch)
+        var UIPath = Settings.UIPath;
+        val path = Functions.resourceDir("$UIPath/")
+        loadDataFromFolder(path)
+    }
+}
+
+class UIDataElement(var path: String, var addData: ArrayList<String> = ArrayList()) {
+    fun loadJson(): JSONObject {
+        val json = Functions.loadJSONObject(path)
+        for (i in addData) {
+            json.add(Functions.loadJSONObject(i))
+        }
+        return json
     }
 }

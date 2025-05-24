@@ -1,0 +1,14 @@
+{
+    "x": 0,
+    "y": 0,
+    "width": 310,
+    "height": 130,
+    "type": "LPanel",
+    "tag": "bg",
+    "panelColor": [
+        0,
+        0,
+        0,
+        50
+    ]
+}
