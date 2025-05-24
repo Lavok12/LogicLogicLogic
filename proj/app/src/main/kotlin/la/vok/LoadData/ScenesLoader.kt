@@ -54,6 +54,14 @@ class SceneData(var gameController: GameController) : JsonDataLoader() {
     }
 
     fun getScene(key: String): LScene {
+        if (!scenes.containsKey(key)) { 
+            if (!scenes.containsKey("")) {
+                scenes[""] = LScene("", gameController = gameController)
+                println("Scene with key '$key' not found, using default scene." +
+                        " Please check your scene paths and keys.")
+            }
+            return scenes[""]!!
+        }
         return scenes[key]!!
     } 
 }

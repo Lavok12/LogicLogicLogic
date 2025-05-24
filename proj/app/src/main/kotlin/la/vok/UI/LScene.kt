@@ -14,7 +14,7 @@ class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var ga
         canvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f, gameController = gameController);
     }
 
-    fun clearElements() {
+    fun clearCanvas() {
         canvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f, gameController = gameController);
     }
 
@@ -35,12 +35,15 @@ class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var ga
     
     fun loadScene() {
         if (loaded) {
-            clearElements();
+            clearCanvas();
             clear();
         }
+        println("Loading scene with tag: $tag")
         for (path in paths) {
+            println("   Loading path: $path")
             val json = Functions.loadJSONObject(path)
             for (key in json.keys()) {
+                println("      key: $key, value: ${json.get(key as String)}")
                 if (json.get(key as String) is String) {
                     val tag = json.getString(key)
                     if (tag != "") {
@@ -49,18 +52,22 @@ class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var ga
                 }
             }
             if (json.hasKey("add")) {
+                println("      Adding tags: ")
                 val arr = json.getJSONArray("add")
                 for (i in 0 until arr.size()) {
                     val tag = arr.getString(i)
+                    println("         Adding tag: $tag")
                     if (tag != "") {
                         elementTags.add(tag)
                     }
                 }
             } 
             if (json.hasKey("remove")) {
+                println("      Removing tags: ")
                 val arr = json.getJSONArray("remove")
                 for (i in 0 until arr.size()) {
                     val tag = arr.getString(i)
+                    println("         Removing tag: $tag")
                     if (tag == "all") {
                         elementTags.clear()
                     } else if (tag != "") {
@@ -70,5 +77,10 @@ class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var ga
             }
         }
     }
-    
+    fun addTagsToCanvas() {
+        clearCanvas();
+        for (tag in elementTags) {
+            canvas.addChild(tag, tag)
+        }
+    }
 }

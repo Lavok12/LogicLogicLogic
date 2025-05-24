@@ -14,7 +14,8 @@ class MainRender(var gameController: GameController) {
 
     fun setScene(sceneName: String) {
         val scene = gameController.scenesLoader.getScene(sceneName)
-        scene.loadScene()
+        scene.checkLoaded()
+        scene.addTagsToCanvas();
         LScene = scene
     }
     fun continueScene(sceneName: String) {
@@ -23,7 +24,8 @@ class MainRender(var gameController: GameController) {
         LScene = scene
     }
     fun setScene(scene: LScene) {
-        scene.loadScene()
+        scene.checkLoaded()
+        scene.addTagsToCanvas();
         LScene = scene
     }
     fun continueScene(scene: LScene) {

@@ -17,6 +17,62 @@ class LCanvas (
 ) {
     var elements = ArrayList<LElement>();
 
+    fun getElementByTag(tag: String): LElement? {
+        for (element in elements) {
+            if (element.tag == tag) {
+                return element
+            }
+        }
+        return null
+    }
+    fun findElementByTag(tag: String): LElement? {
+        for (element in elements) {
+            if (element.tag == tag) {
+                return element
+            } else {
+                var e = element.elementCanvas.findElementByTag(tag)
+                if (e != null) {
+                    return e
+                }
+            }
+        }
+        return null
+    }
+    fun getElementByTagWithPath(path: String): LElement? {
+        val tags = path.split(".")
+        var currentElement: LElement? = null
+        for (tag in tags) {
+            if (currentElement == null) {
+                currentElement = getElementByTag(tag)
+            } else {
+                currentElement = currentElement.elementCanvas.getElementByTag(tag)
+            }
+            if (currentElement == null) {
+                return null
+            }
+        }
+        return currentElement
+    }
+
+    fun getElementById(id: Int): LElement? {
+        return elements[id]
+    }
+    fun getElementByIdWithPath(path: String): LElement? {
+        val ids = path.split(".")
+        var currentElement: LElement? = null
+        for (id in ids) {
+            if (currentElement == null) {
+                currentElement = getElementById(id.toInt())
+            } else {
+                currentElement = currentElement.elementCanvas.getElementById(id.toInt())
+            }
+            if (currentElement == null) {
+                return null
+            }
+        }
+        return currentElement
+    }
+
     fun tick(mx: Float, my: Float): Boolean {
         for (i in elements.size - 1 downTo 0) {
             if (elements[i].tick(mx, my)) {
@@ -33,7 +89,9 @@ class LCanvas (
     }
 
     fun addChild(el: LElement, tag: String = "") {
-        el.tag = tag;
+        if (tag != "") {
+            el.tag = tag;
+        }
         el.parentCanvas = this;
         elements += el;
     }
