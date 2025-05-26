@@ -34,7 +34,7 @@ class SpriteLoader(var gameController: GameController) {
     fun dynamicUnload() {
         var currentTime = Storage.main.millis()
         for (key in sprites.keys) {
-            if (currentTime + Storage.spriteUploadTime < sprites[key]?.lastCalled!!) {
+            if (currentTime + Settings.spriteUploadTime < sprites[key]?.lastCalled!!) {
                 sprites[key]?.removeSprite()
             }
         }

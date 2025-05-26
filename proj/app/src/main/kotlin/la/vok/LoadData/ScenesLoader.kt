@@ -8,23 +8,24 @@ import la.vok.GameController.GameController;
 import la.vok.UI.LScene
 
 class ScenesLoader(var gameController: GameController) {
-    var sceneData = SceneData(gameController);
+    var scenesData = ScenesData(gameController);
 
     fun loadData() {
-        sceneData.loadData()
+        scenesData.loadData()
     }
     fun getPath(key: String): String {
-        return sceneData.getString(key)
+        return scenesData.getString(key)
     }
 
-    fun getScene(key: String): LScene {
-        return sceneData.getScene(key)
+    fun newScene(name: String, key: String): LScene {
+        println("Creating new scene with name '$name' and key '$key'")
+        return scenesData.newScene(name, key)
     }
 }
 
 
-class SceneData(var gameController: GameController) : JsonDataLoader() {
-    var scenes = HashMap<String, LScene>()
+class ScenesData(var gameController: GameController) : JsonDataLoader() {
+    var keys = HashMap<String, ArrayList<String>>()
 
     override fun loadDataFromFolder(path: String) {
         val filesList = Functions.scanDirRecursive(path)
@@ -33,18 +34,30 @@ class SceneData(var gameController: GameController) : JsonDataLoader() {
             try {
                 val json = Functions.loadJSONObject("$file")
                 for (key in json.keys()) {
-                    if (!scenes.containsKey(key as String)) {
-                        scenes[key] = LScene(key, gameController = gameController)
+                    if (!keys.containsKey(key as String)) {
+                        keys[key] = ArrayList<String>()
                     }
                     var jpath = json.getString(key)
-                    scenes[key]!!.addPath(jpath)
+                    keys[key]!! += jpath
+                    
                     println("   key: $key, value: ${jpath}")
                 }
             } catch (e: Exception) {
                 println("Error JSON '$file' -- '$path': ${e.message}")
             }
         }
-        
+    }
+
+    fun newScene(name: String, key: String): LScene {
+        val newScene = LScene(key, name, gameController = gameController)
+        if (keys.containsKey(key)) {
+            for (path in keys[key]!!) {
+                newScene.addPath(path)
+            }
+        } else {
+            println("No paths found for scene '$key'")
+        }
+        return newScene
     }
 
     fun loadData() {
@@ -52,16 +65,4 @@ class SceneData(var gameController: GameController) : JsonDataLoader() {
         val path = Functions.resourceDir("$scenePath")
         loadDataFromFolder(path)
     }
-
-    fun getScene(key: String): LScene {
-        if (!scenes.containsKey(key)) { 
-            if (!scenes.containsKey("")) {
-                scenes[""] = LScene("", gameController = gameController)
-                println("Scene with key '$key' not found, using default scene." +
-                        " Please check your scene paths and keys.")
-            }
-            return scenes[""]!!
-        }
-        return scenes[key]!!
-    } 
 }

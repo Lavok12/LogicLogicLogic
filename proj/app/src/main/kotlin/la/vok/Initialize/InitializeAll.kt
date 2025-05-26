@@ -8,7 +8,7 @@ import la.vok.LavokLibrary.Functions
 import la.vok.GameController.GameController
 
 object initializeAll {
-    fun initializeClient() {
+    fun initialize() {
         initializeGame()
         initializeGraphics()
     }
@@ -29,13 +29,13 @@ object initializeAll {
     }
 
     fun updateResolution() {
-        Storage.disW = Storage.main.width.toFloat()
-        Storage.disH = Storage.main.height.toFloat()
-        Storage.disH2 = Storage.disH / 2
-        Storage.disW2 = Storage.disW / 2
-        Storage.fix = Storage.disW / 2000f
+        Storage.gameController.disW = Storage.main.width.toFloat()
+        Storage.gameController.disH = Storage.main.height.toFloat()
+        Storage.gameController.disH2 = Storage.gameController.disH / 2
+        Storage.gameController.disW2 = Storage.gameController.disW / 2
+        Storage.fix = Storage.gameController.disW / 2000f
 
         Storage.lg.updateResolution()
-        PApplet.println("Resolution updated", Storage.disW, Storage.disH)
+        PApplet.println("Resolution updated", Storage.gameController.disW, Storage.gameController.disH)
     }
 }

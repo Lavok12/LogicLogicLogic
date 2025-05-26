@@ -5,17 +5,17 @@ import processing.data.JSONObject
 import la.vok.GameController.GameController
 import la.vok.Storages.Storage
 
-class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var gameController: GameController) {
+class LScene(var tag: String, var name: String, var paths: ArrayList<String> = ArrayList(), var gameController: GameController) {
     var elementTags: ArrayList<String> = ArrayList()
     var canvas: LCanvas
     var loaded = false;
     
     init {
-        canvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(0f, 0f, Storage.gameController.disW, Storage.gameController.disH, 1f, 1f, gameController = gameController);
     }
 
     fun clearCanvas() {
-        canvas = LCanvas(0f, 0f, Storage.disW, Storage.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(0f, 0f, Storage.gameController.disW, Storage.gameController.disH, 1f, 1f, gameController = gameController);
     }
 
     fun clear() {
@@ -82,5 +82,9 @@ class LScene(var tag: String, var paths: ArrayList<String> = ArrayList(), var ga
         for (tag in elementTags) {
             canvas.addChild(tag, tag)
         }
+    }
+
+    fun tick(mx: Float, my: Float, mouseButton: Int = -1): Boolean {
+        return canvas.tick(mx, my, mouseButton)
     }
 }

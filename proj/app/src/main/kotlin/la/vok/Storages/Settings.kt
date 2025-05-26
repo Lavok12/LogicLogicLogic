@@ -6,8 +6,10 @@ object Settings {
     var isClient: Boolean = true
     var language: String = "eng"
     var languagePath: String = "lang"
-    var spritePath: String = "sprites"
-    var UIPath: String = "ui"
-    var scriptPath: String = "scripts"
-    var scenePath: String = "scenes"
+    var spritePath: String = "paths/sprites"
+    var UIPath: String = "paths/ui"
+    var scriptPath: String = "paths/scripts"
+    var scenePath: String = "paths/scenes"
+
+    var spriteUploadTime: Int = 100*120;
 }

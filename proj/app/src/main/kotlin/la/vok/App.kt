@@ -1,6 +1,7 @@
 package la.vok
 
 import processing.core.PApplet
+import processing.core.PGraphics
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.LGraphics
 import la.vok.LavokLibrary.Functions
@@ -11,8 +12,10 @@ class App : PApplet() {
         Storage.main = this
         size(1080, 720, P2D)
     }
+    
     override fun setup() {
-        initializeAll.initializeClient();
+        println("JavaVersion: ${PApplet.javaVersionName}")
+        initializeAll.initialize()       
     }
     
     override fun draw() {
@@ -21,15 +24,14 @@ class App : PApplet() {
         }
         
         updateMouseCoordinates()
-        Storage.gameController.mainRender()
-
+        Storage.gameController.rendering()
         Storage.gameController.UITick()
     }
 
     fun updateMouseCoordinates() {
-        Storage.moux = (mouseX - Storage.disW2) * (Storage.lg.disW / Storage.disW)
-        Storage.mouy = (-mouseY + Storage.disH2) * (Storage.lg.disH / Storage.disH)
-        Storage.pmoux = (pmouseX - Storage.disW2) * (Storage.lg.disW / Storage.disW)
-        Storage.pmouy = (-pmouseY + Storage.disH2) * (Storage.lg.disH / Storage.disH)
+        Storage.moux = (mouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
+        Storage.mouy = (-mouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
+        Storage.pmoux = (pmouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
+        Storage.pmouy = (-pmouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
     }
 }

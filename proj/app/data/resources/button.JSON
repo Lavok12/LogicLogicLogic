@@ -19,7 +19,10 @@
         100,
         255
     ],
-    "onMouseOver": {
+    "onMouseDown": {
+        "isActive": true
+    },
+    "onMouseUp": {
         "isActive": true
     },
     "onMouseEnter": {

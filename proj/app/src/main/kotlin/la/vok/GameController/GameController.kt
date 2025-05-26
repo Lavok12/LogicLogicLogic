@@ -26,10 +26,19 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var UILoader: UILoader
     lateinit var loadUIList: LoadUIList
     lateinit var scriptsLoader: ScriptsLoader
-    lateinit var mainRender: MainRender
+    lateinit var rendering: Rendering
 
+    var disH: Float = 0f
+    var disW: Float = 0f
+    var disH2: Float = 0f
+    var disW2: Float = 0f
+    
     var gameStarted: Boolean = false
     
+    init {
+        println("GameController initialized")
+    }
+
     fun startGame() {
         println("Game started")
         gameStarted = true
@@ -45,19 +54,20 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         scriptsLoader = ScriptsLoader(this)
         languageController = LanguageController(Settings.language, this);
         spriteLoader = SpriteLoader(this);
-        mainRender = MainRender(this);
+        rendering = Rendering(this);
         scenesLoader = ScenesLoader(this);
     }
 
-    fun mainRender() {
+    fun rendering() {
         if (isClient) {
-            mainRender.render()
+            rendering.render()
         }
     }
 
     fun initClient() {
         if (isClient) {
             clientController = ClientController(this)
+            clientController.standart()
         }
     }
 
@@ -81,18 +91,24 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         UILoader.loadData()
         scriptsLoader.loadData()
         scenesLoader.loadData()
-
-        mainRender.setScene("main")
+        
+        rendering.setScene(scenesLoader.newScene("main1", "main"))
     }
     
 
     fun getCanvas(): LCanvas {
-        return mainRender.LScene!!.canvas
+        return rendering.LScene!!.canvas
+    }
+    fun getScene(): LScene {
+        return rendering.LScene!!
     }
 
     fun UITick() {
         if (isClient) {
-            getCanvas().tick(Storage.moux, Storage.mouy)
+            getScene().tick(Storage.moux, Storage.mouy, 
+            if (Storage.main.mousePressed) 0
+            else Storage.main.mouseButton
+            )
         }
     }
 

@@ -1,7 +1,7 @@
 package la.vok.GameController.Client
 
 import la.vok.GameController.Content.Map.LogicMap
-import la.vok.gameController.Content.Logic.LogicWire
+import la.vok.GameController.Content.Logic.LogicWire
 
 class Camera(var PX: Float, var PY: Float, var zoom: Float) {
 
@@ -81,14 +81,5 @@ class Camera(var PX: Float, var PY: Float, var zoom: Float) {
 
     fun getWorldSize(screenSize: Float): Float {
         return screenSize / zoom
-    }
-
-    fun RenderLogicElements(clientController: ClientController) {
-        for (element in clientController.logicMap.list()) {
-            element.render(this);
-        }
-    }
-    fun RenderWires(clientController: ClientController) {
-        
     }
 }

@@ -73,9 +73,9 @@ class LCanvas (
         return currentElement
     }
 
-    fun tick(mx: Float, my: Float): Boolean {
+    fun tick(mx: Float, my: Float, mouseButton: Int): Boolean {
         for (i in elements.size - 1 downTo 0) {
-            if (elements[i].tick(mx, my)) {
+            if (elements[i].tick(mx, my, mouseButton)) {
                 return true
             }
         }
@@ -84,7 +84,7 @@ class LCanvas (
     
     fun renderElements() {
         for (LElement in elements) {
-            LElement.render(gameController.mainRender)
+            LElement.render(gameController.rendering)
         }
     }
 

@@ -1,6 +1,6 @@
 package la.volk.UI.Elements
 
-import la.vok.UI.MainRender
+import la.vok.UI.Rendering
 import la.vok.Storages.Storage
 import java.awt.Color
 import la.vok.UI.LCanvas
@@ -92,11 +92,12 @@ class LText(
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
     }
 
-    override fun renderElement(mainRender: MainRender) {
+    override fun renderElement(rendering: Rendering) {
         updateVisuals()
-        val lg = mainRender.lg
+        val lg = rendering.lg
         lg.setTextAlign(textAlignX, textAlignY)
         lg.pg.fill(textColor.red.toFloat(), textColor.green.toFloat(), textColor.blue.toFloat(), textColor.alpha.toFloat())
         lg.setText(text, TPX, TPY, textSize)
     }
+    
 }

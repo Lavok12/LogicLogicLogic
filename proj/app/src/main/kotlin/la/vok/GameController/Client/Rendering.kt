@@ -7,27 +7,22 @@ import java.awt.Button
 import java.awt.Color
 import la.vok.GameController.GameController
 import la.vok.GameController.Client.ClientController
+import la.vok.GameController.Client.Camera
 
-class MainRender(var gameController: GameController) {
+class Rendering(var gameController: GameController) {
     lateinit var lg: LGraphics
     var LScene: LScene? = null;
+    val camera: Camera
+    get() {
+        return gameController.clientController.mainCamera
+    }
 
-    fun setScene(sceneName: String) {
-        val scene = gameController.scenesLoader.getScene(sceneName)
-        scene.checkLoaded()
-        scene.addTagsToCanvas();
-        LScene = scene
-    }
-    fun continueScene(sceneName: String) {
-        val scene = gameController.scenesLoader.getScene(sceneName)
-        scene.checkLoaded()
-        LScene = scene
-    }
     fun setScene(scene: LScene) {
         scene.checkLoaded()
         scene.addTagsToCanvas();
         LScene = scene
     }
+    
     fun continueScene(scene: LScene) {
         scene.checkLoaded()
         LScene = scene
@@ -67,6 +62,16 @@ class MainRender(var gameController: GameController) {
         gameController.getCanvas().renderElements();
         updateDistaplay()
         endRender()
-        
+    }
+    fun RenderLogicElements(clientController: ClientController) {
+        for (element in clientController.logicMap.list()) {
+            element.render(camera, this)
+        }
+    }
+
+    fun RenderWires(clientController: ClientController) {
+        for (wire in clientController.logicMap.wires) {
+            wire.render(camera, this)
+        }
     }
 }

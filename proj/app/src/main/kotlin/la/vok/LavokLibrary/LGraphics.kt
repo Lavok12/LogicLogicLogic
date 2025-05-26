@@ -20,11 +20,11 @@ class LGraphics {
     var M = 0f
 
     fun updateResolution() {
-        if (disW != Storage.disW || disH != Storage.disH) {
-            pg = parent.createGraphics(round(Storage.disW).toInt(), round(Storage.disH).toInt(), PApplet.P2D)
+        if (disW != Storage.gameController.disW || disH != Storage.gameController.disH) {
+            pg = parent.createGraphics(round(Storage.gameController.disW).toInt(), round(Storage.gameController.disH).toInt(), PApplet.P2D)
             (pg as PGraphicsOpenGL).textureSampling(3)
             disW = 2000f
-            disH = Storage.disH / Storage.fix
+            disH = Storage.gameController.disH / Storage.fix
 
             disW2 = disW / 2
             disH2 = disH / 2

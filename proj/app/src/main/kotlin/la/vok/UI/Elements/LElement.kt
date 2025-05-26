@@ -49,68 +49,134 @@ open class LElement(
     open var onMouseHold : Boolean = false
     open var hasHitbox : Boolean = true
     
-    open var mouseEnter = false;
+    open var mouseEnter = false
+    open var mouseHold = false
+    open var mouseDownLastFrame = false
+    open var inside = false
+    open var childHandled = false
 
-    open fun tick(mx: Float, my: Float): Boolean {
+    open var oldMouseX: Float = 0f
+    open var oldMouseY: Float = 0f
+
+    open fun tick(mx: Float, my: Float, mouseButton: Int): Boolean {
         if (!isActive) return false
+        inside = inElement(mx, my)
 
-        val inside = inElement(mx, my)
-        val childHandled = elementCanvas.tick(mx, my)
+        mouseDownLastFrame = mouseHold != (mouseButton != 0)
+        mouseHold = mouseButton != 0
 
-        if (childHandled) {
-            if (mouseEnter) handleMouseExit(mx, my)
-            return true
-        }
+        
+        childHandled = elementCanvas.tick(mx, my, mouseButton)
 
-        // Mouse enter / exit
-        if (inside && !mouseEnter) handleMouseEnter(mx, my)
-        else if (!inside && mouseEnter) handleMouseExit(mx, my)
+        handleMouseExit(mx, my, mouseButton)
+        handleMouseEnter(mx, my, mouseButton)
+        handleUpdate(mx, my, mouseButton)
+        handleMouseDown(mx, my, mouseButton)
+        handleMouseUp(mx, my, mouseButton)
+        handleMouseMove(mx, my, mouseButton)
+        handleMouseOver(mx, my, mouseButton)
+        handleMouseHold(mx, my, mouseButton)
 
-        // Event calls
-        if (update) update(mx, my)
-        if (onMouseDown) onMouseDown(mx, my)
-        if (onMouseUp) onMouseUp(mx, my)
-        if (onMouseMove) onMouseMove(mx, my)
-        if (onMouseOver && inside) onMouseOver(mx, my)
-        if (onMouseHold) onMouseHold(mx, my)
+        oldMouseX = mx
+        oldMouseY = my
 
         return if (hasHitbox && inside) true else false
     }
 
-    private fun handleMouseEnter(mx: Float, my: Float) {
-        if (onMouseEnter) {
-            onMouseEnter(mx, my)
+    private fun handleMouseEnter(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (inside && !mouseEnter) {
+            mouseEnter = true
+            if (onMouseEnter) {
+                onMouseEnter(mx, my)
+            }
+            return true
         }
-        mouseEnter = true
+        return false
     }
 
-    private fun handleMouseExit(mx: Float, my: Float) {
-        if (onMouseExit) {
-            onMouseExit(mx, my)
+    private fun handleMouseExit(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if ((childHandled || !inside) && mouseEnter) {
+            mouseEnter = false
+            if (onMouseExit) {
+                onMouseExit(mx, my)
+            }
+            return true
         }
-        mouseEnter = false
+        return false
+    }
+    
+    private fun handleUpdate(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (update) {
+            update(mx, my)
+        }
+        return true
     }
 
-    open fun update(mx: Float, my: Float) {
+    private fun handleMouseDown(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (mouseDownLastFrame && inside) {
+            mouseHold = true
+            if (onMouseDown) {
+                onMouseDown(mx, my)
+            }
+            return true
+        }
+        return false
     }
+
+    private fun handleMouseUp(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (mouseHold && mouseButton == 0) {
+            mouseHold = false
+            println("Mouse up: $mouseHold, button: $mouseButton, inside: $inside")
+            if (onMouseUp) {
+                onMouseUp(mx, my)
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun handleMouseMove(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if ((oldMouseX != mx || oldMouseY != my) && inside) {
+            if (onMouseMove) {
+                onMouseMove(mx, my)
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun handleMouseOver(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (inside) {
+            if (onMouseOver) {
+                onMouseOver(mx, my)
+            }
+            return true
+        }
+        return false
+    }
+
+    private fun handleMouseHold(mx: Float, my: Float, mouseButton: Int): Boolean {
+        if (mouseHold) {
+            if (onMouseHold) {
+                onMouseHold(mx, my)
+            }
+            return true
+        }
+        return false
+    }
+    
+
+    open fun update(mx: Float, my: Float) {}
     open fun onMouseDown(mx: Float, my: Float) {
-    }
-    open fun onMouseUp(mx: Float, my: Float) {
-    }
-    open fun onMouseMove(mx: Float, my: Float) {
-    }
-    open fun onMouseEnter(mx: Float, my: Float) {
-        println("enter $tag")
+        println(getElementType())
         gameController.startGame()
     }
-    open fun onMouseExit(mx: Float, my: Float) {
-        println("exit $tag")
-    }
-    open fun onMouseOver(mx: Float, my: Float) {
-        
-    }
-    open fun onMouseHold(mx: Float, my: Float) {
-    }
+    open fun onMouseUp(mx: Float, my: Float) {}
+    open fun onMouseMove(mx: Float, my: Float) {}
+    open fun onMouseEnter(mx: Float, my: Float) {}
+    open fun onMouseExit(mx: Float, my: Float) {}
+    open fun onMouseOver(mx: Float, my: Float) {}
+    open fun onMouseHold(mx: Float, my: Float) {}
 
     open fun inElement(mx: Float, my: Float): Boolean {
         if (!Functions.tap(PX, PY, SX, SY, mx, my)) {
@@ -254,13 +320,17 @@ open class LElement(
         elementCanvas.width = SX
         elementCanvas.height = SY
     }
-    open fun renderElement(mainRender: MainRender) {
+    open fun renderElement(rendering: Rendering) {
         
     }
-    open fun render(mainRender: MainRender) {
+    open fun render(rendering: Rendering) {
         if (isActive) {
-            renderElement(mainRender);
+            renderElement(rendering);
             elementCanvas.renderElements();
         }
+    }
+
+    open fun getElementType(): String {
+        return this::class.simpleName ?: "LElement"
     }
 }

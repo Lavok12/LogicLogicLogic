@@ -5,17 +5,17 @@ object Storage {
     lateinit var main: la.vok.App
     lateinit var gameController: la.vok.GameController.GameController
 
-    var disH: Float = 0f
-    var disW: Float = 0f
-    var disH2: Float = 0f
-    var disW2: Float = 0f
+    var lg: la.vok.LavokLibrary.LGraphics
+    get() {
+        return gameController.rendering.lg
+    }
+    set(value) {
+        gameController.rendering.lg = value
+    }
 
-    lateinit var lg: la.vok.LavokLibrary.LGraphics
     var fix: Float = 0f
     var mouy: Float = 0f
     var moux: Float = 0f
     var pmouy: Float = 0f
     var pmoux: Float = 0f
-
-    var spriteUploadTime: Int = 100*120;
 }

@@ -1,6 +1,6 @@
 package la.vok.GameController.Client
 
-import la.vok.UI.MainRender
+import la.vok.UI.Rendering
 import la.vok.GameController.GameController;
 import la.vok.GameController.TransferModel.TransferModel
 import la.vok.GameController.Content.Logic.LogicElement
@@ -16,7 +16,15 @@ class ClientController(var gameController: GameController) {
     init {
         mainCamera = Camera(0f, 0f, 1f)
         println("ClientController initialized")
-        logicMap.addElement(LogicElement(0f, 0f, "test", gameController))
+    }
+
+    fun standart() {
+        logicMap.addElement(LogicElement(-200f, -400f, "test", gameController))
+        logicMap.addElement(LogicElement(200f, -400f, "test", gameController))
+        logicMap.addElement(LogicElement(0f, 400f, "test", gameController))
+        logicMap.addWire(logicMap.list()[0], logicMap.list()[2])
+        logicMap.addWire(logicMap.list()[1], logicMap.list()[2])
+        logicMap.updateWireSet()
     }
 
     fun getTransferModel(): TransferModel {
@@ -29,7 +37,7 @@ class ClientController(var gameController: GameController) {
     }
 
     fun RenderLogicElements() {
-        mainCamera.RenderLogicElements(clientController = this)
-        mainCamera.RenderWires(clientController = this)
+        gameController.rendering.RenderLogicElements(clientController = this)
+        gameController.rendering.RenderWires(clientController = this)
     }
 }
