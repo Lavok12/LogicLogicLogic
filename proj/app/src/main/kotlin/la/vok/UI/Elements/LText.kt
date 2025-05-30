@@ -79,6 +79,7 @@ class LText(
                 offsetByWidth, offsetByHeight, percentWidth, percentHeight,
                 maxWidth, maxHeight, minWidth, minHeight, tag
             )
+            ret.hasHitbox = false
             ret.gameController = gameController;
             ret.checkChilds(json);
             ret.setEvents(json)

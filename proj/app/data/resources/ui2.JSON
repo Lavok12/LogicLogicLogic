@@ -2,7 +2,6 @@
     "tag": "endButton",
     "x": 0,
     "y": 0,
-    "alignY": 0,
     "type": "LPanel",
     "height": 860,
     "width": 1560,

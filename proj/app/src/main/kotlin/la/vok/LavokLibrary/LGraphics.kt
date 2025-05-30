@@ -24,12 +24,12 @@ class LGraphics {
             pg = parent.createGraphics(round(Storage.gameController.disW).toInt(), round(Storage.gameController.disH).toInt(), PApplet.P2D)
             (pg as PGraphicsOpenGL).textureSampling(3)
             disW = 2000f
-            disH = Storage.gameController.disH / Storage.fix
+            disH = Storage.gameController.disH / Storage.gameController.fix
 
             disW2 = disW / 2
             disH2 = disH / 2
 
-            M = Storage.fix
+            M = Storage.gameController.fix
         }
     }
 

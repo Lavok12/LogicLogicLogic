@@ -13,9 +13,11 @@ object Storage {
         gameController.rendering.lg = value
     }
 
-    var fix: Float = 0f
-    var mouy: Float = 0f
-    var moux: Float = 0f
-    var pmouy: Float = 0f
-    var pmoux: Float = 0f
+    var mouseController: la.vok.InputController.MouseController
+    get() {
+        return gameController.mouseController
+    }
+    set(value) {
+        gameController.mouseController = value
+    }
 }

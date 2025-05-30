@@ -33,7 +33,7 @@ object initializeAll {
         Storage.gameController.disH = Storage.main.height.toFloat()
         Storage.gameController.disH2 = Storage.gameController.disH / 2
         Storage.gameController.disW2 = Storage.gameController.disW / 2
-        Storage.fix = Storage.gameController.disW / 2000f
+        Storage.gameController.fix = Storage.gameController.disW / 2000f
 
         Storage.lg.updateResolution()
         PApplet.println("Resolution updated", Storage.gameController.disW, Storage.gameController.disH)

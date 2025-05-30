@@ -2,10 +2,12 @@ package la.vok
 
 import processing.core.PApplet
 import processing.core.PGraphics
+import processing.event.MouseEvent
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.LGraphics
 import la.vok.LavokLibrary.Functions
 import la.vok.Initialize.initializeAll
+
 
 class App : PApplet() {
     override fun settings() {
@@ -29,9 +31,30 @@ class App : PApplet() {
     }
 
     fun updateMouseCoordinates() {
-        Storage.moux = (mouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
-        Storage.mouy = (-mouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
-        Storage.pmoux = (pmouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
-        Storage.pmouy = (-pmouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
+        var moux = (mouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
+        var mouy = (-mouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
+        var pmoux = (pmouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
+        var pmouy = (-pmouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
+
+        Storage.mouseController.updateCoord(moux, mouy, pmoux, pmouy)
+    }
+
+    override fun mousePressed(e: MouseEvent) {
+        Storage.mouseController.mousePressed(e)
+    }
+    override fun mouseReleased(e: MouseEvent) {
+        Storage.mouseController.mouseReleased(e)
+    }
+    override fun mouseDragged(e: MouseEvent) {
+        Storage.mouseController.mouseDragged(e)
+    }
+    override fun mouseClicked(e: MouseEvent) {
+        Storage.mouseController.mouseClicked(e)
+    }
+    override fun mouseMoved(e: MouseEvent) {
+        Storage.mouseController.mouseMoved(e)
+    }
+    override fun mouseWheel(e: MouseEvent) {
+        Storage.mouseController.mouseWheel(e)
     }
 }

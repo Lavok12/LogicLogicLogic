@@ -10,5 +10,9 @@
     "black": {
         "path": "resources/black.JSON",
         "addData": []
+    },
+    "panel": {
+        "path": "resources/panel.JSON",
+        "addData": []
     }
 }

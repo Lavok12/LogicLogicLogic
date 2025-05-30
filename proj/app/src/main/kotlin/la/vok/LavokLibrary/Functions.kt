@@ -16,6 +16,9 @@ import processing.data.JSONObject
 import la.vok.App
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.*
+import java.net.NetworkInterface
+import java.util.*
+
 
 fun String.compress(): ByteArray? {
     return try {
@@ -59,10 +62,6 @@ object Functions {
     
     fun yrot(y: Float, a: Float, r: Float): Float {
         return y + PApplet.cos(a) * r
-    }
-    
-    fun tap(xPos: Float, yPos: Float, xSize: Float, ySize: Float): Boolean {
-        return tap(xPos, yPos, xSize, ySize, Storage.moux, Storage.mouy)
     }
     
     fun tap(xPos: Float, yPos: Float, xSize: Float, ySize: Float, mx: Float, my: Float): Boolean {
@@ -152,4 +151,14 @@ object Functions {
         }
         return file.readText()
     }
+
+    fun getUniqueDeviceId(): String {
+        val interfaces = NetworkInterface.getNetworkInterfaces()
+        for (iface in interfaces) {
+            if (!iface.isLoopback && iface.hardwareAddress != null) {
+                return iface.hardwareAddress.joinToString(":") { "%02X".format(it) }
+            }
+        }
+        return UUID.randomUUID().toString() // fallback
+    }    
 }

@@ -6,6 +6,9 @@ import la.vok.GameController.Content.Logic.LogicWire
 
 
 class LogicMap(var gameController: GameController) {
+    var elementsCount = 0L;
+    var wiresCount = 0L;
+
     var map: ArrayList<LogicElement> = ArrayList()
     var wires: HashSet<LogicWire> = HashSet()
 
@@ -15,6 +18,7 @@ class LogicMap(var gameController: GameController) {
     fun removeWire(wire: LogicWire) {
         wires.remove(wire)
     }
+
     fun updateWireSet() {
         wires.clear()
         for (element in gameController.clientController.logicMap.list()) {
@@ -22,11 +26,17 @@ class LogicMap(var gameController: GameController) {
             wires.addAll(element.output)
         }
     }
-    fun addWire(start: LogicElement, end: LogicElement) {
-        val wire = LogicWire(start, end, gameController)
+    fun addElement(PX: Float, PY: Float, type: String, standartInit: Boolean = true): LogicElement {
+        var logic = LogicElement(PX, PY, type, gameController, this, standartInit)
+        map.add(logic)
+        return logic
+    }
+    fun addWire(start: LogicElement, end: LogicElement, standartInit: Boolean = true): LogicWire {
+        val wire = LogicWire(start, end, gameController, this, standartInit)
         wires.add(wire)
         start.output.add(wire)
         end.input.add(wire)
+        return wire
     }
     fun removeWire(start: LogicElement, end: LogicElement) {
         val wire = wires.find { it.start == start && it.end == end }
@@ -47,5 +57,31 @@ class LogicMap(var gameController: GameController) {
 
     fun list(): ArrayList<LogicElement> {
         return map
+    }
+
+    fun checkElementFromId(id: Long): Boolean {
+        return (getElementFromId(id).id == id)
+    }
+
+    fun checkWireFromId(id: Long): Boolean {
+        return (getElementFromId(id).id == id)
+    }
+
+    fun getElementFromId(id: Long): LogicElement {
+        for (i in map) {
+            if (id == i.id) {
+                return i
+            }
+        }
+        return map[0]
+    }
+    
+    fun getWireFromId(id: Long): LogicWire {
+        for (i in wires.toList()) {
+            if (id == i.id) {
+                return i
+            }
+        }
+        return wires.toList()[0]
     }
 }

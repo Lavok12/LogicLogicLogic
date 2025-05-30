@@ -84,7 +84,7 @@ class LScene(var tag: String, var name: String, var paths: ArrayList<String> = A
         }
     }
 
-    fun tick(mx: Float, my: Float, mouseButton: Int = -1): Boolean {
-        return canvas.tick(mx, my, mouseButton)
+    fun tick(mx: Float, my: Float, gameController: GameController): Boolean {
+        return canvas.tick(mx, my, gameController)
     }
 }

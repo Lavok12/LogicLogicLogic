@@ -3,7 +3,7 @@ package la.vok.GameController;
 import la.vok.GameController.Client.ClientController
 import la.vok.GameController.Server.ServerController
 import la.vok.GameController.Menu.MenuController
-import la.vok.GameController.TransferModel.TransferModel
+import la.vok.GameController.TransferModel.*
 import la.vok.LoadData.LanguageController
 import la.vok.LoadData.SpriteLoader
 import la.vok.LoadData.UILoader
@@ -14,12 +14,12 @@ import la.vok.Storages.Settings
 import la.vok.UI.*
 import com.jsyn.engine.LoadAnalyzer
 import la.vok.Storages.Storage
+import la.vok.InputController.*
 
 class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: Boolean = false) {
     lateinit var clientController: ClientController
     lateinit var menuController: MenuController
     lateinit var serverController: ServerController
-    lateinit var transferModel: TransferModel
     lateinit var scenesLoader: ScenesLoader
     lateinit var languageController: LanguageController
     lateinit var spriteLoader: SpriteLoader
@@ -27,11 +27,13 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var loadUIList: LoadUIList
     lateinit var scriptsLoader: ScriptsLoader
     lateinit var rendering: Rendering
+    lateinit var mouseController: MouseController
 
     var disH: Float = 0f
     var disW: Float = 0f
     var disH2: Float = 0f
     var disW2: Float = 0f
+    var fix: Float = 0f
     
     var gameStarted: Boolean = false
     
@@ -42,7 +44,6 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     fun startGame() {
         println("Game started")
         gameStarted = true
-        initTransferModel()
         initServer()
         initClient()
         getCanvas().elements.clear()
@@ -56,6 +57,8 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         spriteLoader = SpriteLoader(this);
         rendering = Rendering(this);
         scenesLoader = ScenesLoader(this);
+
+        mouseController = MouseController(this)
     }
 
     fun rendering() {
@@ -78,11 +81,8 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     fun initServer() {
         if (isServer) {
             serverController = ServerController(this)
+            serverController.start()
         }
-    }
-    
-    fun initTransferModel() {
-        transferModel = TransferModel(this, isLocal)
     }
 
     fun initLoaders() {
@@ -105,10 +105,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
 
     fun UITick() {
         if (isClient) {
-            getScene().tick(Storage.moux, Storage.mouy, 
-            if (Storage.main.mousePressed) 0
-            else Storage.main.mouseButton
-            )
+            getScene().tick(mouseController.moux, mouseController.mouy, this)
         }
     }
 

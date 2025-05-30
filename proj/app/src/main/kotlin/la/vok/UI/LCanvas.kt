@@ -73,9 +73,9 @@ class LCanvas (
         return currentElement
     }
 
-    fun tick(mx: Float, my: Float, mouseButton: Int): Boolean {
+    fun tick(mx: Float, my: Float, gameController: GameController): Boolean {
         for (i in elements.size - 1 downTo 0) {
-            if (elements[i].tick(mx, my, mouseButton)) {
+            if (elements[i].tick(mx, my, gameController)) {
                 return true
             }
         }
@@ -100,24 +100,24 @@ class LCanvas (
     }
 
     fun applyCanvasPosX(x: Float, align: Float = 0f): Float {
-        return (x + posX + align * width/2) / scaleX
+        return (x * scaleX + posX + align * width/2)
     }
     fun applyCanvasPosY(y: Float, align: Float = 0f): Float {
-        return (y + posY + align * height/2) / scaleY
+        return (y * scaleY + posY + align * height/2)
     }
     fun applyCanvasSizeX(w: Float): Float {
-        return w / scaleX
+        return w * scaleX
     }
     fun applyCanvasSizeY(h: Float): Float {
-        return h / scaleY
+        return h * scaleY
     }
     fun applyCanvasTextSize(s: Float): Float {
-        return s / textScale
+        return s * textScale
     }
     fun canvasSizePercentX(w: Float): Float {
-        return width*w
+        return width*w/100f
     }
     fun canvasSizePercentY(h: Float): Float {
-        return height*h
+        return height*h/100f
     }
 }

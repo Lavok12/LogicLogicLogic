@@ -11,6 +11,7 @@ import processing.core.PApplet
 import processing.data.JSONObject
 import processing.data.JSONArray
 import la.vok.LavokLibrary.*
+import la.vok.InputController.MouseController
 
 open class LElement(
     var x: Float = 0f,
@@ -58,24 +59,23 @@ open class LElement(
     open var oldMouseX: Float = 0f
     open var oldMouseY: Float = 0f
 
-    open fun tick(mx: Float, my: Float, mouseButton: Int): Boolean {
+    open fun tick(mx: Float, my: Float, gameController: GameController): Boolean {
         if (!isActive) return false
         inside = inElement(mx, my)
-
-        mouseDownLastFrame = mouseHold != (mouseButton != 0)
-        mouseHold = mouseButton != 0
+        mouseDownLastFrame = mouseHold != (gameController.mouseController.isButtonPressed(MouseController.LEFT))
+        mouseHold = gameController.mouseController.isButtonPressed(MouseController.LEFT)
 
         
-        childHandled = elementCanvas.tick(mx, my, mouseButton)
+        childHandled = elementCanvas.tick(mx, my, gameController)
 
-        handleMouseExit(mx, my, mouseButton)
-        handleMouseEnter(mx, my, mouseButton)
-        handleUpdate(mx, my, mouseButton)
-        handleMouseDown(mx, my, mouseButton)
-        handleMouseUp(mx, my, mouseButton)
-        handleMouseMove(mx, my, mouseButton)
-        handleMouseOver(mx, my, mouseButton)
-        handleMouseHold(mx, my, mouseButton)
+        handleMouseExit(mx, my, gameController)
+        handleMouseEnter(mx, my, gameController)
+        handleUpdate(mx, my, gameController)
+        handleMouseDown(mx, my, gameController)
+        handleMouseUp(mx, my, gameController)
+        handleMouseMove(mx, my, gameController)
+        handleMouseOver(mx, my, gameController)
+        handleMouseHold(mx, my, gameController)
 
         oldMouseX = mx
         oldMouseY = my
@@ -83,7 +83,7 @@ open class LElement(
         return if (hasHitbox && inside) true else false
     }
 
-    private fun handleMouseEnter(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseEnter(mx: Float, my: Float, gameController: GameController): Boolean {
         if (inside && !mouseEnter) {
             mouseEnter = true
             if (onMouseEnter) {
@@ -94,7 +94,7 @@ open class LElement(
         return false
     }
 
-    private fun handleMouseExit(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseExit(mx: Float, my: Float, gameController: GameController): Boolean {
         if ((childHandled || !inside) && mouseEnter) {
             mouseEnter = false
             if (onMouseExit) {
@@ -105,14 +105,14 @@ open class LElement(
         return false
     }
     
-    private fun handleUpdate(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleUpdate(mx: Float, my: Float, gameController: GameController): Boolean {
         if (update) {
             update(mx, my)
         }
         return true
     }
 
-    private fun handleMouseDown(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseDown(mx: Float, my: Float, gameController: GameController): Boolean {
         if (mouseDownLastFrame && inside) {
             mouseHold = true
             if (onMouseDown) {
@@ -123,10 +123,9 @@ open class LElement(
         return false
     }
 
-    private fun handleMouseUp(mx: Float, my: Float, mouseButton: Int): Boolean {
-        if (mouseHold && mouseButton == 0) {
+    private fun handleMouseUp(mx: Float, my: Float, gameController: GameController): Boolean {
+        if (mouseHold && gameController.mouseController.isButtonPressed(MouseController.LEFT)) {
             mouseHold = false
-            println("Mouse up: $mouseHold, button: $mouseButton, inside: $inside")
             if (onMouseUp) {
                 onMouseUp(mx, my)
             }
@@ -135,7 +134,7 @@ open class LElement(
         return false
     }
 
-    private fun handleMouseMove(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseMove(mx: Float, my: Float, gameController: GameController): Boolean {
         if ((oldMouseX != mx || oldMouseY != my) && inside) {
             if (onMouseMove) {
                 onMouseMove(mx, my)
@@ -145,7 +144,7 @@ open class LElement(
         return false
     }
 
-    private fun handleMouseOver(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseOver(mx: Float, my: Float, gameController: GameController): Boolean {
         if (inside) {
             if (onMouseOver) {
                 onMouseOver(mx, my)
@@ -155,7 +154,7 @@ open class LElement(
         return false
     }
 
-    private fun handleMouseHold(mx: Float, my: Float, mouseButton: Int): Boolean {
+    private fun handleMouseHold(mx: Float, my: Float, gameController: GameController): Boolean {
         if (mouseHold) {
             if (onMouseHold) {
                 onMouseHold(mx, my)
@@ -168,7 +167,6 @@ open class LElement(
 
     open fun update(mx: Float, my: Float) {}
     open fun onMouseDown(mx: Float, my: Float) {
-        println(getElementType())
         gameController.startGame()
     }
     open fun onMouseUp(mx: Float, my: Float) {}
@@ -286,6 +284,8 @@ open class LElement(
     open fun updateSprites() {}
 
     open fun updateVisuals() {
+        elementCanvas.scaleX = parentCanvas.scaleX
+        elementCanvas.scaleY = parentCanvas.scaleY
         PX = parentCanvas.applyCanvasPosX(x, alignX)
         PY = parentCanvas.applyCanvasPosY(y, alignY)
 

@@ -2,38 +2,35 @@ package la.vok.GameController.Client
 
 import la.vok.UI.Rendering
 import la.vok.GameController.GameController;
-import la.vok.GameController.TransferModel.TransferModel
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.UI.LCanvas
 import la.vok.Storages.Storage
 import la.vok.GameController.Content.Map.LogicMap
+import la.vok.LavokLibrary.Functions
+import la.vok.GameController.TransferModel.*
 
 class ClientController(var gameController: GameController) {
     var logicMap = LogicMap(gameController)
     var mainCamera: Camera
-    var clientId: String = ""
-    
+    var clientId: String = Functions.getUniqueDeviceId()
+    var name: String = "Name1234"
+    var clientTransferModel: ClientTransferModel
+
     init {
-        mainCamera = Camera(0f, 0f, 1f)
         println("ClientController initialized")
+        clientTransferModel = ClientTransferModel(this)
+        mainCamera = Camera(0f, 0f, 1f)
     }
 
     fun standart() {
-        logicMap.addElement(LogicElement(-200f, -400f, "test", gameController))
-        logicMap.addElement(LogicElement(200f, -400f, "test", gameController))
-        logicMap.addElement(LogicElement(0f, 400f, "test", gameController))
-        logicMap.addWire(logicMap.list()[0], logicMap.list()[2])
-        logicMap.addWire(logicMap.list()[1], logicMap.list()[2])
+        start()
         logicMap.updateWireSet()
     }
 
-    fun getTransferModel(): TransferModel {
-        return gameController.transferModel
-    }
 
     fun start() {
-        getTransferModel().getClientId()
-        getTransferModel().getMap();
+        clientTransferModel.client_input_connect(clientId, name)
+        clientTransferModel.client_input_getMap()
     }
 
     fun RenderLogicElements() {
