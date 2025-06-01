@@ -13,6 +13,7 @@ import la.vok.GameController.GameController
 
 
 class LProgressBar(
+    gameController: GameController,
     x: Float = 0f,
     y: Float = 0f,
     width: Float = 200f,
@@ -45,7 +46,7 @@ class LProgressBar(
     minHeight: Float = 0f,
     tag: String = "" // Tag for the button
 ) : LElement(
-    x, y, width, height, alignX, alignY, parentCanvas,
+    gameController, x, y, width, height, alignX, alignY, parentCanvas,
     percentWidth, percentHeight,
     offsetByWidth, offsetByHeight,
     maxWidth, maxHeight,
@@ -91,7 +92,7 @@ class LProgressBar(
             val postImageKey = json.LgetString("postImageKey", "")
     
             var ret = LProgressBar(
-                x, y, width, height,
+                gameController, x, y, width, height,
                 alignX, alignY, parentCanvas,
                 progress, smooth, steps,
                 fillColor, gradientColor, backgroundColor,

@@ -1,9 +1,9 @@
-package la.vok.LoadData
+package la.vok.GameController.Content
 
 import la.vok.LavokLibrary.Functions
 import la.vok.UI.LScene
 
-class ScenesContainer {
+class ScenesContainer() {
     private val scenes = mutableMapOf<String, LScene>()
 
     fun addScene(scene: LScene) {

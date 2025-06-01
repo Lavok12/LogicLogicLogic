@@ -1,0 +1,13 @@
+{
+    "type": "LText",
+    "text": "test",
+    "x": 0,
+    "y": 0,
+    "tag": "text",
+    "fontSize": 32,
+    "textColor": [
+        255,
+        50,
+        50
+    ]
+}

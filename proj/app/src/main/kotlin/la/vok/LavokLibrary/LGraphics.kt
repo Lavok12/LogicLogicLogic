@@ -20,16 +20,16 @@ class LGraphics {
     var M = 0f
 
     fun updateResolution() {
-        if (disW != Storage.gameController.disW || disH != Storage.gameController.disH) {
-            pg = parent.createGraphics(round(Storage.gameController.disW).toInt(), round(Storage.gameController.disH).toInt(), PApplet.P2D)
+        if (disW != Storage.gameController.rendering.disW || disH != Storage.gameController.rendering.disH) {
+            pg = parent.createGraphics(round(Storage.gameController.rendering.disW).toInt(), round(Storage.gameController.rendering.disH).toInt(), PApplet.P2D)
             (pg as PGraphicsOpenGL).textureSampling(3)
             disW = 2000f
-            disH = Storage.gameController.disH / Storage.gameController.fix
+            disH = Storage.gameController.rendering.disH / Storage.gameController.rendering.fix
 
             disW2 = disW / 2
             disH2 = disH / 2
 
-            M = Storage.gameController.fix
+            M = Storage.gameController.rendering.fix
         }
     }
 

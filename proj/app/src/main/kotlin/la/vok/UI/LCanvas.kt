@@ -11,8 +11,10 @@ class LCanvas (
     var height: Float = 100f,
     var scaleX: Float = 1f,
     var scaleY: Float = 1f,
+    var localScaleX: Float = 1f,
+    var localScaleY: Float = 1f,
     var textScale: Float = 1f,
-    var gameController: GameController = Storage.gameController
+    var gameController: GameController
     
 ) {
     var elements = ArrayList<LElement>();
@@ -100,16 +102,16 @@ class LCanvas (
     }
 
     fun applyCanvasPosX(x: Float, align: Float = 0f): Float {
-        return (x * scaleX + posX + align * width/2)
+        return (x * scaleX * localScaleX + posX + align * width/2)
     }
     fun applyCanvasPosY(y: Float, align: Float = 0f): Float {
-        return (y * scaleY + posY + align * height/2)
+        return (y * scaleY * localScaleY + posY + align * height/2)
     }
     fun applyCanvasSizeX(w: Float): Float {
-        return w * scaleX
+        return w * scaleX * localScaleX
     }
     fun applyCanvasSizeY(h: Float): Float {
-        return h * scaleY
+        return h * scaleY * localScaleY
     }
     fun applyCanvasTextSize(s: Float): Float {
         return s * textScale

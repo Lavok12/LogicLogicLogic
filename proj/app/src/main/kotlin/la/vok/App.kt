@@ -3,6 +3,8 @@ package la.vok
 import processing.core.PApplet
 import processing.core.PGraphics
 import processing.event.MouseEvent
+import processing.event.KeyEvent
+import processing.opengl.PShader
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.LGraphics
 import la.vok.LavokLibrary.Functions
@@ -17,7 +19,7 @@ class App : PApplet() {
     
     override fun setup() {
         println("JavaVersion: ${PApplet.javaVersionName}")
-        initializeAll.initialize()       
+        initializeAll.initialize()
     }
     
     override fun draw() {
@@ -28,13 +30,14 @@ class App : PApplet() {
         updateMouseCoordinates()
         Storage.gameController.rendering()
         Storage.gameController.UITick()
+        Storage.gameController.gameTick()
     }
 
     fun updateMouseCoordinates() {
-        var moux = (mouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
-        var mouy = (-mouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
-        var pmoux = (pmouseX - Storage.gameController.disW2) * (Storage.lg.disW / Storage.gameController.disW)
-        var pmouy = (-pmouseY + Storage.gameController.disH2) * (Storage.lg.disH / Storage.gameController.disH)
+        var moux = (mouseX - Storage.gameController.rendering.disW2) * (Storage.lg.disW / Storage.gameController.rendering.disW)
+        var mouy = (-mouseY + Storage.gameController.rendering.disH2) * (Storage.lg.disH / Storage.gameController.rendering.disH)
+        var pmoux = (pmouseX - Storage.gameController.rendering.disW2) * (Storage.lg.disW / Storage.gameController.rendering.disW)
+        var pmouy = (-pmouseY + Storage.gameController.rendering.disH2) * (Storage.lg.disH / Storage.gameController.rendering.disH)
 
         Storage.mouseController.updateCoord(moux, mouy, pmoux, pmouy)
     }
@@ -56,5 +59,14 @@ class App : PApplet() {
     }
     override fun mouseWheel(e: MouseEvent) {
         Storage.mouseController.mouseWheel(e)
+    }
+    override fun keyPressed(event: KeyEvent) {
+        Storage.gameController.keyTracker.keyPressed(event)
+    }
+    override fun keyReleased(event: KeyEvent) {
+        Storage.gameController.keyTracker.keyReleased(event)
+    }
+    override fun keyTyped(event: KeyEvent) {
+        
     }
 }

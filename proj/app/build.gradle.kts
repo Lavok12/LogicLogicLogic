@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.9.10")
-
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
     // This dependency is used by the application.
     implementation(libs.guava)
 

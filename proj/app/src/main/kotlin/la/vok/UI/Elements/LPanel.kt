@@ -10,13 +10,14 @@ import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 
 class LPanel(
+    gameController: GameController,
     x: Float = 0f, // Положение X
     y: Float = 0f, // Положение Y
     width: Float = 200f, // Ширина панели
     height: Float = 100f, // Высота панели
     alignX: Float = 0f, // Выравнивание по X
     alignY: Float = 0f, // Выравнивание по Y
-    parentCanvas: LCanvas = Storage.gameController.getCanvas(), // Канва родителя
+    parentCanvas: LCanvas = gameController.getCanvas(), // Канва родителя
     var panelColor: Color = Color(100, 100, 100, 255), // Цвет панели
     var imageKey: String = "", // Ключ изображения панели
     var scaleX: Float = 1f, // Масштаб по ширине
@@ -33,7 +34,7 @@ class LPanel(
     tag: String = "" // Tag for the button
 
 ) : LElement(
-    x, y, width, height, alignX, alignY, parentCanvas,
+    gameController, x, y, width, height, alignX, alignY, parentCanvas,
     percentWidth, percentHeight, offsetByWidth, offsetByHeight,
     maxWidth, maxHeight, minWidth, minHeight, tag
 ) {
@@ -64,6 +65,7 @@ class LPanel(
 
             
             var ret = LPanel(
+                gameController,
                 x = x,
                 y = y,
                 width = width,

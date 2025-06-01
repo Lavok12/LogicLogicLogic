@@ -14,5 +14,13 @@
     "panel": {
         "path": "resources/panel.JSON",
         "addData": []
+    },
+    "disconnect": {
+        "path": "resources/disconnect1.JSON",
+        "addData": []
+    },
+    "playerCanvas": {
+        "path": "resources/canvas/playerCanvas.JSON",
+        "addData": []
     }
 }

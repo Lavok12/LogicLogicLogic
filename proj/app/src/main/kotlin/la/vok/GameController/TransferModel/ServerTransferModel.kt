@@ -6,11 +6,13 @@ import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 
-class ServerTransferModel(var serverController: ServerController) {
-    var isLocal: Boolean = serverController.gameController.isLocal
+class ServerTransferModel(var serverController: ServerController): TransferModel {
     init {
-        println("ServerTransferModel initialized")
+        println("   ServerTransferModel initialized")
     }
+
+    var isLocal: Boolean = serverController.gameController.isLocal
+    var serverTransferUpdater = ServerTransferUpdater(this)
 
     val gameController: GameController
     get() {
@@ -21,16 +23,15 @@ class ServerTransferModel(var serverController: ServerController) {
         return gameController.clientController.clientTransferModel
     }
     // input
-
-    // output
-    fun server_output_connect(id: String, name: String) {
+    override fun sendData(transferPackage: TransferPackage) {
         if (isLocal) {
-            gameController.serverController.connectNewPlayer(id, name)
+            clientTransferModel.getData(transferPackage.copy())
+        } else {
+            serverController.onlineWebSocketServer.broadcast(transferPackage.toString())
         }
     }
-    fun server_output_getMap() {
-        if (isLocal) {
-            clientTransferModel.client_output_setMap()
-        }
+    // output
+    override fun getData(transferPackage: TransferPackage) {
+        serverTransferUpdater.processingData(transferPackage)
     }
 }

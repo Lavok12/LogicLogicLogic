@@ -9,6 +9,7 @@ import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 
 class LText(
+    gameController: GameController,
     x: Float = 0f,
     y: Float = 0f,
     width: Float = 200f,
@@ -17,6 +18,7 @@ class LText(
     alignY: Float = 0f,
     parentCanvas: LCanvas = Storage.gameController.getCanvas(),
     var text: String = "Text",
+    var textTranslate: Boolean = true,
     var textAlignX: Int = 0,
     var textAlignY: Int = 0,
     var fontSize: Float = 30f,
@@ -34,7 +36,7 @@ class LText(
     minWidth: Float = 0f,
     minHeight: Float = 0f,
     tag: String = "" // Tag for the button
-) : LElement(x, y, width, height, alignX, 
+) : LElement(gameController, x, y, width, height, alignX, 
     alignY, parentCanvas, percentWidth, 
     percentHeight, offsetByWidth, 
     offsetByHeight, maxWidth, maxHeight,
@@ -53,6 +55,8 @@ class LText(
             val alignX = json.LgetFloat("alignX", 0f)
             val alignY = json.LgetFloat("alignY", 0f)
             val text = json.LgetString("text", "Text")
+            val textTranslate = json.LgetBoolean("textTranslate", true)
+
             val textAlignX = json.LgetInt("textAlignX", 0)
             val textAlignY = json.LgetInt("textAlignY", 0)
             val fontSize = json.LgetFloat("fontSize", 30f)
@@ -73,8 +77,8 @@ class LText(
             
 
             var ret = LText(
-                x, y, width, height, alignX, alignY, parentCanvas,
-                text, textAlignX, textAlignY, fontSize,
+                gameController, x, y, width, height, alignX, alignY, parentCanvas,
+                text, textTranslate, textAlignX, textAlignY, fontSize,
                 textColor, textDeltaX, textDeltaY, textPosAlignX, textPosAlignY,
                 offsetByWidth, offsetByHeight, percentWidth, percentHeight,
                 maxWidth, maxHeight, minWidth, minHeight, tag
@@ -98,7 +102,7 @@ class LText(
         val lg = rendering.lg
         lg.setTextAlign(textAlignX, textAlignY)
         lg.pg.fill(textColor.red.toFloat(), textColor.green.toFloat(), textColor.blue.toFloat(), textColor.alpha.toFloat())
-        lg.setText(text, TPX, TPY, textSize)
+        lg.setText(if (textTranslate) {gameController.languageController.getText(text)} else {text}, TPX, TPY, textSize)
     }
     
 }

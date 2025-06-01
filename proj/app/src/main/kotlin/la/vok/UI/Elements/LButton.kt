@@ -11,14 +11,16 @@ import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 
 class LButton(
+    gameController: GameController,
     x: Float = 0f, // X position of the button
     y: Float = 0f, // Y position of the button
     width: Float = 200f, // Width of the button
     height: Float = 100f, // Height of the button
     alignX: Float = 0f, // X alignment of the button (-1 = left, 1 = right, 0.0 = center)
     alignY: Float = 0f, // Y alignment of the button (-1 = top, 1 = bottom, 0.0 = center)
-    parentCanvas: LCanvas = Storage.gameController.getCanvas(), // Parent canvas for the button
+    parentCanvas: LCanvas = gameController.getCanvas(), // Parent canvas for the button
     var text: String = "Button", // Text to be displayed on the button
+    var textTranslate: Boolean = true, // Language key
     var textAlignX: Int = 0, // X alignment of the text (-1 = left, 1 = right, 0 = center)
     var textAlignY: Int = 0, // Y alignment of the text (-1 = top, 1 = bottom, 0 = center)
     var fontSize: Float = 30f, // Font size of the text
@@ -47,7 +49,7 @@ class LButton(
     minHeight: Float = 0f, // Minimum height of the button
     tag: String = "" // Tag for the button
 
-) : LElement(x, y, width, height, alignX, alignY, parentCanvas, 
+) : LElement(gameController, x, y, width, height, alignX, alignY, parentCanvas, 
     percentWidth, percentHeight, offsetByWidth, offsetByHeight, 
     maxWidth, maxHeight, minWidth, minHeight, tag
 ) {
@@ -83,6 +85,8 @@ class LButton(
         val tag = json.LgetString("tag", "")
 
         val text = json.LgetString("text", "Button")
+        val textTranslate = json.LgetBoolean("textTranslate", true)
+
         val textAlignX = json.LgetInt("textAlignX", 0)
         val textAlignY = json.LgetInt("textAlignY", 0)
         val fontSize = json.LgetFloat("fontSize", 30f)
@@ -106,8 +110,8 @@ class LButton(
         
                 
         var ret = LButton(
-            x, y, width, height, alignX, alignY, parentCanvas,
-            text, textAlignX, textAlignY, fontSize,
+            gameController, x, y, width, height, alignX, alignY, parentCanvas,
+            text, textTranslate, textAlignX, textAlignY, fontSize,
             buttonRadius, buttonColor, hoverColor,
             textColor, hoverTextColor,
             imageKey, hoverImageKey,
@@ -171,7 +175,7 @@ class LButton(
 
         lg.setTextAlign(textAlignX, textAlignY)
         lg.pg.fill(currentTextColor.red.toFloat(), currentTextColor.green.toFloat(), currentTextColor.blue.toFloat(), currentTextColor.alpha.toFloat())
-        lg.setText(text, TPX, TPY, textSize)
+        lg.setText(if (textTranslate) {gameController.languageController.getText(text)} else {text}, TPX, TPY, textSize)
 
         if (postSprite != null) {
             RenderElements.renderBlock(

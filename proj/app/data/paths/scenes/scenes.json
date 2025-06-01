@@ -1,3 +1,4 @@
 {
-    "main": "resources/scene.json"
+    "main": "resources/scene.json",
+    "disconnect": "resources/disconnect.json"
 }
