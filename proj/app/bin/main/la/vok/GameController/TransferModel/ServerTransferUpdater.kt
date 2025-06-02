@@ -47,6 +47,7 @@ class ServerTransferUpdater(var serverTransferModel: ServerTransferModel) : Tran
             }
 
             "update_player_data" -> {
+                id = transferPackage.data.getString("id", "")
                 if (serverController.playersContainer.checkData(id)) {
                     var player = serverController.playersContainer.getData(id)!!
                     var dataP = PlayerData.fromJsonObject(transferPackage.data, gameController)

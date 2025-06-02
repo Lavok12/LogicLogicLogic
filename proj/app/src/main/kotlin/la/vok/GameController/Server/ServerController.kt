@@ -82,4 +82,12 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
     fun destroy() {
 
     }
+
+    fun sendToClient(header: String, data: JSONObject = JSONObject(), client: String) {
+        TransferPackage(header, TransferPackage.SERVER, client, data).send(serverTransferModel)
+    }
+
+    fun sendToAll(header: String, data: JSONObject = JSONObject()) {
+        TransferPackage(header, TransferPackage.SERVER, TransferPackage.ALL, data).send(serverTransferModel)
+    }
 }

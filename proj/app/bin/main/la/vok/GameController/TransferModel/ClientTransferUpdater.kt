@@ -65,12 +65,14 @@ class ClientTransferUpdater(var clientTransferModel: ClientTransferModel) : Tran
                         clientController.playersContainer.playersData[i]!!.SEND_PX = cont.playersData[i]!!.PX
                         clientController.playersContainer.playersData[i]!!.SEND_PY = cont.playersData[i]!!.PY
                         clientController.playersContainer.playersData[i]!!.name = cont.playersData[i]!!.name
+                        clientController.playersContainer.playersData[i]!!.isActive = cont.playersData[i]!!.isActive
                         clientController.playersContainer.playersData[i]!!.DELETE_FLAG = false
                     } else {
                         clientController.playersContainer.addData(i, cont.playersData[i]!!.name)
                         clientController.playersContainer.playersData[i]!!.PX = cont.playersData[i]!!.PX
                         clientController.playersContainer.playersData[i]!!.PY = cont.playersData[i]!!.PY
                         clientController.playersContainer.playersData[i]!!.name = cont.playersData[i]!!.name
+                        clientController.playersContainer.playersData[i]!!.isActive = cont.playersData[i]!!.isActive
                         clientController.playersContainer.playersData[i]!!.DELETE_FLAG = false
                     }
                 }

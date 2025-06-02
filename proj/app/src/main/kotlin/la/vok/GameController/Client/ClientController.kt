@@ -17,6 +17,7 @@ import processing.data.JSONObject
 import java.net.URI
 
 enum class LoadState {
+    STANDART,
     NULL,
     CONNECT,
     GET_POS,
@@ -29,7 +30,7 @@ class ClientController(var gameController: GameController, var addres: String = 
     var logicMap = LogicMap(gameController)
     var mainCamera: Camera
     var clientId: String = Functions.getUniqueDeviceId()
-    var name: String = "Name1234"
+    var name: String = "Lvk1"
     var clientTransferModel: ClientTransferModel
     var frame: Long = 0L
     var loadState: LoadState = LoadState.NULL
@@ -53,6 +54,7 @@ class ClientController(var gameController: GameController, var addres: String = 
     }
 
     fun start() {
+        loadState = LoadState.STANDART
         println("->ClientController started")
         logicMap.updateWireSet()
         isLoaded = true
@@ -61,16 +63,19 @@ class ClientController(var gameController: GameController, var addres: String = 
     fun tick() {
         frame++;
 
-        if (loadState == LoadState.NULL) {
+        if (loadState == LoadState.STANDART) {
             loadState = LoadState.CONNECT
         } else if (loadState == LoadState.CONNECT) {
             println("LoadState.CONNECT")
+            loadState = LoadState.NULL
             connect()
         } else if (loadState == LoadState.GET_POS) {
             println("LoadState.GET_POS")
+            loadState = LoadState.NULL
             get_pos()
         } else if (loadState == LoadState.LOAD_MAP) {
             println("LoadState.LOAD_MAP")
+            loadState = LoadState.NULL
             load_map()
         } else if (loadState == LoadState.LOAD_PLAYERS) {
             println("LoadState.LOAD_PLAYERS")
