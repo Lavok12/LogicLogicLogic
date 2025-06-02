@@ -17,7 +17,7 @@ import la.vok.Storages.Storage
 import la.vok.InputController.*
 import la.vok.GameController.Content.*
 
-enum class ClientState {
+public enum class ClientState {
     UNINITIALIZED,
     INITIALIZED,
     STARTED,
@@ -25,7 +25,7 @@ enum class ClientState {
     DESTROYED
 }
 
-enum class ServerState {
+public enum class ServerState {
     UNINITIALIZED,
     INITIALIZED,
     STARTED,
@@ -45,14 +45,13 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var scriptsLoader: ScriptsLoader
     lateinit var rendering: Rendering
     lateinit var mouseController: MouseController
-
+    lateinit var keyTracker: KeyTracker
+    
     lateinit var scenesContainer: ScenesContainer
     var gameStarted: Boolean = false
 
     var clientState = ClientState.UNINITIALIZED
     var serverState = ServerState.UNINITIALIZED
-
-    var keyTracker = KeyTracker()
 
     init {
         println("GameController initialized")
@@ -77,6 +76,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         scenesLoader = ScenesLoader(this)
 
         mouseController = MouseController(this)
+        keyTracker = KeyTracker(this)
     }
 
     fun rendering() {
@@ -86,7 +86,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     fun initClient() {
         if (isClient && clientState == ClientState.UNINITIALIZED) {
             clientState = ClientState.INITIALIZED
-            clientController = ClientController(this)
+            clientController = ClientController(this, Settings.addres)
             rendering.setScene(scenesContainer.getScene("")!!)
             if (!isLocal) {
                 clientController.initOnline()
@@ -110,8 +110,8 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     fun initServer() {
         if (isServer && serverState == ServerState.UNINITIALIZED) {
             serverState = ServerState.INITIALIZED
-            serverController = ServerController(this)
-            if (!isLocal) {
+            serverController = ServerController(this, Settings.port)
+            if (!isLocal) { 
                 serverController.initOnline()
             } else {
                 startServer()
@@ -154,7 +154,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         getScene().canvas.tick(mouseController.moux, mouseController.mouy, this)
     }
 
-    fun gameTick() {
+    fun checkForStart() {
         if (!isLocal) {
             if (serverState == ServerState.INITIALIZED) {
                 startServer()
@@ -168,6 +168,10 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
                 }
             }
         }
+    }
+
+    fun gameTick() {
+        checkForStart()
         if (gameStarted) {
             if (isServer && serverState == ServerState.STARTED) {
                 serverController.tick()
@@ -209,14 +213,14 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         }
     }
 
-    private fun destroyGame() {
+    private fun destroy() {
         gameStarted = false
         println("---")
         println("Game Ended")
         println("---")
     }
 
-    fun destroy() {
+    fun destroyGame() {
         if (gameStarted) {
             if (isClient) {
                 destroyClient()
@@ -224,7 +228,7 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
             if (isServer) {
                 destroyServer()
             }
-            destroyGame()
+            destroy()
         }
     }
 }

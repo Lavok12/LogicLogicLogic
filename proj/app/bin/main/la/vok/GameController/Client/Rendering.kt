@@ -9,6 +9,7 @@ import java.awt.Color
 import la.vok.GameController.GameController
 import la.vok.GameController.Client.ClientController
 import la.vok.GameController.Client.Camera
+import la.vok.GameController.Client.LoadState
 import la.vok.GameController.Content.*
 import la.vok.GameController.ClientState
 import la.vok.UI.LCanvas
@@ -70,7 +71,7 @@ class Rendering(var gameController: GameController) {
         clearLg();
         if (gameController.gameStarted) {
             if (gameController.isClient) {
-                if (gameController.clientState == ClientState.STARTED) {
+                if (gameController.clientState == ClientState.STARTED && gameController.clientController.loadState == LoadState.STARTED) {
                     gameController.clientController.RenderLogicElements()
                     gameController.clientController.renderPlayer(gameController.clientController.player)
                 }
@@ -100,11 +101,13 @@ class Rendering(var gameController: GameController) {
     }
 
     fun renderPlayer(player: PlayerData,  clientController: ClientController) {
-        player.updateVisual(camera)
-        lg.fill(255f)
-        lg.setEps(player.VX, player.VY, player.VZ * 40f, player.VZ * 80f)
+        if (player.isActive) {
+            player.updateVisual(camera)
+            lg.fill(255f)
+            lg.setEps(player.VX, player.VY, player.VZ * 40f, player.VZ * 80f)
 
-        canvasRender(2, player.canvas)
+            canvasRender(2, player.canvas)
+        }
     }
 
     fun canvasRender(layer: Int, canvas: LCanvas) {

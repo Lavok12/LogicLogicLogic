@@ -28,6 +28,7 @@ class OnlineWebSocketClient(var clientController: ClientController, serverUri: U
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
         println("Disconnected: $reason")
+        clientController.gameController.destroyGame()
     }
 
     override fun onError(ex: Exception?) {

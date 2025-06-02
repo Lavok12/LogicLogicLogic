@@ -10,7 +10,7 @@ import la.vok.GameController.Server.OnlineWebSocketServer
 import la.vok.Storages.Settings
 import processing.data.*
 
-class ServerController(var gameController: GameController) {
+class ServerController(var gameController: GameController, var port: Int = 0) {
     var logicMap = LogicMap(gameController)
     var serverTransferModel: ServerTransferModel
 
@@ -28,7 +28,7 @@ class ServerController(var gameController: GameController) {
     }
 
     fun initOnline() {
-        onlineWebSocketServer = OnlineWebSocketServer(this, 8800)
+        onlineWebSocketServer = OnlineWebSocketServer(this, port)
         onlineWebSocketServer.start()
     }
     
@@ -41,7 +41,7 @@ class ServerController(var gameController: GameController) {
             i.update()
         }
         if (frame % Settings.updateIntervalFrames == 0L) {
-            playersContainer.removeOldData(10)
+            playersContainer.removeOldData(Settings.playersKickTime)
            TransferPackage("send_players_data", TransferPackage.SERVER, TransferPackage.ALL, playersContainer.toJsonObject()).send(serverTransferModel)
         }
     }
@@ -58,26 +58,9 @@ class ServerController(var gameController: GameController) {
     fun connectNewPlayer(id: String, name: String) {
         println("$name connected to Server ($id)")
         playersContainer.addData(id, name)
-        var pldata = PlayerData(id, name, gameController)
-        pldata.PX = 500f
-        pldata.PY = 100f
-        pldata.updateTime()
-
-        TransferPackage("set_coord", TransferPackage.SERVER, id, pldata.toJsonObject()).send(serverTransferModel)
-
         var json = JSONObject()
-        var obj = JSONArray()
-        for (i in gameController.serverController.logicMap.map) {
-            obj.append(i.toJsonObject())
-        }
-        var wires = JSONArray()
-        for (i in gameController.serverController.logicMap.wires) {
-            wires.append(i.toJsonObject())
-        }
-        json.put("elements", obj)
-        json.put("wires", wires)
-
-        TransferPackage("set_map", TransferPackage.SERVER, id, json).send(serverTransferModel)
+        json.put("return", "ok")
+        TransferPackage("loadState_connect_server", TransferPackage.SERVER, id, json).send(serverTransferModel)
     }
     
     fun updatePlayer(id: String, JSONdata: JSONObject) {

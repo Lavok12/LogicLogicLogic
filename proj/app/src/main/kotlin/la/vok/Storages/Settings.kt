@@ -13,6 +13,9 @@ object Settings {
 
     var spriteUploadTime: Int = 100*120;
     var updateIntervalFrames = 10L
+    var playersKickTime = 4000
 
     var canvasRenderLayers = 10
+    var addres = "ws://26.229.52.4:8800"
+    var port = 8800
 }
