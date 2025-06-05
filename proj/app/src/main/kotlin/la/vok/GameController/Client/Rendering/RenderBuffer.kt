@@ -10,8 +10,8 @@ class RenderBuffer(val gameController: GameController, val mainRender: MainRende
 
     private val updateVisual = ArrayList<(MainRender) -> Unit>()
 
-    fun addData(data: RenderLayersData) {
-        addInBufferUpdateVisual(data.updateVisualF)
+    fun addData(updateVisualF: (MainRender) -> Unit, data: RenderLayersData) {
+        addInBufferUpdateVisual(updateVisualF)
         for (i in data.layers) {
             addLayer(i)
         }

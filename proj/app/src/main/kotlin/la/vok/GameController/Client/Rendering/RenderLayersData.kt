@@ -26,7 +26,7 @@ object Layers {
 
 data class RenderLayer(val layer: Int, val sublayer: Int, val f: (MainRender) -> Unit)
 
-class RenderLayersData(var updateVisualF: (MainRender) -> Unit, vararg vlayers: RenderLayer) {
+class RenderLayersData(vararg vlayers: RenderLayer) {
     var layers = vlayers
 }
 

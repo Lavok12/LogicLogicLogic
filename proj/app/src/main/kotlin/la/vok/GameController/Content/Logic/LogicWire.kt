@@ -15,10 +15,11 @@ class LogicWire(
     var logicMap: LogicMap,
     var standartInit: Boolean = true
 ) : IRender {
-    override var renderLayersData: RenderLayersData = RenderLayersData(this::updateVisual,
+    override var renderLayersData: RenderLayersData = RenderLayersData(
         RenderLayer(Layers.B1, 5, this::render)
     )
     override var isVisible = true
+    override val updateVisualF: (MainRender) -> Unit by lazy { this::updateVisual }
 
     companion object {
         fun fromJsonObject(json: JSONObject, gameController: GameController, logicMap: LogicMap): LogicWire {

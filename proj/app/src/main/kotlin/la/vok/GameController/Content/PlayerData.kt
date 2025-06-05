@@ -9,9 +9,10 @@ import la.volk.UI.Elements.LText
 import la.vok.GameController.Client.Rendering.*
 
 class PlayerData(var id: String, var name: String, var gameController: GameController) : IRender {
-    override var renderLayersData: RenderLayersData = RenderLayersData(this::updateVisual,
+    override var renderLayersData: RenderLayersData = RenderLayersData(
         RenderLayer(Layers.B3, 5, this::render)
     )
+    override val updateVisualF: (MainRender) -> Unit by lazy { this::updateVisual }
     override var isVisible = true
 
     var canvas: LCanvas = LCanvas(0f, 0f, 100f, 100f, 1f, 1f, 1f, 1f, 1f, gameController)
