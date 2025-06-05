@@ -105,7 +105,7 @@ class LPanel(
         }
     }
 
-    override fun renderElement(rendering: Rendering) {
+    override fun renderElement(mainRender: MainRender) {
         updateVisuals()
 
         RenderElements.renderBlock(
@@ -114,7 +114,7 @@ class LPanel(
             width = SX*scaleX,
             height = SY*scaleY,
             borderRadius = borderRadius,
-            rendering = rendering,
+            mainRender = mainRender,
             image = panelSprite?.img,
             clr = panelColor
         )

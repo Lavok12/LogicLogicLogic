@@ -1,7 +1,7 @@
 package la.vok.UI;
 
 import java.awt.Color
-import la.vok.UI.Rendering
+import la.vok.UI.MainRender
 import la.vok.Storages.Storage
 import processing.core.PImage
 import la.vok.LavokLibrary.Functions
@@ -16,10 +16,10 @@ object RenderElements {
         height: Float, 
         clr: Color, 
         borderRadius: Float = 0f,
-        rendering: Rendering = Storage.gameController.rendering,
+        mainRender: MainRender,
         image: PImage? = null
         ) {
-        var lg: LGraphics = rendering.lg
+        var lg: LGraphics = mainRender.lg
         if (image == null) {
             lg.pg.fill(clr.red.toFloat(), clr.green.toFloat(), clr.blue.toFloat(), clr.alpha.toFloat())
             if (borderRadius == 0f) {
@@ -29,10 +29,10 @@ object RenderElements {
             }
         } else {
             lg.pg.tint(clr.red.toFloat(), clr.green.toFloat(), clr.blue.toFloat(), clr.alpha.toFloat());
-            lg.setImage(image, posX, posY, width, height)
+            lg.setImage(image, posX, posY, width, height) 
         }
     }
-    fun renderElement(element: LElement, rendering: Rendering = Storage.gameController.rendering) {
-        element.render(rendering);
+    fun renderElement(element: LElement, mainRender: MainRender) {
+        element.render(mainRender);
     }
 }

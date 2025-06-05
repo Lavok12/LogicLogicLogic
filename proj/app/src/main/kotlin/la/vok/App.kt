@@ -34,10 +34,10 @@ class App : PApplet() {
     }
 
     fun updateMouseCoordinates() {
-        var moux = (mouseX - Storage.gameController.rendering.disW2) * (Storage.lg.disW / Storage.gameController.rendering.disW)
-        var mouy = (-mouseY + Storage.gameController.rendering.disH2) * (Storage.lg.disH / Storage.gameController.rendering.disH)
-        var pmoux = (pmouseX - Storage.gameController.rendering.disW2) * (Storage.lg.disW / Storage.gameController.rendering.disW)
-        var pmouy = (-pmouseY + Storage.gameController.rendering.disH2) * (Storage.lg.disH / Storage.gameController.rendering.disH)
+        var moux = (mouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
+        var mouy = (-mouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
+        var pmoux = (pmouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
+        var pmouy = (-pmouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
 
         Storage.mouseController.updateCoord(moux, mouy, pmoux, pmouy)
     }

@@ -3,7 +3,7 @@ package la.vok.GameController.Content.Map
 import la.vok.GameController.GameController
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
-
+import la.vok.GameController.Client.Rendering.*
 
 class LogicMap(var gameController: GameController) {
     var elementsCount = 0L;
@@ -91,5 +91,29 @@ class LogicMap(var gameController: GameController) {
             }
         }
         return wires.toList()[0]
+    }
+
+    fun tick() {
+        for (i in map) {
+            i.tick()
+        }
+    }
+
+    fun update() {
+        for (i in map) {
+            i.update()
+        }
+        for (i in wires) {
+            i.update()
+        }
+    }
+
+    fun renderUpdate(renderBuffer: RenderBuffer) {
+        for (i in map) {
+            i.renderUpdate(renderBuffer)
+        }
+        for (i in wires) {
+            i.renderUpdate(renderBuffer)
+        }
     }
 }

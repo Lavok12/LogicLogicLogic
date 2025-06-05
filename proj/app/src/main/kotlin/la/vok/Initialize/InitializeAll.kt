@@ -30,13 +30,13 @@ object initializeAll {
     }
 
     fun updateResolution() {
-        Storage.gameController.rendering.disW = Storage.main.width.toFloat()
-        Storage.gameController.rendering.disH = Storage.main.height.toFloat()
-        Storage.gameController.rendering.disH2 = Storage.gameController.rendering.disH / 2
-        Storage.gameController.rendering.disW2 = Storage.gameController.rendering.disW / 2
-        Storage.gameController.rendering.fix = Storage.gameController.rendering.disW / 2000f
+        Storage.gameController.mainRender.disW = Storage.main.width.toFloat()
+        Storage.gameController.mainRender.disH = Storage.main.height.toFloat()
+        Storage.gameController.mainRender.disH2 = Storage.gameController.mainRender.disH / 2
+        Storage.gameController.mainRender.disW2 = Storage.gameController.mainRender.disW / 2
+        Storage.gameController.mainRender.fix = Storage.gameController.mainRender.disW / 2000f
 
         Storage.lg.updateResolution()
-        PApplet.println("Resolution updated", Storage.gameController.rendering.disW, Storage.gameController.rendering.disH)
+        PApplet.println("Resolution updated", Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH)
     }
 }

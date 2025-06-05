@@ -34,7 +34,7 @@ class LanguageController(var lang: String = "eng", var gameController: GameContr
         }
         langData[lang] = LanguageData(lang);
         langData[lang]?.loadData();
-    }   
+    }
 
     fun removeLang(lang: String) {
         langData.remove(lang);

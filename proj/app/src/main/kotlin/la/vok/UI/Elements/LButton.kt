@@ -155,9 +155,9 @@ class LButton(
     }
     
     
-    override fun renderElement(rendering: Rendering) {
+    override fun renderElement(mainRender: MainRender) {
         updateVisuals()
-        val lg = rendering.lg
+        val lg = mainRender.lg
 
         val currentButtonColor = if (isHover) hoverColor ?: buttonColor else buttonColor
         val currentTextColor = if (isHover) hoverTextColor ?: textColor else textColor
@@ -168,7 +168,7 @@ class LButton(
             width = SX*scaleX,
             height = SY*scaleY,
             borderRadius = buttonRadius,
-            rendering = Storage.gameController.rendering,
+            mainRender = Storage.gameController.mainRender,
             image = if (isHover) hoverButtonSprite?.img else buttonSprite?.img,
             clr = currentButtonColor
         )
@@ -184,10 +184,10 @@ class LButton(
                 width = SX*scaleX,
                 height = SY*scaleY,
                 borderRadius = buttonRadius,
-                rendering = Storage.gameController.rendering,
+                mainRender = Storage.gameController.mainRender,
                 image = if (isHover) Storage.gameController.spriteLoader.getSprite(postHoverImageKey)?.img else postSprite?.img,
                 clr = currentButtonColor
             )
         }
     }
-}
+} 

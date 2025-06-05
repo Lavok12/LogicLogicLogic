@@ -11,11 +11,11 @@ class LScene(var tag: String, var name: String, var paths: ArrayList<String> = A
     var loaded = false;
     
     init {
-        canvas = LCanvas(0f, 0f, Storage.gameController.rendering.disW, Storage.gameController.rendering.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(0f, 0f, Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH, 1f, 1f, gameController = gameController);
     }
 
     fun clearCanvas() {
-        canvas = LCanvas(0f, 0f, Storage.gameController.rendering.disW, Storage.gameController.rendering.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(0f, 0f, Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH, 1f, 1f, gameController = gameController);
     }
 
     fun clear() {

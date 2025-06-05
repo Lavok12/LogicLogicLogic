@@ -4,6 +4,7 @@ import la.vok.GameController.Server.*
 import la.vok.GameController.*
 import la.vok.Storages.Storage
 import processing.data.JSONObject
+import la.vok.GameController.Client.Rendering.*
 
 class PlayersContainer(var gameController: GameController) {
     var playersData = HashMap<String, PlayerData>()
@@ -16,9 +17,6 @@ class PlayersContainer(var gameController: GameController) {
     }
     fun checkData(id: String): Boolean {
         return playersData.containsKey(id)
-    }
-    fun updateData(id: String) {
-        playersData[id]!!.updateTime()
     }
     fun removeData(id: String) {
         playersData.remove(id)
@@ -33,15 +31,6 @@ class PlayersContainer(var gameController: GameController) {
         }
         return ret
     }
-    fun removeOldData(time: Int) {
-        var millis = Storage.main.millis()
-        for (i in playersData.keys) {
-            var obj = playersData[i]
-            if (obj!!.lastUpdate + time < millis) {
-                playersData.remove(i)
-            }
-        }
-    }
     fun toJsonObject(): JSONObject {
         var json: JSONObject = JSONObject()
         for (i in playersData.keys) {
@@ -55,6 +44,12 @@ class PlayersContainer(var gameController: GameController) {
             i.DELETE_FLAG = true
         }
     }
+    fun renderUpdate(renderBuffer: RenderBuffer) {
+        for (i in getAllPlayers()) {
+            var iRender: IRender = i
+            iRender.renderUpdate(renderBuffer)
+        }
+    }
     fun deleteWithFlags() {
         for (i in playersData.keys) {
             var obj = playersData[i]
@@ -63,7 +58,6 @@ class PlayersContainer(var gameController: GameController) {
             }
         }
     }
-
     companion object {
         fun fromJsonObject(JSONObject: JSONObject, gameController: GameController) : PlayersContainer {
             var container = PlayersContainer(gameController)

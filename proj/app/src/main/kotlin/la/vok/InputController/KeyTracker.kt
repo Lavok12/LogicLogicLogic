@@ -16,6 +16,12 @@ class KeyTracker(val gameController: GameController) {
                 }
             }
         }
+        if (event.keyCode == KeyCode.x) {
+            gameController.destroyClient()
+        }
+        if (event.keyCode == KeyCode.z) {
+            gameController.destroyServer()
+        }
         println(event.key + " ! " + event.keyCode)
     }
 

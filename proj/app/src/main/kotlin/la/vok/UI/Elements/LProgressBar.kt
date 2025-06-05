@@ -1,6 +1,6 @@
 package la.volk.UI.Elements
 
-import la.vok.UI.Rendering
+import la.vok.UI.MainRender
 import la.vok.UI.*
 import la.vok.UI.LCanvas
 import la.vok.Storages.Storage
@@ -132,9 +132,9 @@ class LProgressBar(
         }
     }
     
-    override fun renderElement(rendering: Rendering) {
+    override fun renderElement(mainRender: MainRender) {
         updateVisuals()
-        val lg = rendering.lg
+        val lg = mainRender.lg
 
         // Внутренние размеры с учётом padding
         val innerX = PX + paddingX
@@ -149,7 +149,7 @@ class LProgressBar(
             PX, PY, SX * scaleX, SY * scaleY,
             backgroundColor,
             borderRadius,
-            rendering,
+            mainRender,
             backgroundSprite?.img
         )
 
@@ -174,7 +174,7 @@ class LProgressBar(
                     innerH,
                     fcolor,
                     borderRadius,
-                    rendering,
+                    mainRender,
                     fillSprite?.img
                 )
             }
@@ -190,7 +190,7 @@ class LProgressBar(
                 innerH,
                 fillColor,
                 borderRadius,
-                rendering,
+                mainRender,
                 fillSprite?.img
             )
         }
@@ -200,7 +200,7 @@ class LProgressBar(
                 PX, PY, SX * scaleX, SY * scaleY,
                 backgroundColor,
                 borderRadius,
-                rendering,
+                mainRender,
                 postSprite?.img
             )
         }

@@ -14,7 +14,7 @@ import la.vok.GameController.Content.*
 import la.vok.GameController.ClientState
 import la.vok.UI.LCanvas
 
-class Rendering(var gameController: GameController) {
+class MainRender(var gameController: GameController) {
     var disH: Float = 0f
     var disW: Float = 0f
     var disH2: Float = 0f
@@ -49,17 +49,21 @@ class Rendering(var gameController: GameController) {
     fun startRender() {
         Storage.lg.beginDraw();
     }
+    
     fun endRender() {
         Storage.lg.endDraw();
     }
+
     fun clearLg() {
         Storage.lg.pg.background(0);
         lg.pg.noStroke();
         Storage.lg = Storage.lg;
     }
+
     fun clearDisplay() {
         Storage.main.background(0);
     }
+
     fun updateDistaplay() {
         clearDisplay();
         Storage.main.image(Storage.lg.pg, 0f, 0f, Storage.main.width.toFloat(), Storage.main.height.toFloat());
@@ -72,11 +76,19 @@ class Rendering(var gameController: GameController) {
         if (gameController.gameStarted) {
             if (gameController.isClient) {
                 if (gameController.clientState == ClientState.STARTED && gameController.clientController.loadState == LoadState.STARTED) {
-                    gameController.clientController.RenderLogicElements()
-                    gameController.clientController.renderPlayer(gameController.clientController.player)
+                    gameController.clientController.renderUpdate(gameController.renderBuffer)
+
+                    gameController.renderBuffer.updateVisualAll()
+                    gameController.renderBuffer.renderA()
+                    gameController.renderBuffer.renderB()
+                    gameController.renderBuffer.renderC()
+                    gameController.renderBuffer.clearA()
+                    gameController.renderBuffer.clearB()
+                    gameController.renderBuffer.clearC()
                 }
             }
         }
+        
 
         gameController.getCanvas().width = Storage.lg.disW
         gameController.getCanvas().height = Storage.lg.disH
@@ -87,27 +99,6 @@ class Rendering(var gameController: GameController) {
         updateDistaplay()
         endRender()
 
-    }
-    fun RenderLogicElements(clientController: ClientController) {
-        for (element in clientController.logicMap.list()) {
-            element.render(camera, this)
-        }
-    }
-
-    fun RenderWires(clientController: ClientController) {
-        for (wire in clientController.logicMap.wires) {
-            wire.render(camera, this)
-        }
-    }
-
-    fun renderPlayer(player: PlayerData,  clientController: ClientController) {
-        if (player.isActive) {
-            player.updateVisual(camera)
-            lg.fill(255f)
-            lg.setEps(player.VX, player.VY, player.VZ * 40f, player.VZ * 80f)
-
-            canvasRender(2, player.canvas)
-        }
     }
 
     fun canvasRender(layer: Int, canvas: LCanvas) {

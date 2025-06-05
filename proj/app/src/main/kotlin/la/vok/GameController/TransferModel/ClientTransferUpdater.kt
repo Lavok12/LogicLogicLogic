@@ -1,83 +1,41 @@
 package la.vok.GameController.TransferModel
 
+import java.*
 import processing.data.JSONObject
 import la.vok.GameController.Content.Logic.*
 import la.vok.GameController.Content.PlayersContainer
 import la.vok.GameController.Client.LoadState
+import la.vok.Storages.Storage
 
 class ClientTransferUpdater(var clientTransferModel: ClientTransferModel) : TransfeUpdater {
+    var transferBuffer = TransferBuffer(this)
     var clientController = clientTransferModel.clientController
     var gameController = clientController.gameController
+
+    private val handlers = mapOf(
+        "loadState_connect_server" to CLIENT_loadState_connect_server(),
+        "loadState_getPos_server" to CLIENT_loadState_getPos_server(),
+        "loadState_loadMap_server" to CLIENT_loadState_loadMap_server(),
+        "disconnect" to CLIENT_disconnect(),
+        "players_data_update" to CLIENT_players_data_update(),
+        "ping" to CLIENT_ping(),
+        "pong" to CLIENT_pong(),
+    )
 
     init {
         println("       ClientTransferUpdater initialized")
     }
 
     override fun processingData(transferPackage: TransferPackage) {
-        if (transferPackage.recipient != clientController.clientId) {
-            if (transferPackage.recipient != TransferPackage.ALL) {
-                return
-            }
+        if (transferPackage.recipient != clientController.clientId && transferPackage.recipient != TransferPackage.ALL) {
+            return
         }
-        when(transferPackage.header) {
-            "loadState_connect_server" -> {
-                var json = transferPackage.data
-                if (json.getString("return", "") == "ok") {
-                    clientController.loadState = LoadState.GET_POS
-                } else {
-                    gameController.destroyClient()
-                }
-            }
-            "loadState_getPos_server" -> {
-                var json = transferPackage.data
-                clientController.player.PX = json.getFloat("PX")
-                clientController.player.PY = json.getFloat("PY")
-                clientController.loadState = LoadState.LOAD_MAP
-            }
-            "loadState_loadMap_server" -> {
-                var json = transferPackage.data
-                var obj = json.getJSONArray("elements")
-                var wires = json.getJSONArray("wires")
-                clientController.logicMap.clear()
-                
-                for (i in 0 until obj.size()) {
-                    val l: JSONObject = obj.getJSONObject(i)
-                    clientController.logicMap.addElement(LogicElement.fromJsonObject(l, gameController, gameController.clientController.logicMap))
-                }
-                
-                for (i in 0 until wires.size()) {
-                    val l: JSONObject = wires.getJSONObject(i)
-                    clientController.logicMap.addWire(LogicWire.fromJsonObject(l, gameController, gameController.clientController.logicMap))
-                }
-                clientController.player.isActive = true
-                clientController.loadState = LoadState.STARTED
-            }
-            "disconnect" -> {
-                gameController.destroyClient()
-            }
-            "send_players_data" -> {
-                var json = transferPackage.data
-                var cont = PlayersContainer.fromJsonObject(json, gameController)
 
-                clientController.playersContainer.setDeleteFlags()
-                for (i in cont.playersData.keys) {
-                    if (clientController.playersContainer.playersData.containsKey(i)) {
-                        clientController.playersContainer.playersData[i]!!.SEND_PX = cont.playersData[i]!!.PX
-                        clientController.playersContainer.playersData[i]!!.SEND_PY = cont.playersData[i]!!.PY
-                        clientController.playersContainer.playersData[i]!!.name = cont.playersData[i]!!.name
-                        clientController.playersContainer.playersData[i]!!.isActive = cont.playersData[i]!!.isActive
-                        clientController.playersContainer.playersData[i]!!.DELETE_FLAG = false
-                    } else {
-                        clientController.playersContainer.addData(i, cont.playersData[i]!!.name)
-                        clientController.playersContainer.playersData[i]!!.PX = cont.playersData[i]!!.PX
-                        clientController.playersContainer.playersData[i]!!.PY = cont.playersData[i]!!.PY
-                        clientController.playersContainer.playersData[i]!!.name = cont.playersData[i]!!.name
-                        clientController.playersContainer.playersData[i]!!.isActive = cont.playersData[i]!!.isActive
-                        clientController.playersContainer.playersData[i]!!.DELETE_FLAG = false
-                    }
-                }
-                clientController.playersContainer.deleteWithFlags()
-            }
+        val handler = handlers[transferPackage.header]
+        if (handler != null) {
+            handler.handle(transferPackage.data, this)
+        } else {
+            println("${transferPackage.header} not found")
         }
     }
 }

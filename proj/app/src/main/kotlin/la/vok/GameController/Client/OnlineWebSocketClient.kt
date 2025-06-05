@@ -20,7 +20,7 @@ class OnlineWebSocketClient(var clientController: ClientController, serverUri: U
 
     override fun onMessage(message: String?) {
         try {
-            clientController.clientTransferModel.getData(TransferPackage.fromString(message!!))
+            clientController.clientTransferModel.clientTransferUpdater.transferBuffer.add(TransferPackage.fromString(message!!))
         } catch (e: Exception) {
             println("Error processing message: ${e.message}")
         }

@@ -329,12 +329,12 @@ open class LElement(
         elementCanvas.width = SX
         elementCanvas.height = SY
     }
-    open fun renderElement(rendering: Rendering) {
+    open fun renderElement(mainRender: MainRender) {
         
     }
-    open fun render(rendering: Rendering) {
+    open fun render(mainRender: MainRender) {
         if (isActive) {
-            renderElement(rendering);
+            renderElement(mainRender);
             elementCanvas.renderElements();
         }
     }

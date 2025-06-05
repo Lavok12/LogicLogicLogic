@@ -7,20 +7,18 @@ import la.vok.GameController.Content.PlayersContainer
 import la.vok.GameController.TransferModel.*
 import la.vok.GameController.Content.*
 import la.vok.GameController.Server.OnlineWebSocketServer
-import la.vok.Storages.Settings
+import la.vok.GameController.Server.PlayerConnect
+import la.vok.Storages.*
 import processing.data.*
 
 class ServerController(var gameController: GameController, var port: Int = 0) {
+    lateinit var onlineWebSocketServer: OnlineWebSocketServer
+    var connectsContainer = ConnectsContainer(this)
+
     var logicMap = LogicMap(gameController)
     var serverTransferModel: ServerTransferModel
 
-    lateinit var onlineWebSocketServer: OnlineWebSocketServer
-
-    var playersContainer: PlayersContainer = PlayersContainer(gameController)
-    var LogicElements: ArrayList<LogicElement> = ArrayList()
-
-    var frame: Long = 0L
-    
+    var frame: Long = -1L
 
     init {
         println("ServerController initialized")
@@ -34,15 +32,15 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
     
     fun tick() {
         frame++
-        for (i in LogicElements) {
-            i.tick()
-        }
-        for (i in LogicElements) {
-            i.update()
-        }
+        serverTransferModel.serverTransferUpdater.transferBuffer.processingAll()
+        logicMap.tick()
+        logicMap.update()
         if (frame % Settings.updateIntervalFrames == 0L) {
-            playersContainer.removeOldData(Settings.playersKickTime)
-           TransferPackage("send_players_data", TransferPackage.SERVER, TransferPackage.ALL, playersContainer.toJsonObject()).send(serverTransferModel)
+            connectsContainer.removeOldConnections()
+            sendToAll("players_data_update", connectsContainer.connectionsToPlayerContainer().toJsonObject())
+        }
+        if (frame % Settings.pingInterval == 0L) {
+            connectsContainer.pingAll()
         }
     }
 
@@ -57,18 +55,17 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
 
     fun connectNewPlayer(id: String, name: String) {
         println("$name connected to Server ($id)")
-        playersContainer.addData(id, name)
+        connectsContainer.addConnect(id)
+        connectsContainer.getConnect(id).initPlayer(id, name)
         var json = JSONObject()
         json.put("return", "ok")
-        TransferPackage("loadState_connect_server", TransferPackage.SERVER, id, json).send(serverTransferModel)
+        sendToClient("loadState_connect_server", connectsContainer.getConnect(id), json)
     }
-    
-    fun updatePlayer(id: String, JSONdata: JSONObject) {
-        if (playersContainer.checkData(id)) {
-            playersContainer.updateData(id)
-        } else {
-            TransferPackage("disconnect", TransferPackage.SERVER, id, JSONObject()).send(serverTransferModel)
-        }
+
+    fun ping(id: String) {
+        var json = JSONObject()
+        json.put("time", System.currentTimeMillis())
+        sendToClient("ping", id, json)
     }
 
     fun checkConnections() {
@@ -83,11 +80,22 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
 
     }
 
-    fun sendToClient(header: String, data: JSONObject = JSONObject(), client: String) {
-        TransferPackage(header, TransferPackage.SERVER, client, data).send(serverTransferModel)
+    fun sendToClient(header: String, connect: PlayerConnect, data: JSONObject = JSONObject()) {
+        TransferPackage(header, TransferPackage.SERVER, connect.clientId, data).send(serverTransferModel)
+    }
+
+    fun sendToClient(header: String, id: String, data: JSONObject = JSONObject()) {
+        TransferPackage(header, TransferPackage.SERVER, id, data).send(serverTransferModel)
     }
 
     fun sendToAll(header: String, data: JSONObject = JSONObject()) {
         TransferPackage(header, TransferPackage.SERVER, TransferPackage.ALL, data).send(serverTransferModel)
+    }
+
+    fun disconnectPlayer(id: String) {
+        if (connectsContainer.contains(id)) {
+            connectsContainer.removeConnect(id)
+        }
+        sendToClient("disconnect", id)
     }
 }

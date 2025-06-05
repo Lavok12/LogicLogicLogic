@@ -86,7 +86,7 @@ class LCanvas (
     
     fun renderElements() {
         for (LElement in elements) {
-            LElement.render(gameController.rendering)
+            LElement.render(gameController.mainRender)
         }
     }
 

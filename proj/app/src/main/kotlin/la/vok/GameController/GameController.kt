@@ -16,6 +16,7 @@ import com.jsyn.engine.LoadAnalyzer
 import la.vok.Storages.Storage
 import la.vok.InputController.*
 import la.vok.GameController.Content.*
+import la.vok.GameController.Client.Rendering.*
 
 public enum class ClientState {
     UNINITIALIZED,
@@ -43,7 +44,8 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var UILoader: UILoader
     lateinit var loadUIList: LoadUIList
     lateinit var scriptsLoader: ScriptsLoader
-    lateinit var rendering: Rendering
+    lateinit var mainRender: MainRender
+    lateinit var renderBuffer: RenderBuffer
     lateinit var mouseController: MouseController
     lateinit var keyTracker: KeyTracker
     
@@ -72,22 +74,22 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         scriptsLoader = ScriptsLoader(this)
         languageController = LanguageController(Settings.language, this)
         spriteLoader = SpriteLoader(this)
-        rendering = Rendering(this)
+        mainRender = MainRender(this)
         scenesLoader = ScenesLoader(this)
-
+        renderBuffer = RenderBuffer(this, mainRender)
         mouseController = MouseController(this)
         keyTracker = KeyTracker(this)
     }
 
     fun rendering() {
-        rendering.render()
+        mainRender.render()
     }
 
     fun initClient() {
         if (isClient && clientState == ClientState.UNINITIALIZED) {
             clientState = ClientState.INITIALIZED
-            clientController = ClientController(this, Settings.addres)
-            rendering.setScene(scenesContainer.getScene("")!!)
+            clientController = ClientController(this, Settings.address)
+            mainRender.setScene(scenesContainer.getScene("")!!)
             if (!isLocal) {
                 clientController.initOnline()
             } else {
@@ -139,15 +141,15 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         scenesContainer.addScene(LScene("", "", gameController = this))
         scenesContainer.addScene(scenesLoader.newScene("main", "main"))
         scenesContainer.addScene(scenesLoader.newScene("disconnect", "disconnect"))
-        rendering.setScene(scenesContainer.getScene("main")!!)
+        mainRender.setScene(scenesContainer.getScene("main")!!)
     }
 
     fun getCanvas(): LCanvas {
-        return rendering.LScene!!.canvas
+        return mainRender.LScene!!.canvas
     }
 
     fun getScene(): LScene {
-        return rendering.LScene!!
+        return mainRender.LScene!!
     }
 
     fun UITick() {
@@ -183,11 +185,11 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     }
 
     fun destroyClient() {
-        println("destroyClient")
         if (clientState == ClientState.STARTED || clientState == ClientState.INITIALIZED) {
             clientController.destroy()
+            println("destroyClient")
             clientState = ClientState.DESTROYED
-            rendering.setScene(scenesContainer.getScene("disconnect")!!)
+            mainRender.setScene(scenesContainer.getScene("disconnect")!!)
             if (serverState != ServerState.STARTED) {
                 destroyGame()
             } else if (isLocal) {
@@ -199,9 +201,9 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     }
 
     fun destroyServer() {
-        println("destroyServer")
         if (serverState == ServerState.STARTED || serverState == ServerState.INITIALIZED) {
             serverController.destroy()
+            println("destroyServer")
             serverState = ServerState.DESTROYED
             if (clientState != ClientState.STARTED) {
                 destroyGame()

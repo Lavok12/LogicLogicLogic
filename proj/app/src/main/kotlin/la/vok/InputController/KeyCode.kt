@@ -7,5 +7,7 @@ object KeyCode {
     val d = 68
     val s = 83
     val a = 65
+    val z = 90
+    val x = 88
     val SPACE = 32
 }

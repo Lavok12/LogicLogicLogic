@@ -4,8 +4,9 @@ import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Map.LogicMap
 import la.vok.GameController.Client.Camera
 import la.vok.GameController.GameController
-import la.vok.UI.Rendering
+import la.vok.UI.MainRender
 import processing.data.*
+import la.vok.GameController.Client.Rendering.*
 
 class LogicWire(
     var start: LogicElement,
@@ -13,7 +14,12 @@ class LogicWire(
     var gameController: la.vok.GameController.GameController,
     var logicMap: LogicMap,
     var standartInit: Boolean = true
-) {
+) : IRender {
+    override var renderLayersData: RenderLayersData = RenderLayersData(this::updateVisual,
+        RenderLayer(Layers.B1, 5, this::render)
+    )
+    override var isVisible = true
+
     companion object {
         fun fromJsonObject(json: JSONObject, gameController: GameController, logicMap: LogicMap): LogicWire {
             var id: Long  = json.getLong("id", 0L)
@@ -32,6 +38,8 @@ class LogicWire(
     }
 
     var id: Long = 0
+    var isActive: Boolean = false
+    
 
     init {
         if (standartInit) {
@@ -39,8 +47,6 @@ class LogicWire(
             logicMap.wiresCount++
         }
     }
-
-    var isActive: Boolean = false
     
     fun activate() {
         isActive = true
@@ -48,14 +54,34 @@ class LogicWire(
     fun deactivate() {
         isActive = false
     }
-    fun render(camera: Camera, rendering: Rendering) {
-        rendering.lg.fill(255f,0f,0f)
-        rendering.lg.setLine(
-            camera.camX(start.PX + 5f),
-            camera.camY(start.PY + 5f),
-            camera.camX(end.PX + 5f),
-            camera.camY(end.PY + 5f),
-            camera.camZ(5f),
+    var SVX = 0f
+    var SVY = 0f
+    var EVX = 0f
+    var EVY = 0f
+    var VZ = 0f
+
+    fun tick() {
+
+    }
+    fun update() {
+
+    }
+    fun updateVisual(mainRender: MainRender) {
+        SVX = mainRender.camera.camX(start.PX)
+        SVY = mainRender.camera.camY(start.PY)
+        EVX = mainRender.camera.camX(end.PX)
+        EVY = mainRender.camera.camY(end.PY)
+        VZ  = mainRender.camera.camZ(5f)
+    
+    }
+    fun render(mainRender: MainRender) {
+        mainRender.lg.fill(255f,0f,0f)
+        mainRender.lg.setLine(
+            SVX,
+            SVY,
+            EVX,
+            EVY,
+            VZ,
             200f,
             100f,
             100f

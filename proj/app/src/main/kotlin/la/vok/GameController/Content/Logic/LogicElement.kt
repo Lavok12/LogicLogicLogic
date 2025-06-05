@@ -6,9 +6,10 @@ import la.vok.LavokLibrary.LGraphics
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.Map.LogicMap
 import la.vok.GameController.GameController
-import la.vok.UI.Rendering
+import la.vok.UI.MainRender
 import la.vok.UI.LCanvas
 import processing.data.*
+import la.vok.GameController.Client.Rendering.*
 
 class LogicElement(
     var PX: Float,
@@ -17,7 +18,12 @@ class LogicElement(
     var gameController: la.vok.GameController.GameController,
     var logicMap: LogicMap,
     var standartInit: Boolean = true
-) {
+) : IRender {
+    override var renderLayersData: RenderLayersData = RenderLayersData(this::updateVisual,
+        RenderLayer(Layers.B2, 5, this::render)
+    )
+    override var isVisible = true
+
     companion object {
         fun fromJsonObject(json: JSONObject, gameController: GameController, logicMap: LogicMap): LogicElement {
             var id: Long  = json.getLong("id", 0L)
@@ -47,19 +53,31 @@ class LogicElement(
     fun tick() {
 
     }
+    
     fun update() {
 
     }
-    fun render(camera: Camera, rendering: Rendering) {
-        rendering.lg.fill(100f, 100f, 200f)
-        rendering.lg.setEps(
-            camera.camX(PX),
-            camera.camY(PY),
-            camera.camZ(50f),
-            camera.camZ(50f)
+    
+    var VX = 0f
+    var VY = 0f
+    var VZ = 0f
+
+    fun updateVisual(mainRender: MainRender) {
+        VX = mainRender.camera.camX(PX)
+        VY = mainRender.camera.camY(PY)
+        VZ = mainRender.camera.camZ(50f)
+    }
+
+    fun render(mainRender: MainRender) {
+        mainRender.lg.fill(100f, 100f, 200f)
+        mainRender.lg.setEps(
+            VX,
+            VY,
+            VZ,
+            VZ,
         )
     }
-    fun renderCanvas(camera: Camera, rendering: Rendering) {
+    fun renderCanvas(camera: Camera, mainRender: MainRender) {
         if (canvas == null) {
             canvas = LCanvas(
                 posX = camera.camX(PX),

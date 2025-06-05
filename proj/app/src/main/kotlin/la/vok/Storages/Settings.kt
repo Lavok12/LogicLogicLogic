@@ -1,7 +1,7 @@
 package la.vok.Storages
 
 object Settings {
-    var isLocal: Boolean = false
+    var isLocal: Boolean = true
     var isServer: Boolean = true
     var isClient: Boolean = true
     var language: String = "eng"
@@ -14,8 +14,10 @@ object Settings {
     var spriteUploadTime: Int = 100*120;
     var updateIntervalFrames = 10L
     var playersKickTime = 4000
-
+    var playerDisconnectTime = 4000
+    var pingInterval = 200L
+    
     var canvasRenderLayers = 10
-    var addres = "ws://26.229.52.4:8800"
+    var address = "ws://26.229.52.4:8800"
     var port = 8800
 }
