@@ -87,21 +87,27 @@ class CLIENT_players_data_update : ClientTransferHandler {
         for ((id, pdata) in cont.playersData) {
             val localPlayer = controller.playersContainer.playersData[id]
             if (localPlayer != null) {
-                localPlayer.PX = pdata.PX
-                localPlayer.PY = pdata.PY
-                localPlayer.name = pdata.name
-                localPlayer.DELETE_FLAG = false
+                var isPlayer: Boolean = true
                 if (id.equals(updater.clientController.clientId)) {
-                    localPlayer!!.isVisible = false
+                    isPlayer = false
+                } else {
+                    localPlayer.PX = pdata.PX
+                    localPlayer.PY = pdata.PY
+                    localPlayer.name = pdata.name
+                    localPlayer.DELETE_FLAG = false
+                    localPlayer!!.isVisible = isPlayer
                 }
             } else {
-                controller.playersContainer.addData(id, pdata.name)
-                controller.playersContainer.playersData[id]!!.PX = pdata.PX
-                controller.playersContainer.playersData[id]!!.PY = pdata.PY
-                controller.playersContainer.playersData[id]!!.name = pdata.name
-                controller.playersContainer.playersData[id]!!.DELETE_FLAG = false
+                var isPlayer: Boolean = true
                 if (id.equals(updater.clientController.clientId)) {
-                    controller.playersContainer.playersData[id]!!.isVisible = false
+                    isPlayer = false
+                } else {
+                    controller.playersContainer.addData(id, pdata.name)
+                    controller.playersContainer.playersData[id]!!.PX = pdata.PX
+                    controller.playersContainer.playersData[id]!!.PY = pdata.PY
+                    controller.playersContainer.playersData[id]!!.name = pdata.name
+                    controller.playersContainer.playersData[id]!!.DELETE_FLAG = false
+                    controller.playersContainer.playersData[id]!!.isVisible = isPlayer
                 }
             }
         }

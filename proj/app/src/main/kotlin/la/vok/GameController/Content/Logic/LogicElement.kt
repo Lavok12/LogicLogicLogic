@@ -62,15 +62,36 @@ class LogicElement(
     var VX = 0f
     var VY = 0f
     var VZ = 0f
+    var VCR = 0f
+    var VCG = 0f
+    var VCB = 0f
 
     fun updateVisual(mainRender: MainRender) {
         VX = mainRender.camera.camX(PX)
         VY = mainRender.camera.camY(PY)
         VZ = mainRender.camera.camZ(50f)
+        
+        when (type) {
+            "test" -> {
+                isVisible = true
+                VCR = 60f
+                VCG = 90f
+                VCB = 200f
+            }
+            "new" -> {
+                isVisible = true
+                VCR = 200f
+                VCG = 90f
+                VCB = 60f
+            } 
+            else -> {
+                isVisible = false
+            }
+        }
     }
-
+    
     fun render(mainRender: MainRender) {
-        mainRender.lg.fill(100f, 100f, 200f)
+        mainRender.lg.fill(VCR, VCG, VCB)
         mainRender.lg.setEps(
             VX,
             VY,
@@ -116,4 +137,3 @@ class LogicElement(
 
     }
 }
-

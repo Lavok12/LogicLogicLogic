@@ -4,7 +4,7 @@ import la.vok.LavokLibrary.*
 import la.vok.Storages.Storage
 import la.vok.UI.LCanvas
 import la.vok.GameController.GameController
-import la.volk.UI.Elements.*
+import la.vok.UI.Elements.*
 import processing.data.JSONObject
 import processing.data.JSONArray
 
@@ -117,6 +117,7 @@ class LoadUIList(private val gameController: GameController) {
             "LText" -> LText.JSONToElement(json, canvas, gameController)
             "LButton" -> LButton.JSONToElement(json, canvas, gameController)
             "LProgressBar" -> LProgressBar.JSONToElement(json, canvas, gameController)
+            "LTextField" -> LTextField.JSONToElement(json, canvas, gameController)
             else -> LElement.JSONToElement(json, canvas, gameController)
         }
     }

@@ -9,6 +9,11 @@ import la.vok.GameController.Client.Rendering.*
 class PlayersContainer(var gameController: GameController) {
     var playersData = HashMap<String, PlayerData>()
 
+    fun updateCanvas() {
+        for (i in getAllPlayers()) {
+            i.updateCanvas()
+        }
+    }
     fun getData(id: String): PlayerData {
         return playersData[id]!!
     }
@@ -19,6 +24,7 @@ class PlayersContainer(var gameController: GameController) {
         return playersData.containsKey(id)
     }
     fun removeData(id: String) {
+        playersData[id]?.destroy()
         playersData.remove(id)
     }
     fun getAllPlayers(): Set<PlayerData> {
@@ -54,8 +60,13 @@ class PlayersContainer(var gameController: GameController) {
         for (i in playersData.keys) {
             var obj = playersData[i]
             if (obj!!.DELETE_FLAG) {
-                playersData.remove(i)
+                removeData(i)
             }
+        }
+    }
+    fun clear() {
+        for (i in playersData.keys) {
+            removeData(i)
         }
     }
     companion object {

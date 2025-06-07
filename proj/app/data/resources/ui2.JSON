@@ -33,6 +33,23 @@
             "tag": "b3",
             "y": -160,
             "x": 100
+        },
+        {
+            "type": "LTextField",
+            "x": 500,
+            "y": 50,
+            "width": 500,
+            "height": 150,
+            "text": "enter_name",
+            "textTranslate": true,
+            "fontSize": 32,
+            "textColor": [
+                255,
+                255,
+                255,
+                255
+            ],
+            "tag": "nicknameField"
         }
     ]
 }

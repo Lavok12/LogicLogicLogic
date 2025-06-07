@@ -67,7 +67,7 @@ class SERVER_add_logicElement : ServerTransferHandler {
         if (!container.contains(id)) return
 
         val map = updater.serverController.logicMap
-        map.addElement(data.getFloat("PX", 0f), data.getFloat("PY", 0f), "")
+        map.addElement(data.getFloat("PX", 0f), data.getFloat("PY", 0f), data.getString("type", "d"))
 
         val json = JSONObject()
         val elements = JSONArray()

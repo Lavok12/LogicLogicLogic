@@ -1,8 +1,8 @@
-package la.volk.UI.Elements
+package la.vok.UI.Elements
 
 import la.vok.UI.*
 import la.vok.UI.LCanvas
-import la.vok.Storages.Storage
+import la.vok.Storages.*
 import la.vok.LoadData.*
 import la.vok.GameController.GameController
 import org.luaj.vm2.*
@@ -36,7 +36,7 @@ open class LElement(
     open var PY: Float = 0f
     open var SX: Float = 0f
     open var SY: Float = 0f
-    open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, gameController)
+    open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, -1, gameController)
     open var isActive: Boolean = true
 
     open var update : Boolean = false
@@ -163,11 +163,12 @@ open class LElement(
         return false
     }
     
-
+    open fun deactivate() {
+    }
     open fun update(mx: Float, my: Float) {}
     open fun onMouseDown(mx: Float, my: Float) {
         if (!gameController.gameStarted) {
-            gameController.startGame()
+            gameController.startGame(Settings.isClient, Settings.isServer, Settings.isLocal)
         }
     }
     open fun onMouseUp(mx: Float, my: Float) {}

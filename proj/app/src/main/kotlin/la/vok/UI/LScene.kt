@@ -32,6 +32,10 @@ class LScene(var tag: String, var name: String, var paths: ArrayList<String> = A
             loaded = true
         }
     }
+
+    fun deactivate() {
+        canvas.deactivate()
+    }
     
     fun loadScene() {
         if (loaded) {

@@ -8,6 +8,9 @@ class KeyTracker(val gameController: GameController) {
     private val pressedKeys = mutableSetOf<Int>()
 
     fun keyPressed(event: KeyEvent) {
+        if (gameController.textFieldController.isEditing) {
+            gameController.textFieldController.input(event)
+        }
         pressedKeys.add(event.keyCode)
         if (event.keyCode == KeyCode.SPACE) {
             if (gameController.gameStarted && gameController.clientState == ClientState.STARTED) {

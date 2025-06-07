@@ -3,7 +3,7 @@ package la.vok.UI
 import la.vok.Storages.Storage
 import la.vok.Storages.Settings
 import la.vok.LavokLibrary.LGraphics
-import la.volk.UI.Elements.*
+import la.vok.UI.Elements.*
 import java.awt.Button
 import java.awt.Color
 import la.vok.GameController.GameController
@@ -28,22 +28,25 @@ class MainRender(var gameController: GameController) {
         return gameController.clientController.mainCamera
     } 
 
-    var canvasRenderList = ArrayList<ArrayList<LCanvas>>()
-    init {
-        for (i in 0..Settings.canvasRenderLayers) {
-            canvasRenderList += ArrayList<LCanvas>()
-        }
-    }
-
     fun setScene(scene: LScene) {
+        if (LScene != null) {
+            gameController.lCanvasController.remove(LScene!!.canvas)
+        }
+        LScene?.deactivate()
         scene.checkLoaded()
         scene.addTagsToCanvas();
         LScene = scene
+        gameController.lCanvasController.add(LScene!!.canvas)
     }
     
     fun continueScene(scene: LScene) {
+        if (LScene != null) {
+            gameController.lCanvasController.remove(LScene!!.canvas)
+        }
+        LScene?.deactivate()
         scene.checkLoaded()
         LScene = scene
+        gameController.lCanvasController.add(LScene!!.canvas)
     }
 
     fun startRender() {
@@ -89,28 +92,12 @@ class MainRender(var gameController: GameController) {
             }
         }
         
-
         gameController.getCanvas().width = Storage.lg.disW
         gameController.getCanvas().height = Storage.lg.disH
 
-        canvasRender(5, gameController.getCanvas())
-
-        canvasListRender()
+        gameController.lCanvasController.canvasListRender()
         updateDistaplay()
         endRender()
 
-    }
-
-    fun canvasRender(layer: Int, canvas: LCanvas) {
-        canvasRenderList[layer] += canvas
-    }
-
-    fun canvasListRender() {
-        for (j in canvasRenderList) {
-            for (i in j) {
-                i.renderElements()
-            }
-            j.clear()
-        }
     }
 }

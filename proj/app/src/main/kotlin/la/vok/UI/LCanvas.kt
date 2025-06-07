@@ -2,7 +2,7 @@ package la.vok.UI
 
 import la.vok.GameController.GameController
 import la.vok.Storages.Storage
-import la.volk.UI.Elements.LElement
+import la.vok.UI.Elements.LElement
 
 class LCanvas (
     var posX: Float = 0f,
@@ -14,10 +14,11 @@ class LCanvas (
     var localScaleX: Float = 1f,
     var localScaleY: Float = 1f,
     var textScale: Float = 1f,
+    var layer: Int = 0,
     var gameController: GameController
-    
 ) {
     var elements = ArrayList<LElement>();
+    var isActive = false
 
     fun getElementByTag(tag: String): LElement? {
         for (element in elements) {
@@ -73,6 +74,13 @@ class LCanvas (
             }
         }
         return currentElement
+    }
+
+    fun deactivate() {
+        gameController.lCanvasController.remove(this)
+        for (LElement in elements) {
+            LElement.deactivate()
+        }
     }
 
     fun tick(mx: Float, my: Float, gameController: GameController): Boolean {

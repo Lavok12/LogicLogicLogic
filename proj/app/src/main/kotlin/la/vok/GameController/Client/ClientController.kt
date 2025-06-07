@@ -45,6 +45,8 @@ class ClientController(var gameController: GameController, var address: String =
     var serverConnect: ServerConnect = ServerConnect(this)
 
     fun renderUpdate(renderBuffer: RenderBuffer) {
+        player.updateCanvas()
+        playersContainer.updateCanvas()
         player.renderUpdate(renderBuffer)
         playersContainer.renderUpdate(renderBuffer)
         logicMap.renderUpdate(renderBuffer)
@@ -133,6 +135,7 @@ class ClientController(var gameController: GameController, var address: String =
             var json = JSONObject()
             json.put("PX", player.PX)
             json.put("PY", player.PY)
+            json.put("type", "new")
             sendToServer("add_logicElement", json)
         }
     }
@@ -151,6 +154,8 @@ class ClientController(var gameController: GameController, var address: String =
     }
 
     fun destroy() {
+        player.destroy()
+        playersContainer.clear()
     }
 
     fun sendToServer(header: String, data: JSONObject = JSONObject()) {

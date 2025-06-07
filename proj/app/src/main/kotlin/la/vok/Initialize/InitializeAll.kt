@@ -20,7 +20,7 @@ object initializeAll {
     }
 
     fun initializeGame() {
-        Storage.gameController = GameController(Settings.isClient, Settings.isServer, Settings.isLocal);
+        Storage.gameController = GameController();
         Storage.gameController.startInit(); 
         Storage.gameController.initLoaders();
         Storage.gameController.initScenes();

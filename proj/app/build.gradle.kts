@@ -22,6 +22,9 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:1.9.10")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.0") // или protobuf/json
+
     // This dependency is used by the application.
     implementation(libs.guava)
 

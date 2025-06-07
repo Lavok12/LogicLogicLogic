@@ -17,6 +17,7 @@ import la.vok.Storages.Storage
 import la.vok.InputController.*
 import la.vok.GameController.Content.*
 import la.vok.GameController.Client.Rendering.*
+import la.vok.UI.*
 
 public enum class ClientState {
     UNINITIALIZED,
@@ -34,7 +35,7 @@ public enum class ServerState {
     DESTROYED
 }
 
-class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: Boolean = false) {
+class GameController() {
     lateinit var clientController: ClientController
     lateinit var menuController: MenuController
     lateinit var serverController: ServerController
@@ -46,20 +47,29 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     lateinit var scriptsLoader: ScriptsLoader
     lateinit var mainRender: MainRender
     lateinit var renderBuffer: RenderBuffer
+
     lateinit var mouseController: MouseController
     lateinit var keyTracker: KeyTracker
+    lateinit var textFieldController: TextFieldController
     
+    lateinit var lCanvasController: LCanvasController
     lateinit var scenesContainer: ScenesContainer
     var gameStarted: Boolean = false
 
     var clientState = ClientState.UNINITIALIZED
     var serverState = ServerState.UNINITIALIZED
 
+    var isClient: Boolean = false
+    var isServer: Boolean = false
+    var isLocal: Boolean = false
     init {
         println("GameController initialized")
     }
 
-    fun startGame() {
+    fun startGame(isClient: Boolean, isServer: Boolean, isLocal: Boolean = false) {
+        this.isClient = isClient
+        this.isServer = isServer
+        this.isLocal = isLocal
         println("---")
         println("Game started")
         println("---")
@@ -79,6 +89,8 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
         renderBuffer = RenderBuffer(this, mainRender)
         mouseController = MouseController(this)
         keyTracker = KeyTracker(this)
+        textFieldController = TextFieldController(this)
+        lCanvasController = LCanvasController(this)
     }
 
     fun rendering() {
@@ -185,35 +197,50 @@ class GameController(var isClient: Boolean, var isServer: Boolean, var isLocal: 
     }
 
     fun destroyClient() {
-        if (clientState == ClientState.STARTED || clientState == ClientState.INITIALIZED) {
-            clientController.destroy()
-            println("destroyClient")
-            clientState = ClientState.DESTROYED
-            mainRender.setScene(scenesContainer.getScene("disconnect")!!)
-            if (serverState != ServerState.STARTED) {
-                destroyGame()
-            } else if (isLocal) {
-                serverController.destroy()
-                serverState = ServerState.DESTROYED
-                destroyGame()
-            }
+        if (!isClientActive()) return
+    
+        destroyClientInternal()
+        mainRender.setScene(scenesContainer.getScene("disconnect")!!)
+    
+        if (serverState != ServerState.STARTED) {
+            destroyGame()
+        } else if (isLocal) {
+            destroyServerInternal()
+            destroyGame()
         }
     }
-
+    
     fun destroyServer() {
-        if (serverState == ServerState.STARTED || serverState == ServerState.INITIALIZED) {
-            serverController.destroy()
-            println("destroyServer")
-            serverState = ServerState.DESTROYED
-            if (clientState != ClientState.STARTED) {
-                destroyGame()
-            } else if (isLocal) {
-                clientController.destroy()
-                clientState = ClientState.DESTROYED
-                destroyGame()
-            }
+        if (!isServerActive()) return
+    
+        destroyServerInternal()
+    
+        if (clientState != ClientState.STARTED) {
+            destroyGame()
+        } else if (isLocal) {
+            destroyClientInternal()
+            destroyGame()
         }
     }
+    
+    private fun isClientActive() =
+        clientState == ClientState.STARTED || clientState == ClientState.INITIALIZED
+    
+    private fun isServerActive() =
+        serverState == ServerState.STARTED || serverState == ServerState.INITIALIZED
+    
+    private fun destroyClientInternal() {
+        clientController.destroy()
+        println("destroyClient")
+        clientState = ClientState.DESTROYED
+    }
+    
+    private fun destroyServerInternal() {
+        serverController.destroy()
+        println("destroyServer")
+        serverState = ServerState.DESTROYED
+    }
+    
 
     private fun destroy() {
         gameStarted = false
