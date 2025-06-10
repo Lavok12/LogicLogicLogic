@@ -28,20 +28,15 @@ class App : PApplet() {
         }
         
         updateMouseCoordinates()
+        Storage.gameController.tick()
         Storage.gameController.rendering()
-        Storage.gameController.UITick()
+        Storage.gameController.lCanvasController.UITick()
         Storage.gameController.gameTick()
     }
 
     fun updateMouseCoordinates() {
-        var moux = (mouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
-        var mouy = (-mouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
-        var pmoux = (pmouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
-        var pmouy = (-pmouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
-
-        Storage.mouseController.updateCoord(moux, mouy, pmoux, pmouy)
+        Storage.mouseController.updateCoord(mouseX.toFloat(), mouseY.toFloat(), pmouseX.toFloat(), pmouseY.toFloat())
     }
-
     override fun mousePressed(e: MouseEvent) {
         Storage.mouseController.mousePressed(e)
     }

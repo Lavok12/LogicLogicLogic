@@ -15,6 +15,7 @@ class ServerTransferUpdater(var serverTransferModel: ServerTransferModel) : Tran
         "loadState_loadMap_client" to SERVER_loadState_loadMap_client(),
         "update_player_data" to SERVER_update_player_data(),
         "add_logicElement" to SERVER_add_logicElement(),
+        "chat_message" to SERVER_chat_message(),
         "ping" to SERVER_ping(),
         "pong" to SERVER_pong()
     )

@@ -1,5 +1,5 @@
 {
-    "tag": "endButton",
+    "tag": "panel",
     "x": 0,
     "y": 0,
     "type": "LPanel",
@@ -36,10 +36,11 @@
         },
         {
             "type": "LTextField",
-            "x": 500,
-            "y": 50,
-            "width": 500,
-            "height": 150,
+            "x": 0,
+            "y": 0,
+            "width": 800,
+            "height": 100,
+            "multiline": true,
             "text": "enter_name",
             "textTranslate": true,
             "fontSize": 32,

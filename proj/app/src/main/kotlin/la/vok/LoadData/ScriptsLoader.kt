@@ -5,7 +5,9 @@ import la.vok.LoadData.LanguageData
 import la.vok.Storages.Settings
 import processing.data.JSONObject
 import la.vok.GameController.GameController;
-import la.vok.UI.LScene
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
+
 
 class ScriptsLoader(var gameController: GameController) {
     var scriptsData = ScriptsData();

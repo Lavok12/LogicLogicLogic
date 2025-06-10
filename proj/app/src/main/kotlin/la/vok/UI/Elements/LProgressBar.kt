@@ -2,15 +2,16 @@ package la.vok.UI.Elements
 
 import la.vok.UI.MainRender
 import la.vok.UI.*
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
 import java.awt.Color
-
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import la.vok.LavokLibrary.*;
 import processing.data.JSONObject
 import la.vok.GameController.GameController
-
 
 class LProgressBar(
     gameController: GameController,
@@ -31,10 +32,10 @@ class LProgressBar(
     var fillImageKey: String = "",
     var backgroundImageKey: String = "",
     var imagePadding: Float = 2f,
-    var paddingX: Float = 4f, // ← новый параметр отступа по X
-    var paddingY: Float = 4f, // ← новый параметр отступа по Y
-    var scaleX: Float = 1f, // Scale factor for the progress bar width
-    var scaleY: Float = 1f, // Scale factor for the progress bar height
+    var paddingX: Float = 4f,
+    var paddingY: Float = 4f,
+    var scaleX: Float = 1f,
+    var scaleY: Float = 1f,
     var postImageKey: String = "",
     offsetByWidth: Float = 0f,
     offsetByHeight: Float = 0f,
@@ -44,7 +45,7 @@ class LProgressBar(
     maxHeight: Float = 0f,
     minWidth: Float = 0f,
     minHeight: Float = 0f,
-    tag: String = "" // Tag for the button
+    tag: String = ""
 ) : LElement(
     gameController, x, y, width, height, alignX, alignY, parentCanvas,
     percentWidth, percentHeight,

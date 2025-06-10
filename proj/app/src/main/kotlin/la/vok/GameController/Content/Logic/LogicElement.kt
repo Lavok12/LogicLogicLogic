@@ -7,9 +7,10 @@ import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.Map.LogicMap
 import la.vok.GameController.GameController
 import la.vok.UI.MainRender
-import la.vok.UI.LCanvas
 import processing.data.*
 import la.vok.GameController.Client.Rendering.*
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 class LogicElement(
     var PX: Float,

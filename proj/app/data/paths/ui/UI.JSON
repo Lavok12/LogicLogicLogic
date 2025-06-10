@@ -22,5 +22,9 @@
     "playerCanvas": {
         "path": "resources/canvas/playerCanvas.JSON",
         "addData": []
+    },
+    "chat": {
+        "path": "resources/chat.JSON",
+        "addData": []
     }
 }

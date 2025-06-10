@@ -8,6 +8,7 @@ import la.vok.GameController.TransferModel.*
 import la.vok.GameController.Content.*
 import la.vok.GameController.Server.OnlineWebSocketServer
 import la.vok.GameController.Server.PlayerConnect
+import la.vok.GameController.Server.ServerChatController
 import la.vok.Storages.*
 import processing.data.*
 
@@ -17,12 +18,14 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
 
     var logicMap = LogicMap(gameController)
     var serverTransferModel: ServerTransferModel
-
+    var serverChatController: ServerChatController
+    
     var frame: Long = -1L
 
     init {
         println("ServerController initialized")
         serverTransferModel = ServerTransferModel(this)
+        serverChatController = ServerChatController(this, Settings.serverChatHistory)
     }
 
     fun initOnline() {

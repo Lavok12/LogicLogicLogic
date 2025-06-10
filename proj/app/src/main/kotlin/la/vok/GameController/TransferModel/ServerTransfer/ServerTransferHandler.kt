@@ -2,6 +2,7 @@ package la.vok.GameController.TransferModel
 
 import la.vok.GameController.*
 import la.vok.GameController.Client.*
+import la.vok.GameController.Server.ServerChatController
 import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
@@ -57,6 +58,17 @@ class SERVER_update_player_data : ServerTransferHandler {
         } else {
             updater.serverController.disconnectPlayer(sender) 
         }
+    }
+}
+
+class SERVER_chat_message : ServerTransferHandler {
+    override fun handle(data: JSONObject, sender: String, updater: ServerTransferUpdater) {
+        var text = data.getString("text", "text")
+        val id = data.getString("clientId", "")
+        val container = updater.serverController.connectsContainer
+        if (!container.contains(id)) return
+        var autor = container.getPlayerData(id).name
+        updater.serverController.serverChatController.addMessage(autor, text)
     }
 }
 

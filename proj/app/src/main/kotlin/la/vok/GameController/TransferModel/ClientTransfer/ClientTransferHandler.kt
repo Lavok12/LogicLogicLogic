@@ -78,6 +78,13 @@ class CLIENT_pong : ClientTransferHandler {
     }
 }
 
+class CLIENT_new_message : ClientTransferHandler {
+    override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
+        updater.clientController.clientChatController.addMessage(
+            data.getJSONObject("data").getString("autor", ""), 
+            data.getJSONObject("data").getString("text", ""))
+    }
+}
 class CLIENT_players_data_update : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
         val controller = updater.clientController

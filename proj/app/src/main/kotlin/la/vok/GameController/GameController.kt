@@ -4,12 +4,7 @@ import la.vok.GameController.Client.ClientController
 import la.vok.GameController.Server.ServerController
 import la.vok.GameController.Menu.MenuController
 import la.vok.GameController.TransferModel.*
-import la.vok.LoadData.LanguageController
-import la.vok.LoadData.SpriteLoader
-import la.vok.LoadData.UILoader
-import la.vok.LoadData.LoadUIList
-import la.vok.LoadData.ScriptsLoader
-import la.vok.LoadData.ScenesLoader
+import la.vok.LoadData.*
 import la.vok.Storages.Settings
 import la.vok.UI.*
 import com.jsyn.engine.LoadAnalyzer
@@ -18,6 +13,12 @@ import la.vok.InputController.*
 import la.vok.GameController.Content.*
 import la.vok.GameController.Client.Rendering.*
 import la.vok.UI.*
+import la.vok.UI.Canvas.*
+import la.vok.UI.Canvas.LCanvasController
+import la.vok.UI.Canvas.LCanvas
+import la.vok.UI.Scenes.ScenesContainer
+import la.vok.UI.Scenes.*
+import la.vok.UI.Elements.LTextField
 
 public enum class ClientState {
     UNINITIALIZED,
@@ -67,6 +68,7 @@ class GameController() {
     }
 
     fun startGame(isClient: Boolean, isServer: Boolean, isLocal: Boolean = false) {
+        textFieldController.stopEditing()
         this.isClient = isClient
         this.isServer = isServer
         this.isLocal = isLocal
@@ -100,8 +102,13 @@ class GameController() {
     fun initClient() {
         if (isClient && clientState == ClientState.UNINITIALIZED) {
             clientState = ClientState.INITIALIZED
+            Storage.name = (getCanvas().findElementByTag("nicknameField") as LTextField).inputString
+            if (Storage.name == "") {
+                Storage.name = "lvk"
+            }
             clientController = ClientController(this, Settings.address)
-            mainRender.setScene(scenesContainer.getScene("")!!)
+            initGameScenes()
+            mainRender.setScene(scenesContainer.getScene("game")!!)
             if (!isLocal) {
                 clientController.initOnline()
             } else {
@@ -148,6 +155,9 @@ class GameController() {
         scenesLoader.loadData()
     }
 
+    fun initGameScenes() {
+        scenesContainer.addScene(scenesLoader.newScene("game", "game"))
+    }
     fun initScenes() {
         scenesContainer = ScenesContainer()
         scenesContainer.addScene(LScene("", "", gameController = this))
@@ -162,10 +172,6 @@ class GameController() {
 
     fun getScene(): LScene {
         return mainRender.LScene!!
-    }
-
-    fun UITick() {
-        getScene().canvas.tick(mouseController.moux, mouseController.mouy, this)
     }
 
     fun checkForStart() {
@@ -194,6 +200,10 @@ class GameController() {
                 clientController.tick()
             }
         }
+    }
+
+    fun tick() {
+        keyTracker.tick()
     }
 
     fun destroyClient() {

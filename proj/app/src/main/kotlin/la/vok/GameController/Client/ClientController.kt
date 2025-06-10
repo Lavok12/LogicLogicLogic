@@ -3,7 +3,6 @@ package la.vok.GameController.Client
 import la.vok.UI.MainRender
 import la.vok.GameController.GameController;
 import la.vok.GameController.Content.Logic.LogicElement
-import la.vok.UI.LCanvas
 import la.vok.Storages.Storage
 import la.vok.Storages.Settings
 import la.vok.GameController.Content.Map.LogicMap
@@ -13,9 +12,12 @@ import la.vok.GameController.TransferModel.*
 import la.vok.GameController.Content.PlayerData
 import la.vok.GameController.Client.LoadState
 import la.vok.GameController.Client.Rendering.*
+import la.vok.GameController.Client.ClientChatController
 import la.vok.InputController.KeyCode
 import processing.data.JSONObject
 import java.net.URI
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 enum class LoadState {
     STANDART,
@@ -31,18 +33,25 @@ class ClientController(var gameController: GameController, var address: String =
     var logicMap = LogicMap(gameController)
     var mainCamera: Camera
     var clientId: String = Functions.getUniqueDeviceId()
-    var name: String = "Lvk1"
+    var name: String = Storage.name
     var clientTransferModel: ClientTransferModel
     var frame: Long = -1L
     var loadState: LoadState = LoadState.NULL
 
     lateinit var onlineWebSocketClient: OnlineWebSocketClient
 
-    var player: PlayerData = PlayerData(clientId, name, gameController)
-    var playersContainer: PlayersContainer = PlayersContainer(gameController)
-    var isLoaded = false;
+    var player: PlayerData
+    var playersContainer: PlayersContainer
+    var clientChatController: ClientChatController
 
+    var isLoaded = false;
     var serverConnect: ServerConnect = ServerConnect(this)
+    
+    init {
+        player = PlayerData(clientId, name, gameController)
+        playersContainer = PlayersContainer(gameController)
+        clientChatController = ClientChatController(this, Settings.clientChatHistory)
+    }
 
     fun renderUpdate(renderBuffer: RenderBuffer) {
         player.updateCanvas()
@@ -103,17 +112,19 @@ class ClientController(var gameController: GameController, var address: String =
         checkLoad()
         if (loadState == LoadState.STARTED) {
             checkLastTime()
-            if (gameController.keyTracker.isPressed(KeyCode.w)) {
-                player.PY += 20
-            }
-            if (gameController.keyTracker.isPressed(KeyCode.a)) {
-                player.PX -= 20
-            }
-            if (gameController.keyTracker.isPressed(KeyCode.s)) {
-                player.PY -= 20
-            }
-            if (gameController.keyTracker.isPressed(KeyCode.d)) {
-                player.PX += 20
+            if (!gameController.textFieldController.isEditing) {
+                if (gameController.keyTracker.isPressed(KeyCode.w)) {
+                    player.PY += 20
+                }
+                if (gameController.keyTracker.isPressed(KeyCode.a)) {
+                    player.PX -= 20
+                }
+                if (gameController.keyTracker.isPressed(KeyCode.s)) {
+                    player.PY -= 20
+                }
+                if (gameController.keyTracker.isPressed(KeyCode.d)) {
+                    player.PX += 20
+                }
             }
             
             mainCamera.PX = player.PX

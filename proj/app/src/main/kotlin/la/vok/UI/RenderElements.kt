@@ -1,4 +1,4 @@
-package la.vok.UI;
+package la.vok.UI
 
 import java.awt.Color
 import la.vok.UI.MainRender

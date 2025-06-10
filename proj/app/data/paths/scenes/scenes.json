@@ -1,4 +1,5 @@
 {
     "main": "resources/scene.json",
-    "disconnect": "resources/disconnect.json"
+    "disconnect": "resources/disconnect.json",
+    "game": "resources/game.json"
 }

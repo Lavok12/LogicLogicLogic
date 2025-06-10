@@ -12,7 +12,9 @@ import la.vok.GameController.Client.Camera
 import la.vok.GameController.Client.LoadState
 import la.vok.GameController.Content.*
 import la.vok.GameController.ClientState
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
+
 
 class MainRender(var gameController: GameController) {
     var disH: Float = 0f
@@ -88,6 +90,13 @@ class MainRender(var gameController: GameController) {
                     gameController.renderBuffer.clearA()
                     gameController.renderBuffer.clearB()
                     gameController.renderBuffer.clearC()
+                }
+                var c = -1
+                for (i in gameController.clientController.clientChatController.gerLatestMesssages()) {
+                    c++
+                    lg.fill(255f)
+                    lg.setTextAlign(-1, 0)
+                    lg.setText(i.getFullText(), -950f, -lg.disH2 + 160 + c * 45, 30f)
                 }
             }
         }

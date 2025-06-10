@@ -2,11 +2,13 @@ package la.vok.LoadData
 
 import la.vok.LavokLibrary.*
 import la.vok.Storages.Storage
-import la.vok.UI.LCanvas
 import la.vok.GameController.GameController
 import la.vok.UI.Elements.*
 import processing.data.JSONObject
 import processing.data.JSONArray
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
+
 
 class LoadUIList(private val gameController: GameController) {
 

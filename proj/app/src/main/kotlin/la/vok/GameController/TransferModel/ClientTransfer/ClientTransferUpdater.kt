@@ -18,6 +18,7 @@ class ClientTransferUpdater(var clientTransferModel: ClientTransferModel) : Tran
         "loadState_loadMap_server" to CLIENT_loadState_loadMap_server(),
         "disconnect" to CLIENT_disconnect(),
         "players_data_update" to CLIENT_players_data_update(),
+        "new_message" to CLIENT_new_message(),
         "ping" to CLIENT_ping(),
         "pong" to CLIENT_pong(),
     )

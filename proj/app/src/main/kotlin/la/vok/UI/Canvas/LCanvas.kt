@@ -1,8 +1,11 @@
-package la.vok.UI
+package la.vok.UI.Canvas
 
 import la.vok.GameController.GameController
 import la.vok.Storages.Storage
+import la.vok.LavokLibrary.*
 import la.vok.UI.Elements.LElement
+import la.vok.UI.*
+import la.vok.UI.Scenes.*
 
 class LCanvas (
     var posX: Float = 0f,
@@ -15,10 +18,18 @@ class LCanvas (
     var localScaleY: Float = 1f,
     var textScale: Float = 1f,
     var layer: Int = 0,
+    var hasHitbox: Boolean = true,
     var gameController: GameController
 ) {
     var elements = ArrayList<LElement>();
     var isActive = false
+
+    fun inside(mx: Float, my: Float): Boolean {
+        if (!Functions.tap(posX, posY, width, height, mx, my)) {
+            return false;
+        }
+        return true;
+    }
 
     fun getElementByTag(tag: String): LElement? {
         for (element in elements) {
@@ -83,13 +94,10 @@ class LCanvas (
         }
     }
 
-    fun tick(mx: Float, my: Float, gameController: GameController): Boolean {
+    fun tick() {
         for (i in elements.size - 1 downTo 0) {
-            if (elements[i].tick(mx, my, gameController)) {
-                return true
-            }
+            elements[i].tick()
         }
-        return false
     }
     
     fun renderElements() {
@@ -130,4 +138,28 @@ class LCanvas (
     fun canvasSizePercentY(h: Float): Float {
         return height*h/100f
     }
+
+    fun getAllElements(): ArrayList<ArrayList<LElement>> {
+        val ret = ArrayList<ArrayList<LElement>>()
+    
+        fun addToLayer(index: Int, element: LElement) {
+            while (ret.size <= index) {
+                ret.add(ArrayList())
+            }
+            ret[index].add(element)
+        }
+    
+        fun traverse(canvas: LCanvas, layer: Int) {
+            for (element in canvas.elements) {
+                addToLayer(layer, element)
+                element.elementCanvas.let { childCanvas ->
+                    traverse(childCanvas, layer + 1)
+                }
+            }
+        }
+    
+        traverse(this, 0)
+        return ret
+    }
+    
 }

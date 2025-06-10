@@ -6,9 +6,12 @@ import la.vok.LoadData.LSprite
 import java.awt.Color
 import processing.core.PApplet
 import processing.data.JSONObject
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 class LButton(
     gameController: GameController,

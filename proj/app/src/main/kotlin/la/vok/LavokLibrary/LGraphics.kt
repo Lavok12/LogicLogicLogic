@@ -65,6 +65,12 @@ class LGraphics {
         pg.text(txt, (disW2 + xPos) * M, (disH2 - yPos), w * M, h * M)
     }
 
+    fun getTextWidth(txt: String, size: Float): Float {
+        val lsize = size.coerceIn(1f, 100000f)
+        pg.textSize(lsize * M)
+        return pg.textWidth(txt) / M * 1.015f
+    }
+    
     fun fill(red: Float) {
         pg.noFill()
         pg.fill(red)

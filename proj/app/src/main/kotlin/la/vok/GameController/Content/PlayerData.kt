@@ -7,6 +7,8 @@ import la.vok.GameController.GameController
 import la.vok.GameController.Client.Camera
 import la.vok.UI.Elements.LText
 import la.vok.GameController.Client.Rendering.*
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 class PlayerData(var id: String, var name: String, var gameController: GameController) : IRender {
     override var renderLayersData: RenderLayersData = RenderLayersData(
@@ -15,7 +17,7 @@ class PlayerData(var id: String, var name: String, var gameController: GameContr
     override val updateVisualF: (MainRender) -> Unit by lazy { this::updateVisual }
     override var isVisible = true
 
-    var canvas: LCanvas = LCanvas(0f, 0f, 100f, 100f, 1f, 1f, 1f, 1f, 1f, 2, gameController)
+    var canvas: LCanvas = LCanvas(0f, 0f, 100f, 100f, 1f, 1f, 1f, 1f, 1f, 2, false, gameController)
 
     init {
         canvas.addChild("playerCanvas", "text")

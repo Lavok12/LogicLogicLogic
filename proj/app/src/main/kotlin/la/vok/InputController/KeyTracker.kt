@@ -4,32 +4,45 @@ import processing.event.KeyEvent
 import la.vok.GameController.*
 import la.vok.GameController.Client.LoadState
 
-class KeyTracker(val gameController: GameController) {
+class KeyTracker(var gameController: GameController) {
     private val pressedKeys = mutableSetOf<Int>()
 
+    var lastKeyEvent: KeyEvent? = null
+
     fun keyPressed(event: KeyEvent) {
+        pressedKeys.add(event.keyCode)
+
         if (gameController.textFieldController.isEditing) {
             gameController.textFieldController.input(event)
+            gameController.textFieldController.repeatCounter = 0
+            lastKeyEvent = event
         }
-        pressedKeys.add(event.keyCode)
-        if (event.keyCode == KeyCode.SPACE) {
-            if (gameController.gameStarted && gameController.clientState == ClientState.STARTED) {
-                if (gameController.clientController.loadState == LoadState.STARTED) {
-                    gameController.clientController.setLogicElement()
+
+        if (!gameController.textFieldController.isEditing) {
+            when (event.keyCode) {
+                KeyCode.SPACE -> {
+                    if (gameController.gameStarted &&
+                        gameController.clientState == ClientState.STARTED &&
+                        gameController.clientController.loadState == LoadState.STARTED
+                    ) {
+                        gameController.clientController.setLogicElement()
+                    }
                 }
+                KeyCode.x -> gameController.destroyClient()
+                KeyCode.z -> gameController.destroyServer()
             }
         }
-        if (event.keyCode == KeyCode.x) {
-            gameController.destroyClient()
-        }
-        if (event.keyCode == KeyCode.z) {
-            gameController.destroyServer()
-        }
-        println(event.key + " ! " + event.keyCode)
+
+        println("${event.key} ! ${event.keyCode}")
     }
 
     fun keyReleased(event: KeyEvent) {
         pressedKeys.remove(event.keyCode)
+
+        if (lastKeyEvent?.keyCode == event.keyCode) {
+            lastKeyEvent = null
+            gameController.textFieldController.repeatCounter = 0
+        }
     }
 
     fun isPressed(keyCode: Int): Boolean {
@@ -38,5 +51,11 @@ class KeyTracker(val gameController: GameController) {
 
     fun getPressedKeys(): Set<Int> {
         return pressedKeys.toSet()
+    }
+
+    fun tick() {
+        if (!gameController.textFieldController.isEditing) return
+        gameController.textFieldController.tick(this)
+        
     }
 }

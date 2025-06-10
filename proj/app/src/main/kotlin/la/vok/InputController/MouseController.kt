@@ -2,6 +2,7 @@ package la.vok.InputController
 
 import la.vok.GameController.*
 import processing.event.MouseEvent
+import la.vok.Storages.*
 
 class MouseController(val gameController: GameController) {
     var moux: Float = 0f
@@ -17,21 +18,21 @@ class MouseController(val gameController: GameController) {
 
     private val pressedButtons = mutableSetOf<Int>()
 
-    fun updateCoord(moux: Float, mouy: Float) { 
-        this.moux = moux
-        this.mouy = mouy
+    fun updateCoord(mouseX: Float, mouseY: Float) { 
+        this.moux = (mouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
+        this.mouy = (-mouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
     }
-    fun updateCoord(moux: Float, mouy: Float, pmoux: Float, pmouy: Float) {
-        this.pmoux = pmoux
-        this.pmouy = pmouy
-        this.moux = moux
-        this.mouy = mouy
+    fun updateCoord(mouseX: Float, mouseY: Float, pmouseX: Float, pmouseY: Float) {
+        this.moux = (mouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
+        this.mouy = (-mouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
+        this.pmoux = (pmouseX - Storage.gameController.mainRender.disW2) * (Storage.lg.disW / Storage.gameController.mainRender.disW)
+        this.pmouy = (-pmouseY + Storage.gameController.mainRender.disH2) * (Storage.lg.disH / Storage.gameController.mainRender.disH)
     }
 
     fun mousePressed(event: MouseEvent) {
         updateCoord(event.x.toFloat(), event.y.toFloat())
-
         pressedButtons.add(event.button)
+        gameController.lCanvasController.mouseClicked(this)
     }
 
     fun mouseReleased(event: MouseEvent) {

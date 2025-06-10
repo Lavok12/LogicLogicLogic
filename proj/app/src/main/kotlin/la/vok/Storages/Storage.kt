@@ -19,4 +19,6 @@ object Storage {
     set(value) {
         gameController.mouseController = value
     }
+
+    var name: String = "LVK"
 }

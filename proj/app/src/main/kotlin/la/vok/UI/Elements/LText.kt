@@ -3,10 +3,13 @@ package la.vok.UI.Elements
 import la.vok.UI.MainRender
 import la.vok.Storages.Storage
 import java.awt.Color
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import processing.data.JSONObject
 import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 class LText(
     gameController: GameController,

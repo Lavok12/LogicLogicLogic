@@ -3,7 +3,8 @@ package la.vok.UI.Elements
 import la.vok.UI.*
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import java.awt.Color
 import processing.data.JSONObject
 import la.vok.LavokLibrary.*

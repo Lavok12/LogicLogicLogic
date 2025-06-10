@@ -1,7 +1,8 @@
 package la.vok.UI.Elements
 
 import la.vok.UI.*
-import la.vok.UI.LCanvas
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 import la.vok.Storages.*
 import la.vok.LoadData.*
 import la.vok.GameController.GameController
@@ -12,6 +13,8 @@ import processing.data.JSONObject
 import processing.data.JSONArray
 import la.vok.LavokLibrary.*
 import la.vok.InputController.MouseController
+import la.vok.UI.Canvas.*
+import la.vok.UI.Scenes.*
 
 open class LElement(
     var gameController: GameController,
@@ -36,7 +39,7 @@ open class LElement(
     open var PY: Float = 0f
     open var SX: Float = 0f
     open var SY: Float = 0f
-    open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, -1, gameController)
+    open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, -1, true, gameController)
     open var isActive: Boolean = true
 
     open var update : Boolean = false
@@ -48,137 +51,93 @@ open class LElement(
     open var onMouseOver : Boolean = false
     open var onMouseHold : Boolean = false
     open var hasHitbox : Boolean = true
-    
-    open var mouseEnter = false
-    open var mouseHold = false
-    open var mouseDownLastFrame = false
-    open var inside = false
-    open var childHandled = false
 
-    open var oldMouseX: Float = 0f
-    open var oldMouseY: Float = 0f
-
-    open fun tick(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (!isActive) return false
-        inside = inElement(mx, my)
-        mouseDownLastFrame = mouseHold != (gameController.mouseController.isButtonPressed(MouseController.LEFT))
-        mouseHold = gameController.mouseController.isButtonPressed(MouseController.LEFT)
-
-        
-        childHandled = elementCanvas.tick(mx, my, gameController)
-
-        handleMouseExit(mx, my, gameController)
-        handleMouseEnter(mx, my, gameController)
-        handleUpdate(mx, my, gameController)
-        handleMouseDown(mx, my, gameController)
-        handleMouseUp(mx, my, gameController)
-        handleMouseMove(mx, my, gameController)
-        handleMouseOver(mx, my, gameController)
-        handleMouseHold(mx, my, gameController)
-
-        oldMouseX = mx
-        oldMouseY = my
-
-        return if (hasHitbox && inside) true else false
+    open fun tick() {
+        if (!isActive) return
+        handleUpdate()
+        otherTick()
+        elementCanvas.tick()
     }
 
-    private fun handleMouseEnter(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (inside && !mouseEnter) {
-            mouseEnter = true
-            if (onMouseEnter) {
-                onMouseEnter(mx, my)
-            }
-            return true
-        }
-        return false
+    open fun otherTick() {
     }
 
-    private fun handleMouseExit(mx: Float, my: Float, gameController: GameController): Boolean {
-        if ((childHandled || !inside) && mouseEnter) {
-            mouseEnter = false
-            if (onMouseExit) {
-                onMouseExit(mx, my)
-            }
-            return true
-        }
-        return false
-    }
-    
-    private fun handleUpdate(mx: Float, my: Float, gameController: GameController): Boolean {
+    open fun handleUpdate() {
         if (update) {
-            update(mx, my)
+            update()
         }
-        return true
     }
 
-    private fun handleMouseDown(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (mouseDownLastFrame && inside) {
-            mouseHold = true
-            if (onMouseDown) {
-                onMouseDown(mx, my)
-            }
-            return true
+    open fun handleMouseEnter(mouseController: MouseController) {
+        if (onMouseEnter) {
+            onMouseEnter(mouseController)
         }
-        return false
     }
 
-    private fun handleMouseUp(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (mouseHold && gameController.mouseController.isButtonPressed(MouseController.LEFT)) {
-            mouseHold = false
-            if (onMouseUp) {
-                onMouseUp(mx, my)
-            }
-            return true
+    open fun handleMouseExit(mouseController: MouseController) {
+        if (onMouseExit) {
+            onMouseExit(mouseController)
         }
-        return false
     }
 
-    private fun handleMouseMove(mx: Float, my: Float, gameController: GameController): Boolean {
-        if ((oldMouseX != mx || oldMouseY != my) && inside) {
-            if (onMouseMove) {
-                onMouseMove(mx, my)
-            }
-            return true
+    open fun handleMouseDown(mouseController: MouseController) {
+        if (onMouseDown) {
+            onMouseDown(mouseController)
         }
-        return false
     }
 
-    private fun handleMouseOver(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (inside) {
-            if (onMouseOver) {
-                onMouseOver(mx, my)
-            }
-            return true
+    open fun handleMouseUp(mouseController: MouseController) {
+        if (onMouseUp) {
+            onMouseUp(mouseController)
         }
-        return false
     }
 
-    private fun handleMouseHold(mx: Float, my: Float, gameController: GameController): Boolean {
-        if (mouseHold) {
-            if (onMouseHold) {
-                onMouseHold(mx, my)
-            }
-            return true
+    open fun handleMouseMove(mouseController: MouseController) {
+        if (onMouseMove) {
+            onMouseMove(mouseController)
         }
-        return false
+    }
+
+    open fun handleMouseOver(mouseController: MouseController) {
+        if (onMouseOver) {
+            onMouseOver(mouseController)
+        }
+    }
+
+    open fun handleMouseHold(mouseController: MouseController) {
+        if (onMouseHold) {
+            onMouseHold(mouseController)
+        }
     }
     
     open fun deactivate() {
     }
-    open fun update(mx: Float, my: Float) {}
-    open fun onMouseDown(mx: Float, my: Float) {
-        if (!gameController.gameStarted) {
+    open fun update() {}
+    open fun onMouseDown(mouseController: MouseController) {
+        if (tag == "send") {
+            var sendData = JSONObject()
+            var tf: LTextField = gameController.getCanvas().findElementByTag("chat") as LTextField
+            sendData.put("text", tf.inputString)
+            tf.clearInput()
+            gameController.clientController.sendToServer("chat_message", sendData)
+        } else {
             gameController.startGame(Settings.isClient, Settings.isServer, Settings.isLocal)
         }
     }
-    open fun onMouseUp(mx: Float, my: Float) {}
-    open fun onMouseMove(mx: Float, my: Float) {}
-    open fun onMouseEnter(mx: Float, my: Float) {}
-    open fun onMouseExit(mx: Float, my: Float) {}
-    open fun onMouseOver(mx: Float, my: Float) {}
-    open fun onMouseHold(mx: Float, my: Float) {}
+    open fun onMouseUp(mouseController: MouseController) {}
+    open fun onMouseMove(mouseController: MouseController) {}
+    open fun onMouseEnter(mouseController: MouseController) {}
+    open fun onMouseExit(mouseController: MouseController) {}
+    open fun onMouseOver(mouseController: MouseController) {}
+    open fun onMouseHold(mouseController: MouseController) {}
 
-    open fun inElement(mx: Float, my: Float): Boolean {
+    open fun inside(mx: Float, my: Float): Boolean {
+        if (!isActive) {
+            return false
+        }
+        if (!hasHitbox) {
+            return false
+        }
         if (!Functions.tap(PX, PY, SX, SY, mx, my)) {
             return false;
         }

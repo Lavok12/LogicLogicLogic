@@ -1,5 +1,6 @@
-package la.vok.UI
+package la.vok.UI.Scenes
 
+import la.vok.UI.Canvas.*
 import la.vok.LavokLibrary.Functions
 import processing.data.JSONObject
 import la.vok.GameController.GameController

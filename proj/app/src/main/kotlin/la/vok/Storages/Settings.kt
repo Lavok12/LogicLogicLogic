@@ -16,8 +16,14 @@ object Settings {
     var playersKickTime = 4000
     var playerDisconnectTime = 4000
     var pingInterval = 200L
-    
+    var keyRepeatDelay = 25 
+    var keyRepeatRate = 1 
+
     var canvasRenderLayers = 10
     var address = "ws://26.229.52.4:8800"
     var port = 8800
+
+    var serverChatHistory = 100
+    var clientChatHistory = 100
+    var clientChatHistoryTime = 20000
 }
