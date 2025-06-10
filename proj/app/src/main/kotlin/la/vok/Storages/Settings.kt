@@ -2,7 +2,7 @@ package la.vok.Storages
 
 object Settings {
     var isLocal: Boolean = false
-    var isServer: Boolean = true
+    var isServer: Boolean = false
     var isClient: Boolean = true
     var language: String = "eng"
     var languagePath: String = "lang"
