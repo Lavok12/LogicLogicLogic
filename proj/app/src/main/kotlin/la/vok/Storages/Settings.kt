@@ -1,7 +1,7 @@
 package la.vok.Storages
 
 object Settings {
-    var isLocal: Boolean = true
+    var isLocal: Boolean = false
     var isServer: Boolean = true
     var isClient: Boolean = true
     var language: String = "eng"
@@ -20,8 +20,8 @@ object Settings {
     var keyRepeatRate = 1 
 
     var canvasRenderLayers = 10
-    var address = "ws://26.229.52.4:8800"
-    var port = 8800
+    var address = "ws://26.229.52.4:8810"
+    var port = 8810
 
     var serverChatHistory = 100
     var clientChatHistory = 100

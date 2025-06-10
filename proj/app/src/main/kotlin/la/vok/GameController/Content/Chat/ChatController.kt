@@ -14,4 +14,7 @@ open class ChatController (var gameController: GameController, var maxHistorySiz
             history.removeAt(0)
         }
     }
+    open fun getLastMessage(): ChatMessage? {
+        return if (history.isNotEmpty()) history.last() else null
+    }
 }

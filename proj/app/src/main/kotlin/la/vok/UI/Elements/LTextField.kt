@@ -257,7 +257,7 @@ class LTextField(
                 val x1 = TPX + mainRender.lg.getTextWidth(line.substring(0, selStart), textSize)
                 val x2 = TPX + mainRender.lg.getTextWidth(line.substring(0, selEnd), textSize)
     
-                val y = cursorY - i * lineHeight * 1.24f
+                val y = cursorY - i * lineHeight * 1.2f
                 mainRender.lg.fill(100f, 150f, 255f, 120f)
                 mainRender.lg.setBlock(
                     x1 + (x2 - x1) / 2f,
@@ -287,7 +287,7 @@ class LTextField(
         }
     
         val cursorX = TPX + mainRender.lg.getTextWidth(lines[lineIndex].substring(0, charIndexInLine), textSize)
-        val cursorY = TPY + textSize * 0.2f - (lineIndex * lineHeight) * 1.24f
+        val cursorY = TPY + textSize * 0.2f - (lineIndex * lineHeight) * 1.2f
     
         mainRender.lg.fill(50f, 150f, 220f, 160f)
         mainRender.lg.setBlock(

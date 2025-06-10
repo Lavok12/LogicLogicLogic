@@ -83,6 +83,9 @@ class CLIENT_new_message : ClientTransferHandler {
         updater.clientController.clientChatController.addMessage(
             data.getJSONObject("data").getString("autor", ""), 
             data.getJSONObject("data").getString("text", ""))
+            updater.clientController.clientChatController.getLastMessage()!!.r = data.getJSONObject("data").getInt("r", 255)
+            updater.clientController.clientChatController.getLastMessage()!!.g = data.getJSONObject("data").getInt("g", 255)
+            updater.clientController.clientChatController.getLastMessage()!!.b = data.getJSONObject("data").getInt("b", 255)
     }
 }
 class CLIENT_players_data_update : ClientTransferHandler {
