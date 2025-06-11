@@ -141,11 +141,18 @@ class LTextField(
     fun tickEditing() {}
     fun newChar(char: Char) {}
 
-    override fun updateVisuals() {
-        super.updateVisuals()
+    fun standartVisuals() {
         TPX = PX + textDeltaX * parentCanvas.scaleX + SX * textPosAlignX / 2 - width / 2 + textSize
         TPY = PY + textDeltaY * parentCanvas.scaleY + SY * textPosAlignY / 2 + height / 2 - textSize
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
+    }
+    override fun updateGridVisuals(nx: Float, ny: Float) {
+        super.updateGridVisuals(nx, ny)
+        standartVisuals()
+    }
+    override fun updateVisuals() {
+        super.updateVisuals()
+        standartVisuals()
     }
     override fun handleMouseDown(mouseController: MouseController) {
         super.handleMouseDown(mouseController)
@@ -200,8 +207,6 @@ class LTextField(
     }
     
     override fun renderElement(mainRender: MainRender) {
-        updateVisuals()
-
         val lg = mainRender.lg
     
         // Отрисовка фона

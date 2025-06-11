@@ -44,9 +44,11 @@ class ClientController(var gameController: GameController, var address: String =
     var playersContainer: PlayersContainer
     var clientChatController: ClientChatController
 
+    var clientFunctions: ClientFunctions = ClientFunctions(this)
     var isLoaded = false;
     var serverConnect: ServerConnect = ServerConnect(this)
-    
+
+
     init {
         player = PlayerData(clientId, name, gameController)
         playersContainer = PlayersContainer(gameController)
@@ -93,15 +95,15 @@ class ClientController(var gameController: GameController, var address: String =
         } else if (loadState == LoadState.CONNECT) {
             println("LoadState.CONNECT")
             loadState = LoadState.NULL
-            connect()
+            clientFunctions.connect()
         } else if (loadState == LoadState.GET_POS) {
             println("LoadState.GET_POS")
             loadState = LoadState.NULL
-            get_pos()
+            clientFunctions.get_pos()
         } else if (loadState == LoadState.LOAD_MAP) {
             println("LoadState.LOAD_MAP")
             loadState = LoadState.NULL
-            load_map()
+            clientFunctions.load_map()
         } else if (loadState == LoadState.LOAD_PLAYERS) {
             println("LoadState.LOAD_PLAYERS")
         }
@@ -131,46 +133,14 @@ class ClientController(var gameController: GameController, var address: String =
             mainCamera.PY = player.PY
             
             if (frame % Settings.updateIntervalFrames == 0L) {
-                sendToServer("update_player_data", player.toJsonObject())
+                clientFunctions.sendToServer("update_player_data", player.toJsonObject())
             }
             if (frame % Settings.pingInterval == 0L) {
                 var json = JSONObject()
                 json.put("time", System.currentTimeMillis())
-                sendToServer("ping", json)
+                clientFunctions.sendToServer("ping", json)
             }
+            clientChatController.removeOldMessages()
         }
-    }
-
-    fun setLogicElement() {
-        if (loadState == LoadState.STARTED) {
-            var json = JSONObject()
-            json.put("PX", player.PX)
-            json.put("PY", player.PY)
-            json.put("type", "new")
-            sendToServer("add_logicElement", json)
-        }
-    }
-    fun connect() {
-        var json = JSONObject()
-        json.put("name", name)
-        sendToServer("loadState_connect_client", json)
-    }
-    
-    fun get_pos() {
-        sendToServer("loadState_getPos_client")
-    }
-
-    fun load_map() {
-        sendToServer("loadState_loadMap_client")
-    }
-
-    fun destroy() {
-        player.destroy()
-        playersContainer.clear()
-    }
-
-    fun sendToServer(header: String, data: JSONObject = JSONObject()) {
-        data.put("clientId", clientId)
-        TransferPackage(header, clientId, TransferPackage.SERVER, data).send(clientTransferModel)
     }
 }

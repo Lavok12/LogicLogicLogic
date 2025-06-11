@@ -5,7 +5,9 @@ import la.vok.Storages.Storage
 import la.vok.LavokLibrary.*
 import la.vok.UI.Elements.LElement
 import la.vok.UI.*
+import la.vok.UI.Elements.LayoutDirection
 import la.vok.UI.Scenes.*
+import javax.swing.text.Element
 
 class LCanvas (
     var posX: Float = 0f,
@@ -23,6 +25,19 @@ class LCanvas (
 ) {
     var elements = ArrayList<LElement>();
     var isActive = false
+
+    fun removeElement(tag: String) {
+        var element = getElementByTag(tag)
+        if (element != null) {
+            removeElement(element)
+        }
+    }
+    fun removeElement(element: LElement) {
+        if (elements.contains(element)) {
+            element.destroy()
+            elements.remove(element)
+        }
+    }
 
     fun inside(mx: Float, my: Float): Boolean {
         if (!Functions.tap(posX, posY, width, height, mx, my)) {
@@ -99,22 +114,64 @@ class LCanvas (
             elements[i].tick()
         }
     }
-    
+
     fun renderElements() {
         for (LElement in elements) {
+            LElement.updateVisuals()
             LElement.render(gameController.mainRender)
         }
     }
 
-    fun addChild(el: LElement, tag: String = "") {
-        if (tag != "") {
-            el.tag = tag;
-        }
-        el.parentCanvas = this;
-        elements += el;
+    fun renderElementsGrid(parent: LElement) {
+
     }
-    fun addChild(key: String, tag: String = "") {
-        gameController.loadUIList.addChilds(key, this, tag)
+
+    fun renderElementsLine(parent: LElement) {
+        var i: Int = -1
+        when (parent.layoutDirection) {
+            LayoutDirection.HORIZONTAL -> {
+                var dx = 0f
+                if (parent.alignCenterX) {
+                    dx = (elements.size-1) * parent.spacingX * scaleX * localScaleX / 2
+                }
+                for (LElement in if (!parent.reverseX) {elements} else {elements.reversed()}) {
+                    i++
+                    LElement.updateGridVisuals(
+                        posX + (parent.contentDeltaX + i * parent.spacingX) * scaleX * localScaleX - dx
+                        ,
+                        posY + (parent.contentDeltaY) * scaleX * localScaleX
+                    )
+                    LElement.render(gameController.mainRender)
+                }
+            }
+            LayoutDirection.VERTICAL -> {
+                var dy = 0f
+                if (parent.alignCenterX) {
+                    dy = (elements.size-1) * parent.spacingY * scaleY * localScaleY / 2
+                }
+                for (LElement in if (!parent.reverseY) {elements} else {elements.reversed()}) {
+                    i++
+                    LElement.updateGridVisuals(
+                        posX + (parent.contentDeltaX) * scaleX * localScaleX
+                        ,
+                        posY + (parent.contentDeltaY + i * parent.spacingY) * scaleX * localScaleX - dy
+                    )
+                    LElement.render(gameController.mainRender)
+                }
+            }
+        }
+    }
+
+    fun addChild(el: LElement, tag: String = "") : LElement {
+        if (tag != "") {
+            el.tag = tag
+        }
+        el.parentCanvas = this
+        elements += el
+        return  el
+    }
+    fun addChild(key: String, tag: String = "") : LElement {
+        return gameController.loadUIList.addChilds(key, this, tag)
     }
 
     fun applyCanvasPosX(x: Float, align: Float = 0f): Float {
@@ -141,14 +198,14 @@ class LCanvas (
 
     fun getAllElements(): ArrayList<ArrayList<LElement>> {
         val ret = ArrayList<ArrayList<LElement>>()
-    
+
         fun addToLayer(index: Int, element: LElement) {
             while (ret.size <= index) {
                 ret.add(ArrayList())
             }
             ret[index].add(element)
         }
-    
+
         fun traverse(canvas: LCanvas, layer: Int) {
             for (element in canvas.elements) {
                 addToLayer(layer, element)
@@ -157,9 +214,15 @@ class LCanvas (
                 }
             }
         }
-    
+
         traverse(this, 0)
         return ret
     }
-    
+
+    fun destroy() {
+        for (element in elements) {
+            element.destroy()
+        }
+    }
+
 }

@@ -8,7 +8,7 @@ class ConnectsContainer(var serverController: ServerController) {
     
     fun pingAll() {
         for (i in connects.keys) {
-            serverController.ping(i)
+            serverController.serverFunctions.ping(i)
         }
     }
     fun addConnect(id: String) {
@@ -33,7 +33,7 @@ class ConnectsContainer(var serverController: ServerController) {
     fun removeOldConnections() {
         for (i in connects.keys) {
             if (connects[i]!!.lastUpdate + Settings.playersKickTime < Storage.main.millis()) {
-                serverController.disconnectPlayer(i)
+                serverController.serverFunctions.disconnectPlayer(i)
             }
         }
     }

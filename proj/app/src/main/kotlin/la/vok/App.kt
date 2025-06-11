@@ -25,8 +25,12 @@ class App : PApplet() {
     override fun draw() {
         if (frameCount % 60 == 0) {
             println("FPS: $frameRate")
+            Storage.gameController.ktsScriptManager.executeScript("kts")
         }
-        
+        if (frameCount % 10 == 0) {
+            initializeAll.updateResolution()
+        }
+
         updateMouseCoordinates()
         Storage.gameController.tick()
         Storage.gameController.rendering()

@@ -22,7 +22,7 @@ class MainRender(var gameController: GameController) {
     var disH2: Float = 0f
     var disW2: Float = 0f
     var fix: Float = 0f
-    
+
     lateinit var lg: LGraphics
     var LScene: LScene? = null;
     val camera: Camera
@@ -90,13 +90,6 @@ class MainRender(var gameController: GameController) {
                     gameController.renderBuffer.clearA()
                     gameController.renderBuffer.clearB()
                     gameController.renderBuffer.clearC()
-                }
-                var c = -1
-                for (i in gameController.clientController.clientChatController.gerLatestMesssages()) {
-                    c++
-                    lg.fill(i.r.toFloat(), i.g.toFloat(), i.b.toFloat())
-                    lg.setTextAlign(-1, 0)
-                    lg.setText(i.getFullText(), -950f, -lg.disH2 + 160 + c * 45, 30f)
                 }
             }
         }

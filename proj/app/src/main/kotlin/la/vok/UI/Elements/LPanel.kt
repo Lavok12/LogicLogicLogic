@@ -107,8 +107,6 @@ class LPanel(
     }
 
     override fun renderElement(mainRender: MainRender) {
-        updateVisuals()
-
         RenderElements.renderBlock(
             posX = PX,
             posY = PY,

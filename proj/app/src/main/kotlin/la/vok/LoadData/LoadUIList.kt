@@ -12,12 +12,12 @@ import la.vok.UI.Scenes.*
 
 class LoadUIList(private val gameController: GameController) {
 
-    fun addChilds(json: JSONObject, lCanvas: LCanvas, tag: String = "") {
-        lCanvas.addChild(jsonToElement(JSONUpdate(json), lCanvas), tag)
+    fun addChilds(json: JSONObject, lCanvas: LCanvas, tag: String = "") : LElement {
+        return lCanvas.addChild(jsonToElement(JSONUpdate(json), lCanvas), tag)
     }
 
-    fun addChilds(key: String, lCanvas: LCanvas, tag: String = "") {
-        addChilds(loadData(key), lCanvas, tag)
+    fun addChilds(key: String, lCanvas: LCanvas, tag: String = "") : LElement {
+        return addChilds(loadData(key), lCanvas, tag)
     }
 
     fun JSONUpdate(json: JSONObject): JSONObject {

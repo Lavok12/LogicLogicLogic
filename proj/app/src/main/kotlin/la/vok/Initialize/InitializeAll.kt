@@ -36,7 +36,6 @@ object initializeAll {
         Storage.gameController.mainRender.disW2 = Storage.gameController.mainRender.disW / 2
         Storage.gameController.mainRender.fix = Storage.gameController.mainRender.disW / 2000f
 
-        Storage.lg.updateResolution()
-        PApplet.println("Resolution updated", Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH)
+        Storage.lg.checkResolution()
     }
 }

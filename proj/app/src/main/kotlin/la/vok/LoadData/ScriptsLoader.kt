@@ -23,13 +23,15 @@ class ScriptsLoader(var gameController: GameController) {
 
 class ScriptsData() : JsonDataLoader() {
     override fun loadDataFromFolder(path: String) {
-        data.clear()
         super.loadDataFromFolder(path)
     }
 
     fun loadData() {
+        data.clear()
         var scriptPath = Settings.scriptPath;
-        val path = Functions.resourceDir("$scriptPath")
+        var path = Functions.resourceDir("$scriptPath/lua")
+        loadDataFromFolder(path)
+        path = Functions.resourceDir("$scriptPath/kts")
         loadDataFromFolder(path)
     }
 }

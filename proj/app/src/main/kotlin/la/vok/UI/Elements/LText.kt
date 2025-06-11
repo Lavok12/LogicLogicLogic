@@ -93,15 +93,22 @@ class LText(
             return ret;
         }
     }
-    override fun updateVisuals() {
-        super.updateVisuals()
+    fun standartVisuals() {
         TPX = PX + textDeltaX * parentCanvas.scaleX + SX * textPosAlignX / 2
         TPY = PY + textDeltaY * parentCanvas.scaleY + SY * textPosAlignY / 2
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
     }
 
+    override fun updateGridVisuals(nx: Float, ny: Float) {
+        super.updateGridVisuals(nx, ny)
+        standartVisuals()
+    }
+    override fun updateVisuals() {
+        super.updateVisuals()
+        standartVisuals()
+    }
+
     override fun renderElement(mainRender: MainRender) {
-        updateVisuals()
         val lg = mainRender.lg
         lg.setTextAlign(textAlignX, textAlignY)
         lg.pg.fill(textColor.red.toFloat(), textColor.green.toFloat(), textColor.blue.toFloat(), textColor.alpha.toFloat())

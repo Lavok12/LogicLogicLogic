@@ -132,11 +132,9 @@ class LProgressBar(
             postSprite = Storage.gameController.spriteLoader.getSprite(postImageKey)
         }
     }
-    
-    override fun renderElement(mainRender: MainRender) {
-        updateVisuals()
-        val lg = mainRender.lg
 
+    override fun renderElement(mainRender: MainRender) {
+        val lg = mainRender.lg
         // Внутренние размеры с учётом padding
         val innerX = PX + paddingX
         val innerY = PY

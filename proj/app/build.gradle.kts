@@ -25,6 +25,18 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.6.0") 
     implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    val kotlinVersion = "2.1.0"
+
+    dependencies {
+        implementation("org.jetbrains.kotlin:kotlin-scripting-common:$kotlinVersion")
+        implementation("org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlinVersion")
+        implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host:$kotlinVersion")
+        implementation("org.jetbrains.kotlin:kotlin-scripting-jsr223:$kotlinVersion")
+        implementation("org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion")
+    }
+
+
 
     // This dependency is used by the application.
     implementation(libs.guava)

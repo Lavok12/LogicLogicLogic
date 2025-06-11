@@ -12,6 +12,9 @@ class LGraphics {
     lateinit var pg: PGraphics
     var parent: App
 
+    var windowWidth: Float = 0f
+    var windowHeight: Float = 0f
+
     var disH = 0f
     var disW = 0f
     var disH2 = 0f
@@ -19,18 +22,34 @@ class LGraphics {
 
     var M = 0f
 
-    fun updateResolution() {
-        if (disW != Storage.gameController.mainRender.disW || disH != Storage.gameController.mainRender.disH) {
-            pg = parent.createGraphics(round(Storage.gameController.mainRender.disW).toInt(), round(Storage.gameController.mainRender.disH).toInt(), PApplet.P2D)
-            (pg as PGraphicsOpenGL).textureSampling(3)
-            disW = 2000f
-            disH = Storage.gameController.mainRender.disH / Storage.gameController.mainRender.fix
-
-            disW2 = disW / 2
-            disH2 = disH / 2
-
-            M = Storage.gameController.mainRender.fix
+    fun checkResolution() {
+        if (windowWidth != Storage.gameController.mainRender.disW || windowHeight != Storage.gameController.mainRender.disH) {
+            updateResolution()
         }
+    }
+
+    fun updateResolution() {
+        windowWidth = Storage.gameController.mainRender.disW
+        windowHeight = Storage.gameController.mainRender.disH
+        PApplet.println(
+            "Resolution updated",
+            Storage.gameController.mainRender.disW,
+            Storage.gameController.mainRender.disH
+        )
+        pg = parent.createGraphics(
+            round(Storage.gameController.mainRender.disW).toInt(),
+            round(Storage.gameController.mainRender.disH).toInt(),
+            PApplet.P2D
+        )
+        (pg as PGraphicsOpenGL).textureSampling(3)
+        disW = 2000f
+        disH = Storage.gameController.mainRender.disH / Storage.gameController.mainRender.fix
+
+        disW2 = disW / 2
+        disH2 = disH / 2
+
+        M = Storage.gameController.mainRender.fix
+
     }
 
     init {
@@ -70,7 +89,7 @@ class LGraphics {
         pg.textSize(lsize * M)
         return pg.textWidth(txt) / M * 1.015f
     }
-    
+
     fun fill(red: Float) {
         pg.noFill()
         pg.fill(red)

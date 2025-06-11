@@ -19,6 +19,7 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
     var logicMap = LogicMap(gameController)
     var serverTransferModel: ServerTransferModel
     var serverChatController: ServerChatController
+    var serverFunctions: ServerFunctions = ServerFunctions(this)
     
     var frame: Long = -1L
 
@@ -40,7 +41,7 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
         logicMap.update()
         if (frame % Settings.updateIntervalFrames == 0L) {
             connectsContainer.removeOldConnections()
-            sendToAll("players_data_update", connectsContainer.connectionsToPlayerContainer().toJsonObject())
+            serverFunctions.sendToAll("players_data_update", connectsContainer.connectionsToPlayerContainer().toJsonObject())
         }
         if (frame % Settings.pingInterval == 0L) {
             connectsContainer.pingAll()
@@ -56,21 +57,6 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
         logicMap.addWire(logicMap.list()[1], logicMap.list()[2])
     }
 
-    fun connectNewPlayer(id: String, name: String) {
-        println("$name connected to Server ($id)")
-        connectsContainer.addConnect(id)
-        connectsContainer.getConnect(id).initPlayer(id, name)
-        var json = JSONObject()
-        json.put("return", "ok")
-        sendToClient("loadState_connect_server", connectsContainer.getConnect(id), json)
-    }
-
-    fun ping(id: String) {
-        var json = JSONObject()
-        json.put("time", System.currentTimeMillis())
-        sendToClient("ping", id, json)
-    }
-
     fun checkConnections() {
 
     }
@@ -81,24 +67,5 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
 
     fun destroy() {
 
-    }
-
-    fun sendToClient(header: String, connect: PlayerConnect, data: JSONObject = JSONObject()) {
-        TransferPackage(header, TransferPackage.SERVER, connect.clientId, data).send(serverTransferModel)
-    }
-
-    fun sendToClient(header: String, id: String, data: JSONObject = JSONObject()) {
-        TransferPackage(header, TransferPackage.SERVER, id, data).send(serverTransferModel)
-    }
-
-    fun sendToAll(header: String, data: JSONObject = JSONObject()) {
-        TransferPackage(header, TransferPackage.SERVER, TransferPackage.ALL, data).send(serverTransferModel)
-    }
-
-    fun disconnectPlayer(id: String) {
-        if (connectsContainer.contains(id)) {
-            connectsContainer.removeConnect(id)
-        }
-        sendToClient("disconnect", id)
     }
 }

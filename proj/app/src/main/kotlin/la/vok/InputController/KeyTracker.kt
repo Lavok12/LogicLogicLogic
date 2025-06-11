@@ -25,7 +25,7 @@ class KeyTracker(var gameController: GameController) {
                         gameController.clientState == ClientState.STARTED &&
                         gameController.clientController.loadState == LoadState.STARTED
                     ) {
-                        gameController.clientController.setLogicElement()
+                        gameController.clientController.clientFunctions.setLogicElement()
                     }
                 }
                 KeyCode.x -> gameController.destroyClient()

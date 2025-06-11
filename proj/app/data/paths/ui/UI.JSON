@@ -26,5 +26,13 @@
     "chat": {
         "path": "resources/chat.JSON",
         "addData": []
+    },
+    "chatText": {
+        "path": "resources/Chat/chatText.json",
+        "addData": []
+    },
+    "chatPanel": {
+        "path": "resources/Chat/chatPanel.json",
+        "addData": []
     }
 }

@@ -63,6 +63,7 @@ class ScenesData(var gameController: GameController) : JsonDataLoader() {
     }
 
     fun loadData() {
+        data.clear()
         var scenePath = Settings.scenePath;
         val path = Functions.resourceDir("$scenePath")
         loadDataFromFolder(path)

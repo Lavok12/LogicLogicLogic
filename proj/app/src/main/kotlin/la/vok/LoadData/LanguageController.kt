@@ -44,11 +44,11 @@ class LanguageController(var lang: String = "eng", var gameController: GameContr
 
 class LanguageData(var lang: String) : JsonDataLoader() {
     override fun loadDataFromFolder(path: String) {
-        data.clear()
         super.loadDataFromFolder(path)
     }
 
     fun loadData() {
+        data.clear()
         var langPath = Settings.languagePath;
         val path = Functions.resourceDir("$langPath/$lang")
         loadDataFromFolder(path)

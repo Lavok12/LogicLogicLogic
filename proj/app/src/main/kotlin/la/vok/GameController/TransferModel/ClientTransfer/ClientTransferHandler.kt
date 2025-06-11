@@ -2,6 +2,7 @@ package la.vok.GameController.TransferModel
 
 import la.vok.GameController.*
 import la.vok.GameController.Client.*
+import la.vok.GameController.Content.Chat.ChatMessage
 import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
@@ -65,7 +66,7 @@ class CLIENT_disconnect : ClientTransferHandler {
 class CLIENT_ping : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
         data.setLong("answer", System.currentTimeMillis())
-        updater.clientController.sendToServer("pong", data)
+        updater.clientController.clientFunctions.sendToServer("pong", data)
     }
 }
 
@@ -86,8 +87,11 @@ class CLIENT_new_message : ClientTransferHandler {
             updater.clientController.clientChatController.getLastMessage()!!.r = data.getJSONObject("data").getInt("r", 255)
             updater.clientController.clientChatController.getLastMessage()!!.g = data.getJSONObject("data").getInt("g", 255)
             updater.clientController.clientChatController.getLastMessage()!!.b = data.getJSONObject("data").getInt("b", 255)
+        updater.clientController.clientChatController.getLastMessage()!!.updateElement()
     }
 }
+
+
 class CLIENT_players_data_update : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
         val controller = updater.clientController

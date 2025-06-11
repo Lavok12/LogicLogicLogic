@@ -1,0 +1,21 @@
+{
+  "tag": "endButton",
+  "x": 100,
+  "y": 150,
+  "alignX": -1,
+  "alignY": -1,
+  "type": "LPanel",
+  "height": 10,
+  "width": 10,
+  "panelColor": [
+    200,
+    100,
+    50,
+    0
+  ],
+  "reverseY": true,
+  "spacingY": 46,
+  "layoutType": "LINE",
+  "layoutDirection": "VERTICAL",
+  "hasHitbox": false
+}

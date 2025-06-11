@@ -11,7 +11,7 @@ import la.vok.GameController.Content.PlayerData
 class SERVER_loadState_connect_client : ServerTransferHandler {
     override fun handle(data: JSONObject, sender: String, updater: ServerTransferUpdater) {
         val name = data.getString("name")
-        updater.serverController.connectNewPlayer(sender, name)
+        updater.serverController.serverFunctions.connectNewPlayer(sender, name)
     }
 }
 
@@ -20,9 +20,9 @@ class SERVER_loadState_getPos_client : ServerTransferHandler {
         val id = data.getString("clientId", "")
         if (updater.serverController.connectsContainer.contains(id)) {
             val player = updater.serverController.connectsContainer.getPlayerData(id)
-            updater.serverController.sendToClient("loadState_getPos_server", id, player.toJsonObject())
+            updater.serverController.serverFunctions.sendToClient("loadState_getPos_server", id, player.toJsonObject())
         } else {
-            updater.serverController.sendToClient("disconnect", id)
+            updater.serverController.serverFunctions.sendToClient("disconnect", id)
         }
     }
 }
@@ -56,7 +56,7 @@ class SERVER_update_player_data : ServerTransferHandler {
             player.PY = newData.PY
             player.name = newData.name
         } else {
-            updater.serverController.disconnectPlayer(sender) 
+            updater.serverController.serverFunctions.disconnectPlayer(sender)
         }
     }
 }
@@ -98,7 +98,7 @@ class SERVER_add_logicElement : ServerTransferHandler {
 class SERVER_ping : ServerTransferHandler {
     override fun handle(data: JSONObject, sender: String, updater: ServerTransferUpdater) {
         data.setLong("answer", System.currentTimeMillis())
-        updater.serverController.sendToClient("pong", sender, data)
+        updater.serverController.serverFunctions.sendToClient("pong", sender, data)
     }
 }
 

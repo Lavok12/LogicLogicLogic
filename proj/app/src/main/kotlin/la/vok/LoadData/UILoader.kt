@@ -35,7 +35,6 @@ class UIData() : JsonDataLoader() {
     var UIData = HashMap<String, UIDataElement>()
 
     override fun loadDataFromFolder(path: String) {
-        UIData.clear()
         val filesList = Functions.scanDirRecursive(path)
         
         for (file in filesList) {
@@ -58,6 +57,7 @@ class UIData() : JsonDataLoader() {
     }
 
     fun loadData() {
+        UIData.clear()
         var UIPath = Settings.UIPath;
         val path = Functions.resourceDir("$UIPath/")
         loadDataFromFolder(path)

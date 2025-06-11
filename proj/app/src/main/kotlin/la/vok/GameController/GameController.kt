@@ -55,6 +55,8 @@ class GameController() {
     
     lateinit var lCanvasController: LCanvasController
     lateinit var scenesContainer: ScenesContainer
+    lateinit var ktsScriptManager: KtsScriptManager
+
     var gameStarted: Boolean = false
 
     var clientState = ClientState.UNINITIALIZED
@@ -93,6 +95,7 @@ class GameController() {
         keyTracker = KeyTracker(this)
         textFieldController = TextFieldController(this)
         lCanvasController = LCanvasController(this)
+        ktsScriptManager = KtsScriptManager(this)
     }
 
     fun rendering() {
@@ -240,7 +243,7 @@ class GameController() {
         serverState == ServerState.STARTED || serverState == ServerState.INITIALIZED
     
     private fun destroyClientInternal() {
-        clientController.destroy()
+        clientController.clientFunctions.destroy()
         println("destroyClient")
         clientState = ClientState.DESTROYED
     }

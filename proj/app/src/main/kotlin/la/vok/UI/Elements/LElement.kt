@@ -42,16 +42,34 @@ open class LElement(
     open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, -1, true, gameController)
     open var isActive: Boolean = true
 
-    open var update : Boolean = false
-    open var onMouseDown : Boolean = false
-    open var onMouseUp : Boolean = false
-    open var onMouseMove : Boolean = false
-    open var onMouseEnter : Boolean = false
-    open var onMouseExit : Boolean = false
-    open var onMouseOver : Boolean = false
-    open var onMouseHold : Boolean = false
-    open var hasHitbox : Boolean = true
+    open var update: Boolean = false
+    open var onMouseDown: Boolean = false
+    open var onMouseUp: Boolean = false
+    open var onMouseMove: Boolean = false
+    open var onMouseEnter: Boolean = false
+    open var onMouseExit: Boolean = false
+    open var onMouseOver: Boolean = false
+    open var onMouseHold: Boolean = false
+    open var hasHitbox: Boolean = true
 
+
+    var layoutType: LayoutType = LayoutType.NONE // Enum для типа расположения (NONE, LINE, GRID)
+    var layoutDirection: LayoutDirection = LayoutDirection.HORIZONTAL // Enum для направления (только для LINE)
+    var spacingX: Float = 0f // Отступ между элементами
+    var spacingY: Float = 0f // Отступ между элементами
+    var columns: Int = 1 // Количество колонок для GRID
+    var rows: Int = 1 // Количество строк для GRID (может быть 0, если число колонок фиксировано)
+    var contentDeltaX: Float = 0f
+    var contentDeltaY: Float = 0f
+    var reverseX: Boolean = false
+    var reverseY: Boolean = false
+    var alignCenterX: Boolean = false
+    var alignCenterY: Boolean = false
+
+    open fun destroy() {
+        elementCanvas.destroy()
+    }
+    
     open fun tick() {
         if (!isActive) return
         handleUpdate()
@@ -109,9 +127,10 @@ open class LElement(
             onMouseHold(mouseController)
         }
     }
-    
+
     open fun deactivate() {
     }
+
     open fun update() {}
     open fun onMouseDown(mouseController: MouseController) {
         if (tag == "send") {
@@ -119,11 +138,12 @@ open class LElement(
             var tf: LTextField = gameController.getCanvas().findElementByTag("chat") as LTextField
             sendData.put("text", tf.inputString)
             tf.clearInput()
-            gameController.clientController.sendToServer("chat_message", sendData)
+            gameController.clientController.clientFunctions.sendToServer("chat_message", sendData)
         } else {
             gameController.startGame(Settings.isClient, Settings.isServer, Settings.isLocal)
         }
     }
+
     open fun onMouseUp(mouseController: MouseController) {}
     open fun onMouseMove(mouseController: MouseController) {}
     open fun onMouseEnter(mouseController: MouseController) {}
@@ -180,7 +200,32 @@ open class LElement(
         if (objs.hasKey("hasHitbox")) {
             hasHitbox = objs.LgetBoolean("hitbox", true)
         }
-    } 
+        setLayoutProperties(objs)
+    }
+
+    open fun setLayoutProperties(json: JSONObject) {
+        if (json.hasKey("layoutType")) {
+            var l = json.LgetString("layoutType", "")
+            when (l) {
+                "LINE" -> layoutType = LayoutType.LINE
+                "GRID" -> layoutType = LayoutType.GRID
+                else -> layoutType = LayoutType.NONE
+            }
+        }
+        if (json.hasKey("layoutDirection")) {
+            layoutDirection = LayoutDirection.valueOf(json.LgetString("layoutDirection", "").uppercase())
+        }
+        spacingX = json.LgetFloat("spacingX", spacingX)
+        spacingY = json.LgetFloat("spacingY", spacingY)
+        columns = json.LgetInt("columns", columns)
+        rows = json.LgetInt("rows", rows)
+        contentDeltaX = json.LgetFloat("contentDeltaX", 0f)
+        contentDeltaY = json.LgetFloat("contentDeltaY", 0f)
+        reverseX = json.LgetBoolean("reverseX", false)
+        reverseY = json.LgetBoolean("reverseY", false)
+        alignCenterX = json.LgetBoolean("alignCenterX", false)
+        alignCenterY = json.LgetBoolean("alignCenterY", false)
+    }
 
     open fun checkChilds(json: JSONObject) {
         if (json.hasKey("childs")) {
@@ -195,7 +240,7 @@ open class LElement(
                 }
             }
         }
-        
+
 
         if (json.hasKey("whileChilds")) {
             var wc = json.LgetJSONObject("whileChilds")
@@ -252,9 +297,19 @@ open class LElement(
 
     open fun updateSprites() {}
 
-    open fun updateVisuals() {
+    open fun rescaleCanvas() {
         elementCanvas.scaleX = parentCanvas.scaleX
         elementCanvas.scaleY = parentCanvas.scaleY
+    }
+
+    open fun updateGridVisuals(nx: Float, ny: Float) {
+        rescaleCanvas()
+        PX = nx
+        PY = ny
+    }
+
+    open fun updateVisuals() {
+        rescaleCanvas()
         PX = parentCanvas.applyCanvasPosX(x, alignX)
         PY = parentCanvas.applyCanvasPosY(y, alignY)
 
@@ -289,13 +344,19 @@ open class LElement(
         elementCanvas.width = SX
         elementCanvas.height = SY
     }
+
     open fun renderElement(mainRender: MainRender) {
-        
+
     }
+
     open fun render(mainRender: MainRender) {
         if (isActive) {
-            renderElement(mainRender);
-            elementCanvas.renderElements();
+            renderElement(mainRender)
+            when (layoutType) {
+                LayoutType.NONE -> elementCanvas.renderElements()
+                LayoutType.LINE -> elementCanvas.renderElementsLine(this)
+                LayoutType.GRID -> elementCanvas.renderElementsGrid(this)
+            }
         }
     }
 

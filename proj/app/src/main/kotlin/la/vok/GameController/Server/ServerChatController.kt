@@ -21,7 +21,7 @@ class ServerChatController(var serverController : ServerController, maxHistorySi
         }
         var json: JSONObject = JSONObject()
         json.put("data", chatMessage.getRawData())
-        serverController.sendToAll("new_message", json)
+        serverController.serverFunctions.sendToAll("new_message", json)
         super.addMessage(chatMessage)
     }
 }

@@ -66,11 +66,11 @@ class LSprite(var key: String, var SpriteLoader: SpriteLoader) {
 
 class SpritesData() : JsonDataLoader() {
     override fun loadDataFromFolder(path: String) {
-        data.clear()
         super.loadDataFromFolder(path)
     }
 
     fun loadData() {
+        data.clear()
         var spritePath = Settings.spritePath;
         val path = Functions.resourceDir("$spritePath/")
         loadDataFromFolder(path)

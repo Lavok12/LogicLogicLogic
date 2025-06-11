@@ -2,7 +2,7 @@ package la.vok.Storages
 
 object Settings {
     var isLocal: Boolean = false
-    var isServer: Boolean = false
+    var isServer: Boolean = true
     var isClient: Boolean = true
     var language: String = "eng"
     var languagePath: String = "lang"
@@ -13,7 +13,7 @@ object Settings {
 
     var spriteUploadTime: Int = 100*120;
     var updateIntervalFrames = 10L
-    var playersKickTime = 4000
+    var playersKickTime = 15000
     var playerDisconnectTime = 4000
     var pingInterval = 200L
     var keyRepeatDelay = 25 
