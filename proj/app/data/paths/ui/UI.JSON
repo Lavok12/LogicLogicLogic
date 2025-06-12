@@ -34,5 +34,9 @@
     "chatPanel": {
         "path": "resources/Chat/chatPanel.json",
         "addData": []
+    },
+    "textLoad": {
+        "path": "resources/Scenes/Loading/textLoad.json",
+        "addData": []
     }
 }

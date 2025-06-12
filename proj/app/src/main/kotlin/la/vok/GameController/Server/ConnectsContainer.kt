@@ -45,4 +45,15 @@ class ConnectsContainer(var serverController: ServerController) {
         }
         return p
     }
+    fun getIdByName(name: String): String? {
+        for ((id, connect) in connects) {
+            if (connect.playerData.name == name) {
+                return id
+            }
+        }
+        return null
+    }
+    fun getAllNames(): List<String> {
+        return connects.values.map { it.playerData.name }
+    }
 }

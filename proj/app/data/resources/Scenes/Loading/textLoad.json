@@ -1,0 +1,11 @@
+{
+  "textAlignX": 0,
+  "textAlignY": 0,
+  "fontSize": 40,
+  "x": 0,
+  "y": 0,
+  "width": 200,
+  "height": 20,
+  "type": "LText",
+  "tag": "scrTag"
+}

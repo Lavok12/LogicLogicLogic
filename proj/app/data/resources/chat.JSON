@@ -27,7 +27,8 @@
             "text": "Отправить",
             "textTranslate": false,
             "onMouseDown": {
-                "isActive": true
+                "isActive": true,
+                "ktscript": "chatSend"
             }
         }
     ]

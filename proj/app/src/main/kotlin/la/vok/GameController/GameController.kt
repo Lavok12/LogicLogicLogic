@@ -12,6 +12,8 @@ import la.vok.Storages.Storage
 import la.vok.InputController.*
 import la.vok.GameController.Content.*
 import la.vok.GameController.Client.Rendering.*
+import la.vok.GameController.Kts.KtsScriptManager
+import la.vok.GameController.PreLoad.ContentPreLoader
 import la.vok.UI.*
 import la.vok.UI.Canvas.*
 import la.vok.UI.Canvas.LCanvasController
@@ -57,6 +59,8 @@ class GameController() {
     lateinit var scenesContainer: ScenesContainer
     lateinit var ktsScriptManager: KtsScriptManager
 
+    lateinit var contentPreLoader: ContentPreLoader
+
     var gameStarted: Boolean = false
 
     var clientState = ClientState.UNINITIALIZED
@@ -96,6 +100,7 @@ class GameController() {
         textFieldController = TextFieldController(this)
         lCanvasController = LCanvasController(this)
         ktsScriptManager = KtsScriptManager(this)
+        contentPreLoader = ContentPreLoader(this)
     }
 
     fun rendering() {
@@ -156,6 +161,8 @@ class GameController() {
         UILoader.loadData()
         scriptsLoader.loadData()
         scenesLoader.loadData()
+
+        contentPreLoader.loadFiles()
     }
 
     fun initGameScenes() {
@@ -165,8 +172,9 @@ class GameController() {
         scenesContainer = ScenesContainer()
         scenesContainer.addScene(LScene("", "", gameController = this))
         scenesContainer.addScene(scenesLoader.newScene("main", "main"))
+        scenesContainer.addScene(scenesLoader.newScene("loading", "loading"))
         scenesContainer.addScene(scenesLoader.newScene("disconnect", "disconnect"))
-        mainRender.setScene(scenesContainer.getScene("main")!!)
+        mainRender.setScene(scenesContainer.getScene("loading")!!)
     }
 
     fun getCanvas(): LCanvas {
@@ -206,6 +214,7 @@ class GameController() {
     }
 
     fun tick() {
+        contentPreLoader.tick()
         keyTracker.tick()
     }
 

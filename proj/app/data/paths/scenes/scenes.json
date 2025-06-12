@@ -1,5 +1,6 @@
 {
-    "main": "resources/scene.json",
-    "disconnect": "resources/disconnect.json",
-    "game": "resources/game.json"
+    "main": "resources/Scenes/scene.json",
+    "disconnect": "resources/Scenes/disconnect.json",
+    "game": "resources/Scenes/game.json",
+    "loading": "resources/Scenes/loading.json"
 }

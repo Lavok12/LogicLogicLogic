@@ -28,8 +28,16 @@ class ChatMessage(var gameController: GameController, var autor: String, var tex
     }
 
     fun updateElement() {
-        textElement?.textColor = Color(r, g, b)
-        textElement?.text = getFullText()
+        textElement!!.textColor = Color(r, g, b)
+        textElement!!.text = getFullText()
+    }
+
+    fun updateElement(r: Int, g: Int, b: Int) {
+        this.r = r
+        this.g = g
+        this.b = b
+        textElement!!.textColor = Color(r, g, b)
+        textElement!!.text = getFullText()
     }
 
     var textElement: LText? = null

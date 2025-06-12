@@ -2,7 +2,7 @@ package la.vok.GameController.TransferModel
 
 import la.vok.GameController.*
 import la.vok.GameController.Client.*
-import la.vok.GameController.Server.ServerChatController
+import la.vok.GameController.Content.Chat.ServerChatController
 import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire

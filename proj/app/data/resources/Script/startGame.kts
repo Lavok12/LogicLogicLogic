@@ -1,0 +1,1 @@
+gameController.startGame(Settings.isClient, Settings.isServer, Settings.isLocal)

@@ -1,3 +1,6 @@
 {
-    "kts": "resources/Script/ex.kts"
+    "startGame": "resources/Script/startGame.kts",
+    "chatSend": "resources/Script/chatSend.kts",
+    "s1": "resources/Script/startGame1.kts",
+    "s2": "resources/Script/startGame2.kts"
 }

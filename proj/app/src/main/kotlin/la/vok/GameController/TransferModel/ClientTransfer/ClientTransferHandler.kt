@@ -29,6 +29,13 @@ class CLIENT_loadState_getPos_server : ClientTransferHandler {
     }
 }
 
+class CLIENT_player_set_position : ClientTransferHandler {
+    override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
+        updater.clientController.player.PX = data.getFloat("PX")
+        updater.clientController.player.PY = data.getFloat("PY")
+    }
+}
+
 class CLIENT_loadState_loadMap_server : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
         val controller = updater.clientController
@@ -81,13 +88,14 @@ class CLIENT_pong : ClientTransferHandler {
 
 class CLIENT_new_message : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
+        var json = data.getJSONObject("data")
         updater.clientController.clientChatController.addMessage(
-            data.getJSONObject("data").getString("autor", ""), 
-            data.getJSONObject("data").getString("text", ""))
-            updater.clientController.clientChatController.getLastMessage()!!.r = data.getJSONObject("data").getInt("r", 255)
-            updater.clientController.clientChatController.getLastMessage()!!.g = data.getJSONObject("data").getInt("g", 255)
-            updater.clientController.clientChatController.getLastMessage()!!.b = data.getJSONObject("data").getInt("b", 255)
-        updater.clientController.clientChatController.getLastMessage()!!.updateElement()
+            json.getString("autor", ""),
+            json.getString("text", ""),
+            json.getInt("r", 255),
+            json.getInt("g", 255),
+            json.getInt("b", 255)
+        )
     }
 }
 

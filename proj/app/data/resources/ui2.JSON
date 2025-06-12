@@ -17,7 +17,11 @@
                 "button"
             ],
             "tag": "b1",
-            "y": 160
+            "y": 160,
+            "onMouseDown": {
+                "isActive": true,
+                "ktscript": "startGame"
+            }
         },
         {
             "extends": [

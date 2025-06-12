@@ -6,10 +6,14 @@ open class ChatController (var gameController: GameController, var maxHistorySiz
     var history = ArrayList<ChatMessage>()
     var count = -1
 
-    open fun addMessage(autor: String, text: String) {
-        addMessage(ChatMessage(gameController, autor, text))
+    open fun addMessage(autor: String, text: String, r: Int = 255, g: Int = 255, b: Int = 255) {
+        var cm = ChatMessage(gameController, autor, text)
+        cm.r = r
+        cm.g = g
+        cm.b = b
+        addMessage(cm)
     }
-    open fun addMessage(chatMessage: ChatMessage) {
+    protected open fun addMessage(chatMessage: ChatMessage) {
         count++
         chatMessage.number = count
         history += chatMessage

@@ -114,5 +114,4 @@ class LText(
         lg.pg.fill(textColor.red.toFloat(), textColor.green.toFloat(), textColor.blue.toFloat(), textColor.alpha.toFloat())
         lg.setText(if (textTranslate) {gameController.languageController.getText(text)} else {text}, TPX, TPY, textSize)
     }
-    
 }
