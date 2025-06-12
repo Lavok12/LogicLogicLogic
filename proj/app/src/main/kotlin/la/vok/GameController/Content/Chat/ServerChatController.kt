@@ -19,6 +19,13 @@ class ServerChatController(var serverController : ServerController, maxHistorySi
         commands[command.name.lowercase()] = command
     }
 
+    fun addLocalMessage(id: String, autor: String, text: String, r: Int, g: Int, b: Int) {
+        var cm = ChatMessage(gameController, autor, text)
+        cm.r = r
+        cm.g = g
+        cm.b = b
+        addLocalMessage(id,cm)
+    }
     override fun addMessage(autor: String, text: String, r: Int, g: Int, b: Int) {
         if (text.startsWith("/")) {
             handleCommand(autor, text)
@@ -52,7 +59,11 @@ class ServerChatController(var serverController : ServerController, maxHistorySi
         super.addMessage(chatMessage)
     }
 
-    fun lastMessageSetColor(f1: Int, f2: Int, f3: Int) {
-        getLastMessage()!!.updateElement(f1, f2, f3)
+    fun addLocalMessage(id: String, chatMessage: ChatMessage) {
+        println("MESSAGE: ${chatMessage.getFullText()}")
+        var json: JSONObject = JSONObject()
+        json.put("data", chatMessage.getRawData())
+        serverController.serverFunctions.sendToClient("new_message", id, json)
+        super.addMessage(chatMessage)
     }
 }
