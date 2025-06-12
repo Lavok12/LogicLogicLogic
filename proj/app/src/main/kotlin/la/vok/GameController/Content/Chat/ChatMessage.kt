@@ -14,7 +14,11 @@ class ChatMessage(var gameController: GameController, var autor: String, var tex
     var b = 255
 
     fun getFullText(): String {
-        return "$autor : $text"
+        if (autor != "") {
+            return "$autor : $text"
+        } else {
+            return "$text"
+        }
     }
     fun getRawData() : JSONObject {
         var json = JSONObject()

@@ -1,0 +1,14 @@
+{
+  "type": "LProgressBar",
+  "alignX": 0.0,
+  "alignY": -1.0,
+  "y": 200,
+  "percentWidth": 80.0,
+  "height": 100,
+  "progress": 0.0,
+  "smooth": true,
+  "fillColor": [0, 150, 255, 255],
+  "gradientColor": [0, 255, 150, 255],
+  "backgroundColor": [30, 30, 30, 255],
+  "tag": "bottomProgressBar"
+}

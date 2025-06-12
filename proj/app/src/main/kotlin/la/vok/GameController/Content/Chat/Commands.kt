@@ -14,18 +14,18 @@ class HelpCommand(
         when (args.size) {
             0 -> {
                 context.controller.addMessage("System", "Доступные команды:", 180,200,220)
-                var commands = " "
+                var commands = ""
                 var index = 0
                 for (i in serverController.serverChatController.commands) {
                     index++
                     commands += "/${serverController.serverChatController.commands[i.key]!!.name}    "
                     if (index % 3 == 0) {
-                        context.controller.addMessage("System", commands, 120,230,120)
-                        commands = " "
+                        context.controller.addMessage("", " - " + commands, 120,230,120)
+                        commands = ""
                     }
                 }
-                if (commands != " ") {
-                    context.controller.addMessage("System", commands, 120,230,120)
+                if (commands != "") {
+                    context.controller.addMessage("System", " - " + commands, 120,230,120)
                 }
             }
 
@@ -36,7 +36,7 @@ class HelpCommand(
                     context.controller.addMessage("System", "Описание команды /$commandName:",180,230,220)
                     val lines = command.description.trim().split("\n")
                     for (line in lines) {
-                        context.controller.addMessage("System", "$line", 120, 230, 120)
+                        context.controller.addMessage("", " - $line", 120, 230, 120)
                     }
                 } else {
                     context.controller.addMessage("System", "Команда '/$commandName' не найдена.",230,50,50)
@@ -170,7 +170,7 @@ class TeleportCommand(serverController: ServerController) : ChatCommand(serverCo
 
             else -> {
                 context.controller.addMessage("System", "Ошибка синтаксиса",230,50,50)
-                context.controller.addMessage("System", "/help tp:",180,230,220)
+                context.controller.addMessage("System", "/help tp",180,230,220)
             }
         }
     }
@@ -187,7 +187,7 @@ class WhoCommand(serverController: ServerController) : ChatCommand(serverControl
         } else {
             context.controller.addMessage("System", "Онлайн (${onlineNames.size}):", 180, 230, 220)
             val list = onlineNames.joinToString(", ")
-            context.controller.addMessage("System", " - "+list, 120, 230, 120)
+            context.controller.addMessage("", " - "+list, 120, 230, 120)
         }
     }
 }

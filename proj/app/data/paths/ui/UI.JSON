@@ -38,5 +38,9 @@
     "textLoad": {
         "path": "resources/Scenes/Loading/textLoad.json",
         "addData": []
+    },
+    "progressLoad": {
+        "path": "resources/Scenes/Loading/progressLoad.json",
+        "addData": []
     }
 }
