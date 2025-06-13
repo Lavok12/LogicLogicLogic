@@ -74,3 +74,17 @@ operator fun Color.div(value: Float): Color = Color(
     (this.blue / value).roundToInt().coerceIn(0, 255),
     (this.alpha / value).roundToInt().coerceIn(0, 255)
 )
+
+fun Color.copy(): Color = Color(red, green, blue, alpha)
+
+fun Color.toHex(withAlpha: Boolean = true): String {
+    return if (withAlpha) {
+        String.format("#%02X%02X%02X%02X", red, green, blue, alpha)
+    } else {
+        String.format("#%02X%02X%02X", red, green, blue)
+    }
+}
+
+fun Color.toRgbaString(): String {
+    return "rgba($red, $green, $blue, ${alpha / 255.0})"
+}

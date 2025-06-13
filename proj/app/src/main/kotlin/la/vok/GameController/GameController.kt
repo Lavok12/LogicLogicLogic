@@ -53,6 +53,7 @@ class GameController() {
     lateinit var lCanvasController: LCanvasController
     lateinit var scenesContainer: ScenesContainer
     lateinit var ktsScriptManager: KtsScriptManager
+    lateinit var commandsLoader: CommandsLoader
 
     lateinit var contentPreLoader: ContentPreLoader
 
@@ -96,6 +97,7 @@ class GameController() {
         lCanvasController = LCanvasController(this)
         ktsScriptManager = KtsScriptManager(this)
         contentPreLoader = ContentPreLoader(this)
+        commandsLoader = CommandsLoader(this)
     }
 
     fun rendering() {
@@ -156,9 +158,9 @@ class GameController() {
         UILoader.loadData()
         scriptsLoader.loadData()
         scenesLoader.loadData()
+        commandsLoader.loadData()
 
-        contentPreLoader.loadFiles()
-    }
+        contentPreLoader.loadFiles()    }
 
     fun initGameScenes() {
         scenesContainer.addScene(scenesLoader.newScene("game", "game"))

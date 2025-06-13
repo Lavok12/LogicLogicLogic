@@ -2,49 +2,73 @@ package la.vok.GameController.Kts.PreLoad
 
 import la.vok.GameController.GameController
 import la.vok.LavokLibrary.Functions
+import la.vok.LavokLibrary.copy
+import la.vok.Storages.Settings
 import la.vok.UI.Elements.LProgressBar
 import la.vok.UI.Elements.LText
 
-class ContentPreLoader(var gameController: GameController) {
-    lateinit var kts_preload_list: Array<String>
-    var id = 0
-    var max = -1
+class ContentPreLoader(private val gameController: GameController) {
 
-    var flagEnded = false
+    private lateinit var preloadList: Array<String>
+    private var currentId = 0
+    private var maxId = -1
+    private var tickCounter = -1
+
+    var isFinished = false
+        private set
+
     fun loadFiles() {
         val fileText = Functions.loadFile("kts_preload_list")
-        kts_preload_list = fileText.lines().filter { it.isNotBlank() }.toTypedArray()
-        max = kts_preload_list.size - 1
+        preloadList = fileText.lines().filter { it.isNotBlank() }.toTypedArray()
+        maxId = preloadList.size - 1
     }
 
-    var tickCounter = -1 // добавь это поле в класс
-
     fun tick() {
-        if (!flagEnded) {
-            tickCounter++
-            if (tickCounter > 1) {
-                if (id <= max && max != -1) {
-                    gameController.ktsScriptManager.compileScriptOnly(kts_preload_list[id])
-                    id++
-                }
+        if (isFinished) return
+        tickCounter++
 
-                if (id > max) {
-                    flagEnded = true
-                    gameController.mainRender.setScene(gameController.scenesContainer.getScene("main")!!)
+        val textElement = gameController.getCanvas().getElementByTag("textLoad") as? LText
+        val progressBar = gameController.getCanvas().getElementByTag("progressLoad") as? LProgressBar
+
+        if (tickCounter > 1) {
+            if (currentId <= maxId && maxId != -1) {
+                try {
+                    gameController.ktsScriptManager.compileScriptOnly(preloadList[currentId])
+                    currentId++
+                } catch (e: Exception) {
+                    // Ошибка компиляции — показать сообщение и завершить
+                    isFinished = true
+                    textElement?.apply {
+                        text = buildString {
+                            append("Ошибка компиляции скрипта:\n")
+                            append(preloadList[currentId])
+                            append("\n\n")
+                            append(e::class.simpleName)
+                            append(": ")
+                            append(e.message)
+                        }
+                        fontSize = 20f
+                        textColor = Settings.errorMessage.copy()
+                    }
+                    progressBar?.isActive = false
+                    return
                 }
             }
-            val el: LText? = (gameController.getCanvas().getElementByTag("textLoad") as LText?)
-            if (el != null) {
-                el.text =
-                    "Компиляция скриптов ${id + 1} / ${max + 1}" +
-                            "\n" +
-                            "${kts_preload_list[id]} - ${gameController.scriptsLoader.getKtsPath(kts_preload_list[id])}"
-            }
-            val el2: LProgressBar? = (gameController.getCanvas().getElementByTag("progressLoad") as LProgressBar?)
-            if (el2 != null) {
-                el2.progress = ((id + 1) / (max + 1).toFloat())
 
+            // Все скрипты скомпилированы
+            if (currentId > maxId) {
+                isFinished = true
+                gameController.mainRender.setScene(gameController.scenesContainer.getScene("main")!!)
             }
+        }
+
+        // Обновление UI (если ещё не завершено)
+        if (!isFinished && currentId <= maxId) {
+            textElement?.text =
+                "Компиляция скриптов ${currentId + 1} / ${maxId + 1}\n" +
+                        "${preloadList[currentId]} - ${gameController.scriptsLoader.getKtsPath(preloadList[currentId])}"
+
+            progressBar?.progress = (currentId + 1) / (maxId + 1).toFloat()
         }
     }
 }

@@ -1,15 +1,19 @@
 package la.vok.GameController.Content.Chat
 
 import la.vok.GameController.*
+import la.vok.LavokLibrary.copy
+import java.awt.Color
 
 open class ChatController (var gameController: GameController, var maxHistorySize: Int) {
     var history = ArrayList<ChatMessage>()
     var count = -1
 
-    open fun addMessage(autor: String, text: String) {
-        addMessage(ChatMessage(gameController, autor, text))
+    open fun addMessage(autor: String, text: String, color: Color) {
+        var cm = ChatMessage(gameController, autor, text)
+        cm.color = color.copy()
+        addMessage(cm)
     }
-    open fun addMessage(chatMessage: ChatMessage) {
+    protected open fun addMessage(chatMessage: ChatMessage) {
         count++
         chatMessage.number = count
         history += chatMessage

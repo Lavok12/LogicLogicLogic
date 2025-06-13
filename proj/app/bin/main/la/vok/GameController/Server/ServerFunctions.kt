@@ -35,6 +35,13 @@ class ServerFunctions(var serverController: ServerController) {
     fun ping(id: String) {
         var json = JSONObject()
         json.put("time", System.currentTimeMillis())
-        serverController.serverFunctions.sendToClient("ping", id, json)
+        sendToClient("ping", id, json)
+    }
+
+    fun playerSetPosition(id: String, posX: Float, posY: Float) {
+        var json: JSONObject = JSONObject()
+        json.put("PX", posX)
+        json.put("PY", posY)
+        sendToClient("player_set_position", id, json)
     }
 }

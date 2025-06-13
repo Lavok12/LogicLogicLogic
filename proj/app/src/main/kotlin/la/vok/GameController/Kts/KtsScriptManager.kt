@@ -16,6 +16,8 @@ class KtsScriptManager(private val gameController: GameController) {
     private val compiledScripts = mutableMapOf<String, CompiledScript>()
     private val scriptingHost = BasicJvmScriptingHost()
 
+    private val evaluationConfigs: MutableMap<String, ScriptEvaluationConfiguration> = mutableMapOf()
+
     private val compilationConfiguration = ScriptCompilationConfiguration {
         jvm {
             dependenciesFromCurrentContext(wholeClasspath = true)
@@ -28,6 +30,9 @@ class KtsScriptManager(private val gameController: GameController) {
             "la.vok.Storages.*",
             "la.vok.LoadData.*",
             "la.vok.GameController.GameController",
+            "la.vok.GameController.Content.*",
+            "la.vok.GameController.Content.Chat.*",
+            "la.vok.GameController.Server.*",
             "org.luaj.vm2.*",
             "org.luaj.vm2.lib.jse.JsePlatform",
             "processing.core.PApplet",
@@ -35,22 +40,37 @@ class KtsScriptManager(private val gameController: GameController) {
             "processing.data.JSONArray",
             "la.vok.LavokLibrary.*",
             "la.vok.InputController.MouseController",
-            "la.vok.UI.Elements.*"
+            "la.vok.UI.Elements.*",
         )
     }
 
-    private fun createEvaluationConfiguration(): ScriptEvaluationConfiguration {
-        return ScriptEvaluationConfiguration {
+    val commandObject = CommandObject(gameController)
+    val defaultObject = DefaultObject(gameController)
+
+    init {
+        registerEvaluationConfig("default", ScriptEvaluationConfiguration {
             jvm {
                 baseClassLoader(this@KtsScriptManager::class.java.classLoader)
             }
-        }
+            constructorArgs(gameController, commandObject, defaultObject)
+        })
+
+        registerEvaluationConfig("command", ScriptEvaluationConfiguration {
+            jvm {
+                baseClassLoader(this@KtsScriptManager::class.java.classLoader)
+            }
+            constructorArgs(gameController, commandObject, defaultObject)
+        })
     }
 
-    fun compileScriptOnly(key: String) : CompiledScript = runBlocking {
+    fun registerEvaluationConfig(name: String, config: ScriptEvaluationConfiguration) {
+        evaluationConfigs[name] = config
+    }
+
+    fun compileScriptOnly(key: String): CompiledScript = runBlocking {
         val file = File(Storage.main.dataPath(gameController.scriptsLoader.getKtsPath(key)))
 
-        val compiled = compiledScripts.getOrPut(file.absolutePath) {
+        compiledScripts.getOrPut(file.absolutePath) {
             println("Compiling script: ${file.absolutePath}")
             val result = scriptingHost.compiler(file.toScriptSource(), compilationConfiguration)
 
@@ -63,17 +83,28 @@ class KtsScriptManager(private val gameController: GameController) {
 
             result.valueOrThrow()
         }
-        return@runBlocking  compiled
-
     }
 
-    fun executeScript(key: String): ResultWithDiagnostics<EvaluationResult> = runBlocking {
+    fun executeScript(key: String, configName: String): ResultWithDiagnostics<EvaluationResult> = runBlocking {
         val compiled = compileScriptOnly(key)
 
-        val evalConfig = createEvaluationConfiguration().with {
-            constructorArgs(gameController)
+        val baseConfig = if (evaluationConfigs.containsKey(configName)) {
+            evaluationConfigs[configName]!!
+        } else {
+            evaluationConfigs["default"]!!
         }
 
-        scriptingHost.evaluator(compiled, evalConfig)
+        scriptingHost.evaluator(compiled, baseConfig)
+    }
+
+    private fun createDefaultEvaluationConfiguration(): ScriptEvaluationConfiguration {
+        return ScriptEvaluationConfiguration {
+            jvm {
+                baseClassLoader(this@KtsScriptManager::class.java.classLoader)
+            }
+            constructorArgs(gameController)
+        }
     }
 }
+
+

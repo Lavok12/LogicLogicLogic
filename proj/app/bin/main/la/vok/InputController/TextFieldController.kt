@@ -1,6 +1,7 @@
 package la.vok.InputController
 
 import la.vok.GameController.GameController
+import la.vok.Storages.Settings
 import la.vok.UI.Elements.*
 import processing.event.KeyEvent
 
@@ -8,8 +9,6 @@ class TextFieldController(var gameController: GameController) {
     var lTextField: LTextField? = null
     var isEditing = false
     var repeatCounter = 0
-    private val keyRepeatDelay = 15  // Задержка перед первым повтором
-    private val keyRepeatRate = 2    // Интервал между повторами
 
     fun input(key: KeyEvent) {
         if (!isEditing || lTextField == null) return
@@ -104,8 +103,8 @@ class TextFieldController(var gameController: GameController) {
         val event = keyTracker.lastKeyEvent ?: return
         repeatCounter++
 
-        val shouldRepeat = repeatCounter == keyRepeatDelay ||
-            (repeatCounter > keyRepeatDelay && (repeatCounter - keyRepeatDelay) % keyRepeatRate == 0)
+        val shouldRepeat = repeatCounter == Settings.keyRepeatDelay ||
+            (repeatCounter > Settings.keyRepeatDelay && (repeatCounter - Settings.keyRepeatDelay) % Settings.keyRepeatRate == 0)
 
         if (shouldRepeat) {
             val repeatEvent = KeyEvent(

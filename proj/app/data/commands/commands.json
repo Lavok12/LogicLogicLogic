@@ -1,0 +1,37 @@
+{
+  "tp": {
+    "description": "Телепортирует игроков или себя к координатам или другим игрокам",
+    "command-variations": [
+      { "vars": ["@player"], "script": "command_tp" },
+      { "vars": ["@float", "@float"], "script": "command_tp" },
+      { "vars": ["@player", "@player"], "script": "command_tp" },
+      { "vars": ["@player", "@float", "@float"], "script": "command_tp" }
+    ]
+  },
+  "ping": {
+    "description": "Показывает задержку (пинг) игрока",
+    "command-variations": [
+      { "vars": [], "script": "command_ping" },
+      { "vars": ["@player"], "script": "command_ping" }
+    ]
+  },
+  "online": {
+    "description": "Показывает список всех игроков в сети",
+    "command-variations": [
+      { "vars": [], "script": "command_online" }
+    ]
+  },
+  "help": {
+    "description": "Показывает справку по командам",
+    "command-variations": [
+      { "vars": [], "script": "command_help" },
+      { "vars": ["@command"], "script": "command_help" }
+    ]
+  },
+  "tell": {
+    "description": "Написать личное сообщение игроку",
+    "command-variations": [
+      { "vars": ["@player", "@string..."], "script": "command_tell" }
+    ]
+  }
+}

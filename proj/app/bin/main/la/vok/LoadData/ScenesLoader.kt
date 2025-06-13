@@ -1,11 +1,8 @@
 package la.vok.LoadData
 
 import la.vok.LavokLibrary.Functions
-import la.vok.LoadData.LanguageData
 import la.vok.Storages.Settings
-import processing.data.JSONObject
 import la.vok.GameController.GameController;
-import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
 
@@ -64,7 +61,7 @@ class ScenesData(var gameController: GameController) : JsonDataLoader() {
 
     fun loadData() {
         data.clear()
-        var scenePath = Settings.scenePath;
+        var scenePath = Settings.scenesPath;
         val path = Functions.resourceDir("$scenePath")
         loadDataFromFolder(path)
     }

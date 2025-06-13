@@ -1,12 +1,8 @@
 package la.vok.LoadData
 
 import la.vok.LavokLibrary.Functions
-import la.vok.LoadData.LanguageData
 import la.vok.Storages.Settings
-import processing.data.JSONObject
 import la.vok.GameController.GameController;
-import la.vok.UI.Canvas.*
-import la.vok.UI.Scenes.*
 
 
 class ScriptsLoader(var gameController: GameController) {
@@ -33,7 +29,7 @@ class LuaData() : JsonDataLoader() {
 
     fun loadData() {
         data.clear()
-        var scriptPath = Settings.scriptPath;
+        var scriptPath = Settings.scriptsPath;
         var path = Functions.resourceDir("$scriptPath/lua")
         loadDataFromFolder(path)
     }
@@ -46,7 +42,7 @@ class KtsData() : JsonDataLoader() {
 
     fun loadData() {
         data.clear()
-        var scriptPath = Settings.scriptPath;
+        var scriptPath = Settings.scriptsPath;
         var path = Functions.resourceDir("$scriptPath/kts")
         loadDataFromFolder(path)
     }

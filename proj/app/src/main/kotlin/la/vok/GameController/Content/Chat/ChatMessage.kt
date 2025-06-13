@@ -1,6 +1,7 @@
 package la.vok.GameController.Content.Chat
 
 import la.vok.GameController.*
+import la.vok.LavokLibrary.copy
 import la.vok.UI.Elements.LText
 import processing.data.JSONObject
 import java.awt.Color
@@ -9,9 +10,7 @@ class ChatMessage(var gameController: GameController, var autor: String, var tex
     var time = System.currentTimeMillis()
     var number = 0
 
-    var r = 255
-    var g = 255
-    var b = 255
+    var color = Color(255,255,255)
 
     fun getFullText(): String {
         if (autor != "") {
@@ -25,22 +24,19 @@ class ChatMessage(var gameController: GameController, var autor: String, var tex
         json.put("autor", autor)
         json.put("text", text)
         json.put("finalText", getFullText())
-        json.put("r", r)
-        json.put("g", g)
-        json.put("b", b)
+        json.put("r", color.red)
+        json.put("g", color.green)
+        json.put("b", color.blue)
         return json
     }
 
     fun updateElement() {
-        textElement!!.textColor = Color(r, g, b)
+        textElement!!.textColor = color.copy()
         textElement!!.text = getFullText()
     }
 
-    fun updateElement(r: Int, g: Int, b: Int) {
-        this.r = r
-        this.g = g
-        this.b = b
-        textElement!!.textColor = Color(r, g, b)
+    fun updateColor(color: Color) {
+        textElement!!.textColor = color.copy()
         textElement!!.text = getFullText()
     }
 

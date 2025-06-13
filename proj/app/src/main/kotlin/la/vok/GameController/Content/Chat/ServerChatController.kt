@@ -1,59 +1,37 @@
 package la.vok.GameController.Content.Chat
 
 import la.vok.GameController.Server.ServerController
+import la.vok.LavokLibrary.copy
 import processing.data.JSONObject
+import java.awt.Color
 
-class ServerChatController(var serverController : ServerController, maxHistorySize: Int) : ChatController (serverController.gameController, maxHistorySize) {
-    val commands = mutableMapOf<String, ChatCommand>()
+class ServerChatController(
+    var serverController: ServerController,
+    maxHistorySize: Int
+) : ChatController(serverController.gameController, maxHistorySize) {
 
-    init {
-        registerCommand(HelpCommand(serverController))
-        registerCommand(PingCommand(serverController))
-        registerCommand(TeleportCommand(serverController))
-        registerCommand(WhoCommand(serverController))
-        registerCommand(SpawnCommand(serverController))
-        registerCommand(KickCommand(serverController))
+    private val argsClassifier = ArgsClassifier(serverController)
+    private val commandExecutor = CommandExecutor(gameController, serverController, argsClassifier)
+
+    fun addLocalMessage(id: String, autor: String, text: String, color: Color) {
+        val cm = ChatMessage(gameController, autor, text)
+        cm.color = color.copy()
+        addLocalMessage(id, cm)
     }
 
-    private fun registerCommand(command: ChatCommand) {
-        commands[command.name.lowercase()] = command
-    }
-
-    fun addLocalMessage(id: String, autor: String, text: String, r: Int, g: Int, b: Int) {
-        var cm = ChatMessage(gameController, autor, text)
-        cm.r = r
-        cm.g = g
-        cm.b = b
-        addLocalMessage(id,cm)
-    }
-    override fun addMessage(autor: String, text: String, r: Int, g: Int, b: Int) {
+    override fun addMessage(autor: String, text: String, color: Color) {
         if (text.startsWith("/")) {
-            handleCommand(autor, text)
+            commandExecutor.handleCommand(autor, text, this::addLocalMessage)
         } else {
-            var cm = ChatMessage(gameController, autor, text)
-            cm.r = r
-            cm.g = g
-            cm.b = b
+            val cm = ChatMessage(gameController, autor, text)
+            cm.color = color.copy()
             addMessage(cm)
-        }
-    }
-
-    private fun handleCommand(autor: String, text: String) {
-        val parts = text.removePrefix("/").split(" ")
-        val commandName = parts.firstOrNull()?.lowercase() ?: return
-        val args = parts.drop(1)
-
-        val command = commands[commandName]
-        if (command != null) {
-            command.execute(args, ChatContext(this, autor))
-        } else {
-            addMessage("System", "Неизвестная команда: $commandName")
         }
     }
 
     override fun addMessage(chatMessage: ChatMessage) {
         println("MESSAGE: ${chatMessage.getFullText()}")
-        var json: JSONObject = JSONObject()
+        val json = JSONObject()
         json.put("data", chatMessage.getRawData())
         serverController.serverFunctions.sendToAll("new_message", json)
         super.addMessage(chatMessage)
@@ -61,7 +39,7 @@ class ServerChatController(var serverController : ServerController, maxHistorySi
 
     fun addLocalMessage(id: String, chatMessage: ChatMessage) {
         println("MESSAGE: ${chatMessage.getFullText()}")
-        var json: JSONObject = JSONObject()
+        val json = JSONObject()
         json.put("data", chatMessage.getRawData())
         serverController.serverFunctions.sendToClient("new_message", id, json)
         super.addMessage(chatMessage)

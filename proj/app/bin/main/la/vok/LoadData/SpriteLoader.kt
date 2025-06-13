@@ -3,7 +3,6 @@ package la.vok.LoadData
 import la.vok.LavokLibrary.Functions
 import la.vok.Storages.Storage
 import la.vok.Storages.Settings
-import processing.core.PApplet
 import processing.core.PImage
 import la.vok.GameController.GameController;
 
@@ -71,7 +70,7 @@ class SpritesData() : JsonDataLoader() {
 
     fun loadData() {
         data.clear()
-        var spritePath = Settings.spritePath;
+        var spritePath = Settings.spritesPath;
         val path = Functions.resourceDir("$spritePath/")
         loadDataFromFolder(path)
     }

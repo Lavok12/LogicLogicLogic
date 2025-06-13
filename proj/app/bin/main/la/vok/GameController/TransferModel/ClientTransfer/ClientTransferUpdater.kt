@@ -15,6 +15,7 @@ class ClientTransferUpdater(var clientTransferModel: ClientTransferModel) : Tran
     private val handlers = mapOf(
         "loadState_connect_server" to CLIENT_loadState_connect_server(),
         "loadState_getPos_server" to CLIENT_loadState_getPos_server(),
+        "player_set_position" to CLIENT_player_set_position(),
         "loadState_loadMap_server" to CLIENT_loadState_loadMap_server(),
         "disconnect" to CLIENT_disconnect(),
         "players_data_update" to CLIENT_players_data_update(),

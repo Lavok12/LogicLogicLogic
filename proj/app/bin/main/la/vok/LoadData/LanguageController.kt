@@ -1,9 +1,7 @@
 package la.vok.LoadData
 
 import la.vok.LavokLibrary.Functions
-import la.vok.LoadData.LanguageData
 import la.vok.Storages.Settings
-import processing.data.JSONObject
 import la.vok.GameController.GameController;
 
 class LanguageController(var lang: String = "eng", var gameController: GameController) {
@@ -49,7 +47,7 @@ class LanguageData(var lang: String) : JsonDataLoader() {
 
     fun loadData() {
         data.clear()
-        var langPath = Settings.languagePath;
+        var langPath = Settings.languagesPath;
         val path = Functions.resourceDir("$langPath/$lang")
         loadDataFromFolder(path)
     }

@@ -1,16 +1,16 @@
 package la.vok.GameController.Content.Chat
 
 import la.vok.GameController.*
+import la.vok.LavokLibrary.copy
+import java.awt.Color
 
 open class ChatController (var gameController: GameController, var maxHistorySize: Int) {
     var history = ArrayList<ChatMessage>()
     var count = -1
 
-    open fun addMessage(autor: String, text: String, r: Int = 255, g: Int = 255, b: Int = 255) {
+    open fun addMessage(autor: String, text: String, color: Color) {
         var cm = ChatMessage(gameController, autor, text)
-        cm.r = r
-        cm.g = g
-        cm.b = b
+        cm.color = color.copy()
         addMessage(cm)
     }
     protected open fun addMessage(chatMessage: ChatMessage) {

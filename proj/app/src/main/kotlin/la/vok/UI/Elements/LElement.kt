@@ -142,7 +142,7 @@ open class LElement(
     open fun update() {}
     open fun onMouseDown(mouseController: MouseController) {
         if (onMouseDownScript != "") {
-            gameController.ktsScriptManager.executeScript(onMouseDownScript)
+            gameController.ktsScriptManager.executeScript(onMouseDownScript, "default")
         }
     }
 

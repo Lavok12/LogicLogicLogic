@@ -1,6 +1,9 @@
 {
     "startGame": "resources/Script/startGame.kts",
     "chatSend": "resources/Script/chatSend.kts",
-    "s1": "resources/Script/startGame1.kts",
-    "s2": "resources/Script/startGame2.kts"
+    "command_tp": "resources/Commands/command_tp.kts",
+    "command_ping": "resources/Commands/command_ping.kts",
+    "command_online": "resources/Commands/command_online.kts",
+    "command_help": "resources/Commands/command_help.kts",
+    "command_tell": "resources/Commands/command_tell.kts"
 }

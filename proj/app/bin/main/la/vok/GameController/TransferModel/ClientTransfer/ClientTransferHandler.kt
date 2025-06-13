@@ -7,6 +7,7 @@ import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.PlayersContainer
+import java.awt.Color
 
 class CLIENT_loadState_connect_server : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
@@ -26,6 +27,13 @@ class CLIENT_loadState_getPos_server : ClientTransferHandler {
         updater.clientController.player.PX = data.getFloat("PX")
         updater.clientController.player.PY = data.getFloat("PY")
         updater.clientController.loadState = LoadState.LOAD_MAP
+    }
+}
+
+class CLIENT_player_set_position : ClientTransferHandler {
+    override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
+        updater.clientController.player.PX = data.getFloat("PX")
+        updater.clientController.player.PY = data.getFloat("PY")
     }
 }
 
@@ -81,13 +89,14 @@ class CLIENT_pong : ClientTransferHandler {
 
 class CLIENT_new_message : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
+        var json = data.getJSONObject("data")
         updater.clientController.clientChatController.addMessage(
-            data.getJSONObject("data").getString("autor", ""), 
-            data.getJSONObject("data").getString("text", ""))
-            updater.clientController.clientChatController.getLastMessage()!!.r = data.getJSONObject("data").getInt("r", 255)
-            updater.clientController.clientChatController.getLastMessage()!!.g = data.getJSONObject("data").getInt("g", 255)
-            updater.clientController.clientChatController.getLastMessage()!!.b = data.getJSONObject("data").getInt("b", 255)
-        updater.clientController.clientChatController.getLastMessage()!!.updateElement()
+            json.getString("autor", ""),
+            json.getString("text", ""),
+            Color(json.getInt("r", 255),
+            json.getInt("g", 255),
+            json.getInt("b", 255))
+        )
     }
 }
 

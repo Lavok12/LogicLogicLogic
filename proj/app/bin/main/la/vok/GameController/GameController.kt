@@ -3,18 +3,14 @@ package la.vok.GameController;
 import la.vok.GameController.Client.ClientController
 import la.vok.GameController.Server.ServerController
 import la.vok.GameController.Menu.MenuController
-import la.vok.GameController.TransferModel.*
 import la.vok.LoadData.*
 import la.vok.Storages.Settings
 import la.vok.UI.*
-import com.jsyn.engine.LoadAnalyzer
 import la.vok.Storages.Storage
 import la.vok.InputController.*
-import la.vok.GameController.Content.*
 import la.vok.GameController.Client.Rendering.*
 import la.vok.GameController.Kts.KtsScriptManager
-import la.vok.UI.*
-import la.vok.UI.Canvas.*
+import la.vok.GameController.Kts.PreLoad.ContentPreLoader
 import la.vok.UI.Canvas.LCanvasController
 import la.vok.UI.Canvas.LCanvas
 import la.vok.UI.Scenes.ScenesContainer
@@ -57,6 +53,9 @@ class GameController() {
     lateinit var lCanvasController: LCanvasController
     lateinit var scenesContainer: ScenesContainer
     lateinit var ktsScriptManager: KtsScriptManager
+    lateinit var commandsLoader: CommandsLoader
+
+    lateinit var contentPreLoader: ContentPreLoader
 
     var gameStarted: Boolean = false
 
@@ -97,6 +96,8 @@ class GameController() {
         textFieldController = TextFieldController(this)
         lCanvasController = LCanvasController(this)
         ktsScriptManager = KtsScriptManager(this)
+        contentPreLoader = ContentPreLoader(this)
+        commandsLoader = CommandsLoader(this)
     }
 
     fun rendering() {
@@ -157,7 +158,9 @@ class GameController() {
         UILoader.loadData()
         scriptsLoader.loadData()
         scenesLoader.loadData()
-    }
+        commandsLoader.loadData()
+
+        contentPreLoader.loadFiles()    }
 
     fun initGameScenes() {
         scenesContainer.addScene(scenesLoader.newScene("game", "game"))
@@ -208,6 +211,7 @@ class GameController() {
     }
 
     fun tick() {
+        contentPreLoader.tick()
         keyTracker.tick()
     }
 

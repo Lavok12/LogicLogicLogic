@@ -7,6 +7,7 @@ import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.PlayersContainer
+import java.awt.Color
 
 class CLIENT_loadState_connect_server : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
@@ -92,9 +93,9 @@ class CLIENT_new_message : ClientTransferHandler {
         updater.clientController.clientChatController.addMessage(
             json.getString("autor", ""),
             json.getString("text", ""),
-            json.getInt("r", 255),
+            Color(json.getInt("r", 255),
             json.getInt("g", 255),
-            json.getInt("b", 255)
+            json.getInt("b", 255))
         )
     }
 }

@@ -12,7 +12,7 @@ import la.vok.GameController.TransferModel.*
 import la.vok.GameController.Content.PlayerData
 import la.vok.GameController.Client.LoadState
 import la.vok.GameController.Client.Rendering.*
-import la.vok.GameController.Client.ClientChatController
+import la.vok.GameController.Content.Chat.ClientChatController
 import la.vok.InputController.KeyCode
 import processing.data.JSONObject
 import java.net.URI
