@@ -13,6 +13,7 @@ import processing.data.JSONObject
 import processing.data.JSONArray
 import la.vok.LavokLibrary.*
 import la.vok.InputController.MouseController
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
@@ -39,7 +40,7 @@ open class LElement(
     open var PY: Float = 0f
     open var SX: Float = 0f
     open var SY: Float = 0f
-    open var elementCanvas: LCanvas = LCanvas(0f, 0f, 0f, 0f, 1f, 1f, 1f, 1f, 1f, -1, true, gameController)
+    open var elementCanvas: LCanvas = LCanvas(Vec2(0f), Vec2(0f), Vec2(1f), Vec2(1f), 1f, -1, true, gameController)
     open var isActive: Boolean = true
 
     open var update: Boolean = false
@@ -304,27 +305,29 @@ open class LElement(
 
     open fun updateSprites() {}
 
-    open fun rescaleCanvas() {
-        elementCanvas.scaleX = parentCanvas.scaleX
-        elementCanvas.scaleY = parentCanvas.scaleY
-    }
 
     open fun updateGridVisuals(nx: Float, ny: Float) {
-        rescaleCanvas()
         PX = nx
         PY = ny
-    }
-
-    open fun updateVisuals() {
-        rescaleCanvas()
-        PX = parentCanvas.applyCanvasPosX(x, alignX)
-        PY = parentCanvas.applyCanvasPosY(y, alignY)
 
         SX = if (percentWidth != -1f)
             parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
         else
             parentCanvas.applyCanvasSizeX(width)
+        SY = if (percentHeight != -1f)
+            parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
+        else
+            parentCanvas.applyCanvasSizeY(height)
 
+    }
+
+    open fun updateVisuals() {
+        PX = parentCanvas.applyCanvasPosX(x, alignX)
+        PY = parentCanvas.applyCanvasPosY(y, alignY)
+        SX = if (percentWidth != -1f)
+            parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
+        else
+            parentCanvas.applyCanvasSizeX(width)
         SY = if (percentHeight != -1f)
             parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
         else
@@ -346,10 +349,8 @@ open class LElement(
         PX += offsetByWidth * SX
         PY += offsetByHeight * SY
 
-        elementCanvas.posX = PX
-        elementCanvas.posY = PY
-        elementCanvas.width = SX
-        elementCanvas.height = SY
+        elementCanvas.pos = Vec2(PX, PY)
+        elementCanvas.wh = Vec2(SX, SY)
     }
 
     open fun renderElement(mainRender: MainRender) {
@@ -369,5 +370,14 @@ open class LElement(
 
     open fun getElementType(): String {
         return this::class.simpleName ?: "LElement"
+    }
+
+    fun debugRender(mainRender: MainRender) {
+        elementCanvas.debugRender(mainRender)
+        mainRender.lg.fill(255f,0f)
+        mainRender.lg.pg.stroke(255f,0f,0f)
+        mainRender.lg.pg.strokeWeight(4f)
+        mainRender.lg.setBlock(PX, PY, SX, SY)
+        mainRender.lg.pg.noStroke()
     }
 }

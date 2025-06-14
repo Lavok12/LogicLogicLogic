@@ -4,10 +4,11 @@ import la.vok.GameController.GameController
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Client.Rendering.*
+import la.vok.LavokLibrary.Vectors.Vec2
 
 class LogicMap(var gameController: GameController) {
-    var elementsCount = 0L;
-    var wiresCount = 0L;
+    var elementsCount = 0L
+    var wiresCount = 0L
 
     var map: ArrayList<LogicElement> = ArrayList()
     var wires: HashSet<LogicWire> = HashSet()
@@ -17,6 +18,7 @@ class LogicMap(var gameController: GameController) {
         wire.end.input.add(wire)
         wires.add(wire)
     }
+
     fun removeWire(wire: LogicWire) {
         wire.start.output.remove(wire)
         wire.end.input.remove(wire)
@@ -25,8 +27,9 @@ class LogicMap(var gameController: GameController) {
 
     fun clear() {
         map.clear()
-        wires.clear() 
+        wires.clear()
     }
+
     fun updateWireSet() {
         wires.clear()
         for (element in gameController.clientController.logicMap.list()) {
@@ -34,11 +37,13 @@ class LogicMap(var gameController: GameController) {
             wires.addAll(element.output)
         }
     }
-    fun addElement(PX: Float, PY: Float, type: String, standartInit: Boolean = true): LogicElement {
-        var logic = LogicElement(PX, PY, type, gameController, this, standartInit)
+
+    fun addElement(position: Vec2, type: String, standartInit: Boolean = true): LogicElement {
+        val logic = LogicElement(position, type, gameController, this, standartInit)
         map.add(logic)
         return logic
     }
+
     fun addWire(start: LogicElement, end: LogicElement, standartInit: Boolean = true): LogicWire {
         val wire = LogicWire(start, end, gameController, this, standartInit)
         wires.add(wire)
@@ -46,6 +51,7 @@ class LogicMap(var gameController: GameController) {
         end.input.add(wire)
         return wire
     }
+
     fun removeWire(start: LogicElement, end: LogicElement) {
         val wire = wires.find { it.start == start && it.end == end }
         if (wire != null) {
@@ -54,7 +60,7 @@ class LogicMap(var gameController: GameController) {
             end.input.remove(wire)
         }
     }
-    
+
     fun addElement(element: LogicElement) {
         map.add(element)
     }
@@ -68,11 +74,11 @@ class LogicMap(var gameController: GameController) {
     }
 
     fun checkElementFromId(id: Long): Boolean {
-        return (getElementFromId(id).id == id)
+        return getElementFromId(id).id == id
     }
 
     fun checkWireFromId(id: Long): Boolean {
-        return (getElementFromId(id).id == id)
+        return getWireFromId(id).id == id
     }
 
     fun getElementFromId(id: Long): LogicElement {
@@ -83,7 +89,7 @@ class LogicMap(var gameController: GameController) {
         }
         return map[0]
     }
-    
+
     fun getWireFromId(id: Long): LogicWire {
         for (i in wires.toList()) {
             if (id == i.id) {

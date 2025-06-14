@@ -69,6 +69,13 @@ class LCanvasController(var gameController: GameController) {
                 i.renderElements()
             }
         }
+        if (Settings.UIDebugRender) {
+            for (j in canvasRenderList) {
+                for (i in j) {
+                    i.debugRender(Storage.gameController.mainRender)
+                }
+            }
+        }
     }
     
     fun findUIElementAt(mouseX: Float, mouseY: Float): LElement? {

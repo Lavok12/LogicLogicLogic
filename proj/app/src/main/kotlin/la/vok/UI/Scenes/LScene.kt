@@ -4,6 +4,7 @@ import la.vok.UI.Canvas.*
 import la.vok.LavokLibrary.Functions
 import processing.data.JSONObject
 import la.vok.GameController.GameController
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.Storages.Storage
 
 class LScene(var tag: String, var name: String, var paths: ArrayList<String> = ArrayList(), var gameController: GameController) {
@@ -12,11 +13,11 @@ class LScene(var tag: String, var name: String, var paths: ArrayList<String> = A
     var loaded = false;
     
     init {
-        canvas = LCanvas(0f, 0f, Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(Vec2(0f), Vec2(Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH), Vec2(1f), gameController = gameController);
     }
 
     fun clearCanvas() {
-        canvas = LCanvas(0f, 0f, Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH, 1f, 1f, gameController = gameController);
+        canvas = LCanvas(Vec2(0f), Vec2(Storage.gameController.mainRender.disW, Storage.gameController.mainRender.disH), Vec2(1f), gameController = gameController);
     }
 
     fun clear() {

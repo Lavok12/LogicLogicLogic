@@ -11,7 +11,7 @@ when (commandObject.configuratorId) {
             var commandData = commandsLoader.commandsFilesLoader.commandsMap[i]!!
 
             gameController.serverController.serverChatController.addLocalMessage(
-                commandObject.senderId,bv 
+                commandObject.senderId,
                 "",
                 " - /${i} : ${commandData.description}",
                 Settings.systemMessage2

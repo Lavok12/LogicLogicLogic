@@ -1,5 +1,8 @@
 package la.vok.LavokLibrary
 
+import la.vok.LavokLibrary.Vectors.Vec2
+import la.vok.LavokLibrary.Vectors.Vec3
+import la.vok.LavokLibrary.Vectors.Vec4
 import processing.data.JSONObject
 import processing.data.JSONArray
 
@@ -209,6 +212,109 @@ fun JSONArray.LgetJSONObject(index: Int, default: JSONObject = JSONObject()): JS
     if (index < 0 || index >= this.size()) return default
     return try {
         this.getJSONObject(index)
+    } catch (e: Exception) {
+        default
+    }
+}
+
+// ===== Сохранение векторов в JSONObject =====
+
+fun JSONObject.putVec(key: String, vec: Vec2): JSONObject {
+    val arr = JSONArray()
+    arr.append(vec.x)
+    arr.append(vec.y)
+    this.setJSONArray(key, arr)
+    return this
+}
+
+
+fun JSONObject.putVec(key: String, vec: Vec3): JSONObject {
+    val arr = JSONArray()
+    arr.append(vec.x)
+    arr.append(vec.y)
+    arr.append(vec.z)
+    this.setJSONArray(key, arr)
+    return this
+}
+
+fun JSONObject.putVec(key: String, vec: Vec4): JSONObject {
+    val arr = JSONArray()
+    arr.append(vec.x)
+    arr.append(vec.y)
+    arr.append(vec.z)
+    arr.append(vec.w)
+    this.setJSONArray(key, arr)
+    return this
+}
+
+
+// ===== Загрузка векторов из JSONObject =====
+
+fun JSONObject.getVec2(key: String, default: Vec2 = Vec2(0f, 0f)): Vec2 {
+    return try {
+        val arr = getJSONArray(key)
+        Vec2(arr.getFloat(0), arr.getFloat(1))
+    } catch (e: Exception) {
+        default
+    }
+}
+
+fun JSONObject.getVec3(key: String, default: Vec3 = Vec3(0f, 0f, 0f)): Vec3 {
+    return try {
+        val arr = getJSONArray(key)
+        Vec3(arr.getFloat(0), arr.getFloat(1), arr.getFloat(2))
+    } catch (e: Exception) {
+        default
+    }
+}
+
+fun JSONObject.getVec4(key: String, default: Vec4 = Vec4(0f, 0f, 0f, 0f)): Vec4 {
+    return try {
+        val arr = getJSONArray(key)
+        Vec4(arr.getFloat(0), arr.getFloat(1), arr.getFloat(2), arr.getFloat(3))
+    } catch (e: Exception) {
+        default
+    }
+}
+
+// ===== Добавление векторов в JSONArray как массивов =====
+
+fun JSONArray.putVec(vec: Vec2): JSONArray {
+    return this.append(JSONArray().append(vec.x).append(vec.y))
+}
+
+fun JSONArray.putVec(vec: Vec3): JSONArray {
+    return this.append(JSONArray().append(vec.x).append(vec.y).append(vec.z))
+}
+
+fun JSONArray.putVec(vec: Vec4): JSONArray {
+    return this.append(JSONArray().append(vec.x).append(vec.y).append(vec.z).append(vec.w))
+}
+
+// ===== Загрузка векторов из JSONArray по индексу =====
+
+fun JSONArray.getVec2(index: Int, default: Vec2 = Vec2(0f, 0f)): Vec2 {
+    return try {
+        val arr = getJSONArray(index)
+        Vec2(arr.getFloat(0), arr.getFloat(1))
+    } catch (e: Exception) {
+        default
+    }
+}
+
+fun JSONArray.getVec3(index: Int, default: Vec3 = Vec3(0f, 0f, 0f)): Vec3 {
+    return try {
+        val arr = getJSONArray(index)
+        Vec3(arr.getFloat(0), arr.getFloat(1), arr.getFloat(2))
+    } catch (e: Exception) {
+        default
+    }
+}
+
+fun JSONArray.getVec4(index: Int, default: Vec4 = Vec4(0f, 0f, 0f, 0f)): Vec4 {
+    return try {
+        val arr = getJSONArray(index)
+        Vec4(arr.getFloat(0), arr.getFloat(1), arr.getFloat(2), arr.getFloat(3))
     } catch (e: Exception) {
         default
     }

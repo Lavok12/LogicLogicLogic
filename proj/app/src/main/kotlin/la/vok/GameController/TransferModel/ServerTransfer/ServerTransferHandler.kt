@@ -7,6 +7,7 @@ import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.PlayerData
+import la.vok.LavokLibrary.getVec2
 import la.vok.Storages.Settings
 
 class SERVER_loadState_connect_client : ServerTransferHandler {
@@ -53,8 +54,7 @@ class SERVER_update_player_data : ServerTransferHandler {
         if (container.contains(id)) {
             val player = container.getPlayerData(id)
             val newData = PlayerData.fromJsonObject(data, updater.gameController)
-            player.PX = newData.PX
-            player.PY = newData.PY
+            player.pos = newData.pos
             player.name = newData.name
         } else {
             updater.serverController.serverFunctions.disconnectPlayer(sender)
@@ -80,7 +80,7 @@ class SERVER_add_logicElement : ServerTransferHandler {
         if (!container.contains(id)) return
 
         val map = updater.serverController.logicMap
-        map.addElement(data.getFloat("PX", 0f), data.getFloat("PY", 0f), data.getString("type", "d"))
+        map.addElement(data.getVec2("pos"), data.getString("type", "d"))
 
         val json = JSONObject()
         val elements = JSONArray()

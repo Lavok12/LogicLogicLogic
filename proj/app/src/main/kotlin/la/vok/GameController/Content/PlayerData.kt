@@ -7,6 +7,10 @@ import la.vok.GameController.GameController
 import la.vok.GameController.Client.Camera
 import la.vok.UI.Elements.LText
 import la.vok.GameController.Client.Rendering.*
+import la.vok.LavokLibrary.getVec2
+import la.vok.LavokLibrary.Vectors.Vec2
+import la.vok.LavokLibrary.Vectors.Vec3
+import la.vok.LavokLibrary.putVec
 import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
@@ -17,25 +21,20 @@ class PlayerData(var id: String, var name: String, var gameController: GameContr
     override val updateVisualF: (MainRender) -> Unit by lazy { this::updateVisual }
     override var isVisible = true
 
-    var canvas: LCanvas = LCanvas(0f, 0f, 100f, 100f, 1f, 1f, 1f, 1f, 1f, 2, false, gameController)
+    var canvas: LCanvas = LCanvas(Vec2(0f), Vec2(100f), Vec2(1f), Vec2(1f), 1f, 2, false, gameController)
 
     init {
         canvas.addChild("playerCanvas", "text")
     }
 
-    var PX: Float = 0f
-    var PY: Float = 0f
-
-    var VX: Float = 0f
-    var VY: Float = 0f
-    var VZ: Float = 0f
+    var pos = Vec2(0f)
+    var visualPos = Vec3(0f)
     
     var DELETE_FLAG = true
     
     fun updateCanvas() {
         if (isVisible) {
-            canvas.posX = VX
-            canvas.posY = VY - 60
+            canvas.pos = visualPos.xy-Vec2(0f, 50f)
             (canvas.getElementByTag("text") as LText).text = name
             gameController.lCanvasController.add(canvas)
         } else {
@@ -47,8 +46,7 @@ class PlayerData(var id: String, var name: String, var gameController: GameContr
         var json = JSONObject()
         json.put("id", id)
         json.put("name", name)
-        json.put("PX", PX)
-        json.put("PY", PY)
+        json.putVec("pos", pos)
         return json
     }
 
@@ -58,17 +56,14 @@ class PlayerData(var id: String, var name: String, var gameController: GameContr
             val name = JSONObject.getString("name", "")
             val playerData = PlayerData(id, name, gameController)
             
-            playerData.PX = JSONObject.getFloat("PX")
-            playerData.PY = JSONObject.getFloat("PY")
+            playerData.pos = JSONObject.getVec2("pos")
             
             return playerData
         }
     }
 
     fun updateVisual(mainRender: MainRender) {
-        VX = mainRender.camera.camX(PX)
-        VY = mainRender.camera.camY(PY)
-        VZ = mainRender.camera.camZ(1f)
+        visualPos = Vec3(mainRender.camera.cam(pos), mainRender.camera.camZ(1f))
     }
 
     fun destroy() {
@@ -77,6 +72,6 @@ class PlayerData(var id: String, var name: String, var gameController: GameContr
 
     fun render(mainRender: MainRender) {
         mainRender.lg.fill(255f)
-        mainRender.lg.setEps(VX, VY, VZ * 40f, VZ * 80f)
+        mainRender.lg.setEps(visualPos.xy, Vec2(40f, 80f) * visualPos.z)
     }
 }

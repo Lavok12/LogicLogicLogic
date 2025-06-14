@@ -3,6 +3,7 @@ package la.vok.UI.Canvas
 import la.vok.GameController.GameController
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.*
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.UI.Elements.LElement
 import la.vok.UI.*
 import la.vok.UI.Elements.LayoutDirection
@@ -10,14 +11,10 @@ import la.vok.UI.Scenes.*
 import javax.swing.text.Element
 
 class LCanvas (
-    var posX: Float = 0f,
-    var posY: Float = 0f,
-    var width: Float = 100f,
-    var height: Float = 100f,
-    var scaleX: Float = 1f,
-    var scaleY: Float = 1f,
-    var localScaleX: Float = 1f,
-    var localScaleY: Float = 1f,
+    var pos: Vec2 = Vec2(0f),
+    var wh: Vec2 = Vec2(100f),
+    var scale: Vec2 = Vec2(1f),
+    var localScale: Vec2 = Vec2(1f),
     var textScale: Float = 1f,
     var layer: Int = 0,
     var hasHitbox: Boolean = true,
@@ -40,7 +37,7 @@ class LCanvas (
     }
 
     fun inside(mx: Float, my: Float): Boolean {
-        if (!Functions.tap(posX, posY, width, height, mx, my)) {
+        if (!Functions.tap(pos, wh * scale, mx, my)) {
             return false;
         }
         return true;
@@ -132,14 +129,14 @@ class LCanvas (
             LayoutDirection.HORIZONTAL -> {
                 var dx = 0f
                 if (parent.alignCenterX) {
-                    dx = (elements.size-1) * parent.spacingX * scaleX * localScaleX / 2
+                    dx = (elements.size-1) * parent.spacingX * scale.x * localScale.x / 2
                 }
                 for (LElement in if (!parent.reverseX) {elements} else {elements.reversed()}) {
                     i++
                     LElement.updateGridVisuals(
-                        posX + (parent.contentDeltaX + i * parent.spacingX) * scaleX * localScaleX - dx
+                        pos.x + (parent.contentDeltaX + i * parent.spacingX) * scale.x * localScale.x - dx
                         ,
-                        posY + (parent.contentDeltaY) * scaleX * localScaleX
+                        pos.y + (parent.contentDeltaY) * scale.y * localScale.y
                     )
                     LElement.render(gameController.mainRender)
                 }
@@ -147,14 +144,14 @@ class LCanvas (
             LayoutDirection.VERTICAL -> {
                 var dy = 0f
                 if (parent.alignCenterX) {
-                    dy = (elements.size-1) * parent.spacingY * scaleY * localScaleY / 2
+                    dy = (elements.size-1) * parent.spacingY * scale.y * localScale.y / 2
                 }
                 for (LElement in if (!parent.reverseY) {elements} else {elements.reversed()}) {
                     i++
                     LElement.updateGridVisuals(
-                        posX + (parent.contentDeltaX) * scaleX * localScaleX
+                        pos.x + (parent.contentDeltaX) * scale.x * localScale.x
                         ,
-                        posY + (parent.contentDeltaY + i * parent.spacingY) * scaleX * localScaleX - dy
+                        pos.y + (parent.contentDeltaY + i * parent.spacingY) * scale.y * localScale.y - dy
                     )
                     LElement.render(gameController.mainRender)
                 }
@@ -175,25 +172,25 @@ class LCanvas (
     }
 
     fun applyCanvasPosX(x: Float, align: Float = 0f): Float {
-        return (x * scaleX * localScaleX + posX + align * width/2)
+        return (x * scale.x * localScale.x + pos.x + align * wh.x/2)
     }
     fun applyCanvasPosY(y: Float, align: Float = 0f): Float {
-        return (y * scaleY * localScaleY + posY + align * height/2)
+        return (y * scale.y * localScale.y + pos.y + align * wh.y/2)
     }
     fun applyCanvasSizeX(w: Float): Float {
-        return w * scaleX * localScaleX
+        return w * scale.x * localScale.x
     }
     fun applyCanvasSizeY(h: Float): Float {
-        return h * scaleY * localScaleY
+        return h * scale.y * localScale.y
     }
     fun applyCanvasTextSize(s: Float): Float {
         return s * textScale
     }
     fun canvasSizePercentX(w: Float): Float {
-        return width*w/100f
+        return wh.x*w/100f
     }
     fun canvasSizePercentY(h: Float): Float {
-        return height*h/100f
+        return wh.y*h/100f
     }
 
     fun getAllElements(): ArrayList<ArrayList<LElement>> {
@@ -225,4 +222,17 @@ class LCanvas (
         }
     }
 
+    fun debugRender(mainRender: MainRender) {
+        for (i in elements) {
+            i.debugRender(mainRender)
+        }
+        mainRender.lg.fill(255f,0f)
+        mainRender.lg.pg.stroke(0f,255f,0f)
+        mainRender.lg.pg.strokeWeight(4f)
+        mainRender.lg.setBlock(pos, wh*scale)
+        mainRender.lg.pg.noStroke()
+        mainRender.lg.fill(0f, 255f, 0f,255f)
+        mainRender.lg.setTextAlign(-1, 1)
+        mainRender.lg.setText("scale ${scale.x}, ${scale.y}\nlocalScale ${localScale.x}, ${localScale.y}\nwh ${wh.x}, ${wh.y}", pos-Vec2(wh.x, -wh.y)*scale/2f+Vec2(10f, -15f), 25f)
+    }
 }

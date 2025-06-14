@@ -1,6 +1,8 @@
 package la.vok.GameController.Server
 
 import la.vok.GameController.TransferModel.TransferPackage
+import la.vok.LavokLibrary.Vectors.Vec2
+import la.vok.LavokLibrary.putVec
 import processing.data.JSONObject
 
 class ServerFunctions(var serverController: ServerController) {
@@ -38,10 +40,9 @@ class ServerFunctions(var serverController: ServerController) {
         sendToClient("ping", id, json)
     }
 
-    fun playerSetPosition(id: String, posX: Float, posY: Float) {
+    fun playerSetPosition(id: String, pos: Vec2) {
         var json: JSONObject = JSONObject()
-        json.put("PX", posX)
-        json.put("PY", posY)
+        json.putVec("pos", pos)
         sendToClient("player_set_position", id, json)
     }
 }

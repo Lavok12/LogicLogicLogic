@@ -51,4 +51,5 @@ object Settings {
         get() {
             return field.copy()
         }
+    var UIDebugRender = false
 }

@@ -7,6 +7,7 @@ import processing.data.*
 import la.vok.GameController.Content.Logic.LogicElement
 import la.vok.GameController.Content.Logic.LogicWire
 import la.vok.GameController.Content.PlayersContainer
+import la.vok.LavokLibrary.getVec2
 import java.awt.Color
 
 class CLIENT_loadState_connect_server : ClientTransferHandler {
@@ -24,16 +25,14 @@ class CLIENT_loadState_connect_server : ClientTransferHandler {
 
 class CLIENT_loadState_getPos_server : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
-        updater.clientController.player.PX = data.getFloat("PX")
-        updater.clientController.player.PY = data.getFloat("PY")
+        updater.clientController.player.pos = data.getVec2("pos")
         updater.clientController.loadState = LoadState.LOAD_MAP
     }
 }
 
 class CLIENT_player_set_position : ClientTransferHandler {
     override fun handle(data: JSONObject, updater: ClientTransferUpdater) {
-        updater.clientController.player.PX = data.getFloat("PX")
-        updater.clientController.player.PY = data.getFloat("PY")
+        updater.clientController.player.pos = data.getVec2("pos")
     }
 }
 
@@ -114,8 +113,7 @@ class CLIENT_players_data_update : ClientTransferHandler {
                 if (id.equals(updater.clientController.clientId)) {
                     isPlayer = false
                 } else {
-                    localPlayer.PX = pdata.PX
-                    localPlayer.PY = pdata.PY
+                    localPlayer.pos = pdata.pos
                     localPlayer.name = pdata.name
                     localPlayer.DELETE_FLAG = false
                     localPlayer!!.isVisible = isPlayer
@@ -126,8 +124,7 @@ class CLIENT_players_data_update : ClientTransferHandler {
                     isPlayer = false
                 } else {
                     controller.playersContainer.addData(id, pdata.name)
-                    controller.playersContainer.playersData[id]!!.PX = pdata.PX
-                    controller.playersContainer.playersData[id]!!.PY = pdata.PY
+                    controller.playersContainer.playersData[id]!!.pos = pdata.pos
                     controller.playersContainer.playersData[id]!!.name = pdata.name
                     controller.playersContainer.playersData[id]!!.DELETE_FLAG = false
                     controller.playersContainer.playersData[id]!!.isVisible = isPlayer

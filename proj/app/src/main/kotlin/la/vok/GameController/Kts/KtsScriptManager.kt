@@ -39,6 +39,7 @@ class KtsScriptManager(private val gameController: GameController) {
             "processing.data.JSONObject",
             "processing.data.JSONArray",
             "la.vok.LavokLibrary.*",
+            "la.vok.LavokLibrary.Vectors.*",
             "la.vok.InputController.MouseController",
             "la.vok.UI.Elements.*",
         )

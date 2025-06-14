@@ -9,6 +9,7 @@ import la.vok.GameController.Content.*
 import la.vok.GameController.Server.OnlineWebSocketServer
 import la.vok.GameController.Server.PlayerConnect
 import la.vok.GameController.Content.Chat.ServerChatController
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.Storages.*
 import processing.data.*
 
@@ -50,9 +51,9 @@ class ServerController(var gameController: GameController, var port: Int = 0) {
 
     fun start() {
         println("->ServerController started")
-        logicMap.addElement(-200f, -400f, "test")
-        logicMap.addElement(200f, -400f, "test")
-        logicMap.addElement(0f, 400f, "test")
+        logicMap.addElement(Vec2(-200f, -400f), "test")
+        logicMap.addElement(Vec2(200f, -400f), "test")
+        logicMap.addElement(Vec2(0f, 400f), "test")
         logicMap.addWire(logicMap.list()[0], logicMap.list()[2])
         logicMap.addWire(logicMap.list()[1], logicMap.list()[2])
     }

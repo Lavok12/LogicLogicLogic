@@ -9,12 +9,15 @@ import la.vok.GameController.GameController
 import la.vok.UI.MainRender
 import processing.data.*
 import la.vok.GameController.Client.Rendering.*
+import la.vok.LavokLibrary.getVec2
+import la.vok.LavokLibrary.Vectors.Vec2
+import la.vok.LavokLibrary.Vectors.Vec3
+import la.vok.LavokLibrary.putVec
 import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
 class LogicElement(
-    var PX: Float,
-    var PY: Float,
+    var pos: Vec2,
     var type: String,
     var gameController: la.vok.GameController.GameController,
     var logicMap: LogicMap,
@@ -29,12 +32,11 @@ class LogicElement(
     companion object {
         fun fromJsonObject(json: JSONObject, gameController: GameController, logicMap: LogicMap): LogicElement {
             var id: Long  = json.getLong("id", 0L)
-            var PX: Float = json.getFloat("PX", 0f)
-            var PY: Float = json.getFloat("PY", 0f)
+            var pos: Vec2 = json.getVec2("pos", Vec2(0f, 0f))
             var type: String = json.getString("type", "")
             var otherData: JSONObject = json.setJSONObject("otherData", JSONObject())
-        
-            var logic = logicMap.addElement(PX, PY, type, false)
+
+            var logic = logicMap.addElement(pos, type, false)
             logic.id = id
             logic.loadOtherData(otherData)
             return logic
@@ -55,23 +57,20 @@ class LogicElement(
     fun tick() {
 
     }
-    
+
     fun update() {
 
     }
-    
-    var VX = 0f
-    var VY = 0f
-    var VZ = 0f
+
+    var visualpos = Vec3(0f, 0f)
     var VCR = 0f
     var VCG = 0f
     var VCB = 0f
 
     fun updateVisual(mainRender: MainRender) {
-        VX = mainRender.camera.camX(PX)
-        VY = mainRender.camera.camY(PY)
-        VZ = mainRender.camera.camZ(50f)
-        
+        visualpos.xy = mainRender.camera.cam(pos)
+        visualpos.z = mainRender.camera.camZ(50f)
+
         when (type) {
             "test" -> {
                 isVisible = true
@@ -84,38 +83,32 @@ class LogicElement(
                 VCR = 200f
                 VCG = 90f
                 VCB = 60f
-            } 
+            }
             else -> {
                 isVisible = false
             }
         }
     }
-    
+
     fun render(mainRender: MainRender) {
         mainRender.lg.fill(VCR, VCG, VCB)
         mainRender.lg.setEps(
-            VX,
-            VY,
-            VZ,
-            VZ,
+            visualpos.xy,
+            Vec2(visualpos.z)
         )
     }
     fun renderCanvas(camera: Camera, mainRender: MainRender) {
         if (canvas == null) {
             canvas = LCanvas(
-                posX = camera.camX(PX),
-                posY = camera.camY(PY),
-                width = 500f,
-                height = 500f,
-                scaleX = 0.5f,
-                scaleY = 0.5f,
+                pos = camera.cam(pos),
+                wh = Vec2(500f),
+                scale = Vec2(0.5f),
                 textScale = 1f,
                 gameController = gameController
             )
             canvas!!.addChild("panel")
         }
-        canvas!!.posX = camera.camX(PX)
-        canvas!!.posY = camera.camY(PY)
+        canvas!!.pos = camera.cam(pos)
         canvas!!.renderElements()
     }
 
@@ -127,8 +120,7 @@ class LogicElement(
     fun toJsonObject(): JSONObject {
         var json = JSONObject()
         json.put("id", id)
-        json.put("PX", PX)
-        json.put("PY", PY)
+        json.putVec("pos", pos)
         json.put("type", type)
         json.put("otherData", getOtherData())
         return json

@@ -2,7 +2,7 @@ package la.vok.GameController.TransferModel
 
 import processing.data.JSONObject
 
-data class TransferPackage(var header: String, var sender: String, var recipient: String, var data: JSONObject) {
+class TransferPackage(var header: String, var sender: String, var recipient: String, var data: JSONObject) {
     companion object {
         var ALL = "ALL"
         var SERVER = "SERVER"
@@ -30,4 +30,10 @@ data class TransferPackage(var header: String, var sender: String, var recipient
     fun send(transferModel: TransferModel) {
         transferModel.sendData(this)
     }
+
+    fun copy(): TransferPackage {
+        val clonedJson = JSONObject.parse(data.toString())
+        return TransferPackage(header, sender, recipient, clonedJson)
+    }
+
 }

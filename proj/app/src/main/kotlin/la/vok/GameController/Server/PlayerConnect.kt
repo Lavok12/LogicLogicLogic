@@ -1,6 +1,7 @@
 package la.vok.GameController.Server 
 
 import la.vok.GameController.Content.PlayerData
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.Storages.*
 
 class PlayerConnect(var serverController: ServerController, var clientId: String) {
@@ -16,7 +17,6 @@ class PlayerConnect(var serverController: ServerController, var clientId: String
     }
     fun initPlayer(id: String, name: String) {
         playerData = PlayerData(id, name, serverController.gameController)
-        playerData.PX = 500f
-        playerData.PY = 100f
+        playerData.pos = Vec2(0f, 0f)
     }
 }

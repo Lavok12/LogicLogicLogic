@@ -1,6 +1,7 @@
 package la.vok.GameController.Client
 
 import la.vok.GameController.TransferModel.TransferPackage
+import la.vok.LavokLibrary.putVec
 import processing.data.JSONObject
 
 class ClientFunctions(var clientController: ClientController) {
@@ -8,8 +9,7 @@ class ClientFunctions(var clientController: ClientController) {
     fun setLogicElement() {
         if (clientController.loadState == LoadState.STARTED) {
             var json = JSONObject()
-            json.put("PX", clientController.player.PX)
-            json.put("PY", clientController.player.PY)
+            json.putVec("pos", clientController.player.pos)
             json.put("type", "new")
             sendToServer("add_logicElement", json)
         }

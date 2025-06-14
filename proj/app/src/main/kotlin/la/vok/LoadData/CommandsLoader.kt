@@ -87,12 +87,12 @@ class CommandsFilesLoader : JsonDataLoader() {
 
 
 
-data class CommandVariation(
+class CommandVariation(
     val vars: List<String>,
     val script: String
 )
 
-data class CommandData(
+class CommandData(
     val description: String,
     val commandVariations: List<CommandVariation>
 ) {
@@ -159,7 +159,7 @@ data class CommandData(
         for (i in localDefinedVars.indices) {
             val def = localDefinedVars[i]
             val act = actualParamTypes[i]
-            if (def != act && (def != "@string")) {
+            if (def != act && (def != "@string") && (def != "@string...")) {
                 return false
             }
         }

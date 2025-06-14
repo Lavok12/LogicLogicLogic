@@ -7,6 +7,7 @@ import la.vok.GameController.GameController
 import la.vok.UI.MainRender
 import processing.data.*
 import la.vok.GameController.Client.Rendering.*
+import la.vok.LavokLibrary.Vectors.Vec2
 
 class LogicWire(
     var start: LogicElement,
@@ -55,10 +56,8 @@ class LogicWire(
     fun deactivate() {
         isActive = false
     }
-    var SVX = 0f
-    var SVY = 0f
-    var EVX = 0f
-    var EVY = 0f
+    var visualpos1 = Vec2(0f)
+    var visualpos2 = Vec2(0f)
     var VZ = 0f
 
     fun tick() {
@@ -68,20 +67,16 @@ class LogicWire(
 
     }
     fun updateVisual(mainRender: MainRender) {
-        SVX = mainRender.camera.camX(start.PX)
-        SVY = mainRender.camera.camY(start.PY)
-        EVX = mainRender.camera.camX(end.PX)
-        EVY = mainRender.camera.camY(end.PY)
+        visualpos1 = mainRender.camera.cam(start.pos)
+        visualpos2 = mainRender.camera.cam(end.pos)
         VZ  = mainRender.camera.camZ(5f)
     
     }
     fun render(mainRender: MainRender) {
         mainRender.lg.fill(255f,0f,0f)
         mainRender.lg.setLine(
-            SVX,
-            SVY,
-            EVX,
-            EVY,
+            visualpos1,
+            visualpos2,
             VZ,
             200f,
             100f,

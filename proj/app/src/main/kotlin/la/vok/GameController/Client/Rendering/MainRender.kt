@@ -12,6 +12,7 @@ import la.vok.GameController.Client.Camera
 import la.vok.GameController.Client.LoadState
 import la.vok.GameController.Content.*
 import la.vok.GameController.ClientState
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
@@ -94,8 +95,7 @@ class MainRender(var gameController: GameController) {
             }
         }
         
-        gameController.getCanvas().width = Storage.lg.disW
-        gameController.getCanvas().height = Storage.lg.disH
+        gameController.getCanvas().wh = Vec2(Storage.lg.disW, Storage.lg.disH)
 
         gameController.lCanvasController.canvasListRender()
         updateDistaplay()

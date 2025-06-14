@@ -149,8 +149,8 @@ class LButton(
     }
 
     fun standartVisuals() {
-        TPX = PX + textDeltaX * parentCanvas.scaleX + SX * textPosAlignX/2
-        TPY = PY + textDeltaY * parentCanvas.scaleY + SY * textPosAlignY/2
+        TPX = PX + textDeltaX * parentCanvas.scale.x + SX * textPosAlignX/2
+        TPY = PY + textDeltaY * parentCanvas.scale.y + SY * textPosAlignY/2
 
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
     }

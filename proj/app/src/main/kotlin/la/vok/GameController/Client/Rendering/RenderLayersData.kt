@@ -24,7 +24,7 @@ object Layers {
     val TOTAL_LAYERS = MAX_LAYER * MAX_SUBLAYER
 }
 
-data class RenderLayer(val layer: Int, val sublayer: Int, val f: (MainRender) -> Unit)
+class RenderLayer(val layer: Int, val sublayer: Int, val f: (MainRender) -> Unit)
 
 class RenderLayersData(vararg vlayers: RenderLayer) {
     var layers = vlayers

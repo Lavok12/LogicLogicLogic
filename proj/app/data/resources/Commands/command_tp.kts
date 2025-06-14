@@ -3,7 +3,8 @@ when (commandObject.configuratorId) {
         val name = commandObject.args.getOrNull(0) ?: "?"
         val targetId = gameController.serverController.connectsContainer.getIdByName(name)
         val player = gameController.serverController.connectsContainer.getPlayerData(targetId!!)!!
-        gameController.serverController.serverFunctions.playerSetPosition(commandObject.senderId, player.PX, player.PY)
+        gameController.serverController.serverFunctions.playerSetPosition(commandObject.senderId, player.pos
+        )
         gameController.serverController.serverChatController.addLocalMessage(
             commandObject.senderId,
             "System",
@@ -24,8 +25,8 @@ when (commandObject.configuratorId) {
 
         gameController.serverController.serverFunctions.playerSetPosition(
             commandObject.senderId,
-            pos1.toFloat() ?: 0f,
-            pos2.toFloat() ?: 0f
+            Vec2(pos1.toFloat() ?: 0f,
+            pos2.toFloat() ?: 0f)
         )
         gameController.serverController.serverChatController.addLocalMessage(
             commandObject.senderId,
@@ -46,7 +47,7 @@ when (commandObject.configuratorId) {
         val name = commandObject.args.getOrNull(1) ?: "?"
         val targetId = gameController.serverController.connectsContainer.getIdByName(name)!!
         val player = gameController.serverController.connectsContainer.getPlayerData(targetId!!)!!
-        gameController.serverController.serverFunctions.playerSetPosition(id1, player.PX, player.PY)
+        gameController.serverController.serverFunctions.playerSetPosition(id1, player.pos)
         gameController.serverController.serverChatController.addLocalMessage(
             id1,
             "System",
@@ -70,7 +71,7 @@ when (commandObject.configuratorId) {
         val x = pos1.toFloatOrNull() ?: 0f
         val y = pos2.toFloatOrNull() ?: 0f
 
-        gameController.serverController.serverFunctions.playerSetPosition(id1, x, y)
+        gameController.serverController.serverFunctions.playerSetPosition(id1, Vec2(x, y))
         gameController.serverController.serverChatController.addLocalMessage(
             id1,
             "System",

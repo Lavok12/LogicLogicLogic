@@ -56,11 +56,11 @@ class ClientController(var gameController: GameController, var address: String =
     }
 
     fun renderUpdate(renderBuffer: RenderBuffer) {
-        player.updateCanvas()
-        playersContainer.updateCanvas()
         player.renderUpdate(renderBuffer)
         playersContainer.renderUpdate(renderBuffer)
         logicMap.renderUpdate(renderBuffer)
+        player.updateCanvas()
+        playersContainer.updateCanvas()
     }
 
     fun checkLastTime() {
@@ -116,21 +116,20 @@ class ClientController(var gameController: GameController, var address: String =
             checkLastTime()
             if (!gameController.textFieldController.isEditing) {
                 if (gameController.keyTracker.isPressed(KeyCode.w)) {
-                    player.PY += 20
+                    player.pos.y += 20
                 }
                 if (gameController.keyTracker.isPressed(KeyCode.a)) {
-                    player.PX -= 20
+                    player.pos.x -= 20
                 }
                 if (gameController.keyTracker.isPressed(KeyCode.s)) {
-                    player.PY -= 20
+                    player.pos.y -= 20
                 }
                 if (gameController.keyTracker.isPressed(KeyCode.d)) {
-                    player.PX += 20
+                    player.pos.x += 20
                 }
             }
             
-            mainCamera.PX = player.PX
-            mainCamera.PY = player.PY
+            mainCamera.position = player.pos
             
             if (frame % Settings.updateIntervalFrames == 0L) {
                 clientFunctions.sendToServer("update_player_data", player.toJsonObject())

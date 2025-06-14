@@ -142,8 +142,8 @@ class LTextField(
     fun newChar(char: Char) {}
 
     fun standartVisuals() {
-        TPX = PX + textDeltaX * parentCanvas.scaleX + SX * textPosAlignX / 2 - width / 2 + textSize
-        TPY = PY + textDeltaY * parentCanvas.scaleY + SY * textPosAlignY / 2 + height / 2 - textSize
+        TPX = PX + textDeltaX * parentCanvas.scale.x + SX * textPosAlignX / 2 - width / 2 + textSize
+        TPY = PY + textDeltaY * parentCanvas.scale.y + SY * textPosAlignY / 2 + height / 2 - textSize
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
     }
     override fun updateGridVisuals(nx: Float, ny: Float) {

@@ -16,6 +16,7 @@ import processing.data.JSONObject
 import la.vok.App
 import la.vok.Storages.Storage
 import la.vok.LavokLibrary.*
+import la.vok.LavokLibrary.Vectors.Vec2
 import java.net.NetworkInterface
 import java.util.*
 
@@ -68,7 +69,15 @@ object Functions {
         return (mx > xPos - xSize / 2 && mx < xPos + xSize / 2) &&
         (my > yPos - ySize / 2 && my < yPos + ySize / 2)
     }
-    
+    fun tap(position: Vec2, size: Vec2, mouse: Vec2): Boolean {
+        return (mouse.x > position.x - size.x / 2 && mouse.x < position.x + size.x / 2) &&
+                (mouse.y > position.y - size.y / 2 && mouse.y < position.y + size.y / 2)
+    }
+    fun tap(position: Vec2, size: Vec2, mx: Float, my: Float): Boolean {
+        return (mx > position.x - size.x / 2 && mx < position.x + size.x / 2) &&
+                (my > position.y - size.y / 2 && my < position.y + size.y / 2)
+    }
+
     fun leng(X1: Float, Y1: Float): Float {
         return PApplet.sqrt(PApplet.pow(X1, 2f) + PApplet.pow(Y1, 2f))
     }

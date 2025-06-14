@@ -1,6 +1,7 @@
 package la.vok.LavokLibrary
 
 import la.vok.App
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.Storages.Storage
 import processing.core.*
 import processing.opengl.PGraphicsOpenGL
@@ -57,13 +58,6 @@ class LGraphics {
         updateResolution()
     }
 
-    fun setText(txt: String, xPos: Float, yPos: Float, size: Float) {
-        var lsize = size
-        lsize = max(1f, lsize)
-        lsize = min(100000f, lsize)
-        pg.textSize(lsize * M)
-        pg.text(txt, (disW2 + xPos) * M, (disH2 - yPos) * M)
-    }
 
     fun setTextAlign(x: Int, y: Int) {
         when {
@@ -79,6 +73,13 @@ class LGraphics {
         }
     }
 
+    fun setText(txt: String, xPos: Float, yPos: Float, size: Float) {
+        var lsize = size
+        lsize = max(1f, lsize)
+        lsize = min(100000f, lsize)
+        pg.textSize(lsize * M)
+        pg.text(txt, (disW2 + xPos) * M, (disH2 - yPos) * M)
+    }
     fun setTextWH(txt: String, xPos: Float, yPos: Float, size: Float, w: Float, h: Float) {
         pg.textSize(size * M)
         pg.text(txt, (disW2 + xPos) * M, (disH2 - yPos), w * M, h * M)
@@ -219,4 +220,34 @@ class LGraphics {
     fun getPI(): PImage {
         return pg
     }
+
+    fun setBlock(pos: Vec2, size: Vec2) =
+        setBlock(pos.x, pos.y, size.x, size.y)
+
+    fun setBlock(pos: Vec2, size: Vec2, radius: Float) =
+        setBlock(pos.x, pos.y, size.x, size.y, radius)
+    fun setEps(pos: Vec2, size: Vec2) =
+        setEps(pos.x, pos.y, size.x, size.y)
+
+    fun setRotateEps(pos: Vec2, size: Vec2, angle: Float) =
+        setRotateEps(pos.x, pos.y, size.x, size.y, angle)
+    fun setLine(from: Vec2, to: Vec2) =
+        setLine(from.x, from.y, to.x, to.y)
+
+    fun setLine(from: Vec2, to: Vec2, w: Float, r: Float, g: Float, b: Float) =
+        setLine(from.x, from.y, to.x, to.y, w, r, g, b)
+    fun setImage(image: PImage, pos: Vec2, size: Vec2) =
+        setImage(image, pos.x, pos.y, size.x, size.y)
+
+    fun setImage(image: PImage, pos: Vec2, xSize: Float) =
+        setImage(image, pos.x, pos.y, xSize)
+    fun setRotateImage(image: PImage, pos: Vec2, size: Vec2, angle: Float) =
+        setRotateImage(image, pos.x, pos.y, size.x, size.y, angle)
+    fun setText(txt: String, pos: Vec2, size: Float) =
+        setText(txt, pos.x, pos.y, size)
+
+    fun setTextWH(txt: String, pos: Vec2, size: Float, box: Vec2) =
+        setTextWH(txt, pos.x, pos.y, size, box.x, box.y)
+
+
 }
