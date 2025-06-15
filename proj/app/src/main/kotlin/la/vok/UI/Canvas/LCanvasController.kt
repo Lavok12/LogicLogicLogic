@@ -33,6 +33,7 @@ class LCanvasController(var gameController: GameController) {
         if (lCanvas.layer == -1) {
             return
         }
+        lCanvas.activate()
         canvasList.add(lCanvas)
         lCanvas.isActive = true
         updateFlag = true
@@ -42,6 +43,7 @@ class LCanvasController(var gameController: GameController) {
         if (canvasList.contains(lCanvas)) {
             canvasList.remove(lCanvas)
         }
+        lCanvas.deactivate()
         lCanvas.isActive = false
         updateFlag = true
     }

@@ -1,14 +1,7 @@
 {
-    "x": 0,
-    "y": 0,
-    "width": 310,
-    "height": 130,
     "type": "LPanel",
+    "pos": [0, 0],
+    "wh": [310, 130],
     "tag": "bg",
-    "panelColor": [
-        0,
-        0,
-        0,
-        50
-    ]
+    "panelColor": [0, 0, 0, 50]
 }

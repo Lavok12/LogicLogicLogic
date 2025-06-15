@@ -8,96 +8,67 @@ import la.vok.UI.Scenes.*
 import java.awt.Color
 import processing.data.JSONObject
 import la.vok.LavokLibrary.*
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.GameController.GameController
 
 class LPanel(
     gameController: GameController,
-    x: Float = 0f, // Положение X
-    y: Float = 0f, // Положение Y
-    width: Float = 200f, // Ширина панели
-    height: Float = 100f, // Высота панели
-    alignX: Float = 0f, // Выравнивание по X
-    alignY: Float = 0f, // Выравнивание по Y
-    parentCanvas: LCanvas = gameController.getCanvas(), // Канва родителя
-    var panelColor: Color = Color(100, 100, 100, 255), // Цвет панели
-    var imageKey: String = "", // Ключ изображения панели
-    var scaleX: Float = 1f, // Масштаб по ширине
-    var scaleY: Float = 1f, // Масштаб по высоте
-    offsetByWidth: Float = 0f, // Смещение по ширине
-    offsetByHeight: Float = 0f, // Смещение по высоте
-    percentWidth: Float = -1f, // Процент ширины (-1 = нет процента, 0.0 = 0%, 1.0 = 100%)
-    percentHeight: Float = -1f, // Процент высоты (-1 = нет процента, 0.0 = 0%, 1.0 = 100%)
-    maxWidth: Float = 0f, // Максимальная ширина
-    maxHeight: Float = 0f, // Максимальная высота
-    minWidth: Float = 0f, // Минимальная ширина
-    minHeight: Float = 0f, // Минимальная высота
-    var borderRadius: Float = 0f, // Радиус скругления углов
-    tag: String = "" // Tag for the button
-
+    pos: Vec2 = Vec2(0f),
+    wh: Vec2 = Vec2(200f, 100f),
+    align: Vec2 = Vec2(0f),
+    parentCanvas: LCanvas = gameController.getCanvas(),
+    var panelColor: Color = Color(100, 100, 100, 255),
+    var imageKey: String = "",
+    var scale: Vec2 = Vec2(1f),
+    offsetByWH: Vec2 = Vec2(0f),
+    percentWidth: Float = -1f,
+    percentHeight: Float = -1f,
+    var borderRadius: Float = 0f,
+    tag: String = ""
 ) : LElement(
-    gameController, x, y, width, height, alignX, alignY, parentCanvas,
-    percentWidth, percentHeight, offsetByWidth, offsetByHeight,
-    maxWidth, maxHeight, minWidth, minHeight, tag
+    gameController, pos, wh, align, parentCanvas,
+    percentWidth, percentHeight, offsetByWH
 ) {
     private var panelSprite: LSprite? = null
 
+    init {
+        updateSprites()
+    }
+
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LPanel {
-            val x = json.LgetFloat("x", 0f)
-            val y = json.LgetFloat("y", 0f)
-            val width = json.LgetFloat("width", 200f)
-            val height = json.LgetFloat("height", 100f)
-            val alignX = json.LgetFloat("alignX", 0f)
-            val alignY = json.LgetFloat("alignY", 0f)
+            val pos = json.getVec2("pos", Vec2(0f))
+            val wh = json.getVec2("wh", Vec2(200f, 100f))
+            val align = json.getVec2("align", Vec2(0f))
             val percentWidth = json.LgetFloat("percentWidth", -1f)
             val percentHeight = json.LgetFloat("percentHeight", -1f)
-            val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
-            val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
-            val maxWidth = json.LgetFloat("maxWidth", 0f)
-            val maxHeight = json.LgetFloat("maxHeight", 0f)
-            val minWidth = json.LgetFloat("minWidth", 0f)
-            val minHeight = json.LgetFloat("minHeight", 0f)
+            val offsetByWH = json.getVec2("offsetByWH", Vec2(0f))
             val tag = json.LgetString("tag", "")
             val imageKey = json.LgetString("imageKey", "")
             val panelColor = Functions.getColorFromJSON(json, "panelColor", Color(100, 100, 100, 255))
-            val scaleX = json.LgetFloat("scaleX", 1f)
-            val scaleY = json.LgetFloat("scaleY", 1f)
+            val scale = json.getVec2("scale", Vec2(1f))
             val borderRadius = json.LgetFloat("borderRadius", 0f)
 
-            
-            var ret = LPanel(
+            val ret = LPanel(
                 gameController,
-                x = x,
-                y = y,
-                width = width,
-                height = height,
-                alignX = alignX,
-                alignY = alignY,
+                pos = pos,
+                wh = wh,
+                align = align,
                 parentCanvas = parentCanvas,
                 panelColor = panelColor,
                 imageKey = imageKey,
-                scaleX = scaleX,
-                scaleY = scaleY,
-                offsetByWidth = offsetByWidth,
-                offsetByHeight = offsetByHeight,
+                scale = scale,
+                offsetByWH = offsetByWH,
                 percentWidth = percentWidth,
                 percentHeight = percentHeight,
-                maxWidth = maxWidth,
-                maxHeight = maxHeight,
-                minWidth = minWidth,
-                minHeight = minHeight,
                 borderRadius = borderRadius,
                 tag = tag
             )
-            ret.gameController = gameController;
-            ret.checkChilds(json);
+            ret.gameController = gameController
+            ret.checkChilds(json)
             ret.setEvents(json)
-            return ret;
+            return ret
         }
-    }
-    
-    init {
-        updateSprites();
     }
 
     override fun updateSprites() {
@@ -108,10 +79,8 @@ class LPanel(
 
     override fun renderElement(mainRender: MainRender) {
         RenderElements.renderBlock(
-            posX = PX,
-            posY = PY,
-            width = SX*scaleX,
-            height = SY*scaleY,
+            pos = visualPos,
+            wh = visualSize * scale,
             borderRadius = borderRadius,
             mainRender = mainRender,
             image = panelSprite?.img,

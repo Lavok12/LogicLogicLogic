@@ -19,31 +19,25 @@ import la.vok.UI.Scenes.*
 
 open class LElement(
     var gameController: GameController,
-    var x: Float = 0f,
-    var y: Float = 0f,
-    var width: Float = 200f,
-    var height: Float = 100f,
-    var alignX: Float = 0f,
-    var alignY: Float = 0f,
+    var pos: Vec2 = Vec2(0f),
+    var wh: Vec2 = Vec2(0f),
+    var align: Vec2 = Vec2(0f),
     var parentCanvas: LCanvas = gameController.getCanvas(),
     var percentWidth: Float = -1f,
     var percentHeight: Float = -1f,
-    var offsetByWidth: Float = 0f,
-    var offsetByHeight: Float = 0f,
-    var maxWidth: Float = 0f,
-    var maxHeight: Float = 0f,
-    var minWidth: Float = 0f,
-    var minHeight: Float = 0f,
+    var offsetByWH: Vec2 = Vec2(0f),
     var tag: String = "",
 ) {
-    open var PX: Float = 0f
-    open var PY: Float = 0f
-    open var SX: Float = 0f
-    open var SY: Float = 0f
+    open var visualPos = Vec2(0f)
+    open var visualSize = Vec2(0f)
+
     open var elementCanvas: LCanvas = LCanvas(Vec2(0f), Vec2(0f), Vec2(1f), Vec2(1f), 1f, -1, true, gameController)
     open var isActive: Boolean = true
 
-    open var update: Boolean = false
+    open var createEvent: Boolean = false
+    open var updateEvent: Boolean = false
+    open var activateEvent: Boolean = false
+    open var deactivateEvent: Boolean = false
     open var onMouseDown: Boolean = false
     open var onMouseUp: Boolean = false
     open var onMouseMove: Boolean = false
@@ -53,6 +47,10 @@ open class LElement(
     open var onMouseHold: Boolean = false
     open var hasHitbox: Boolean = true
 
+    var createScript: String = ""
+    var updateScript: String = ""
+    var activateScript: String = ""
+    var deactivateScript: String = ""
     var onMouseDownScript: String = ""
     var onMouseUpScript: String = ""
     var onMouseMoveScript: String = ""
@@ -60,16 +58,13 @@ open class LElement(
     var onMouseExitScript: String = ""
     var onMouseOverScript: String = ""
     var onMouseHoldScript: String = ""
-    var updateScript: String = ""
 
     var layoutType: LayoutType = LayoutType.NONE // Enum для типа расположения (NONE, LINE, GRID)
     var layoutDirection: LayoutDirection = LayoutDirection.HORIZONTAL // Enum для направления (только для LINE)
-    var spacingX: Float = 0f // Отступ между элементами
-    var spacingY: Float = 0f // Отступ между элементами
+    var spacing: Vec2 = Vec2(0f) // Отступ между элементами
     var columns: Int = 1 // Количество колонок для GRID
     var rows: Int = 1 // Количество строк для GRID (может быть 0, если число колонок фиксировано)
-    var contentDeltaX: Float = 0f
-    var contentDeltaY: Float = 0f
+    var contentDelta: Vec2 = Vec2(0f)
     var reverseX: Boolean = false
     var reverseY: Boolean = false
     var alignCenterX: Boolean = false
@@ -78,7 +73,11 @@ open class LElement(
     open fun destroy() {
         elementCanvas.destroy()
     }
-    
+
+    init {
+        handleCreate()
+    }
+
     open fun tick() {
         if (!isActive) return
         handleUpdate()
@@ -89,11 +88,29 @@ open class LElement(
     open fun otherTick() {
     }
 
-    open fun handleUpdate() {
-        if (update) {
-            update()
+    open fun handleDeactivate() {
+        if (deactivateEvent) {
+            deactivateEvent()
         }
     }
+
+    open fun handleActivate() {
+        if (activateEvent) {
+            activateEvent()
+        }
+    }
+    open fun handleUpdate() {
+        if (updateEvent) {
+            updateEvent()
+        }
+    }
+
+    open fun handleCreate() {
+        if (createEvent) {
+            createEvent()
+        }
+    }
+
 
     open fun handleMouseEnter(mouseController: MouseController) {
         if (onMouseEnter) {
@@ -138,15 +155,22 @@ open class LElement(
     }
 
     open fun deactivate() {
+        handleDeactivate()
     }
 
-    open fun update() {}
+    open fun activate() {
+        handleActivate()
+    }
+
+    open fun updateEvent() {}
+    open fun createEvent() {}
+    open fun activateEvent() {}
+    open fun deactivateEvent() {}
     open fun onMouseDown(mouseController: MouseController) {
         if (onMouseDownScript != "") {
             gameController.ktsScriptManager.executeScript(onMouseDownScript, "default")
         }
     }
-
     open fun onMouseUp(mouseController: MouseController) {}
     open fun onMouseMove(mouseController: MouseController) {}
     open fun onMouseEnter(mouseController: MouseController) {}
@@ -161,7 +185,7 @@ open class LElement(
         if (!hasHitbox) {
             return false
         }
-        if (!Functions.tap(PX, PY, SX, SY, mx, my)) {
+        if (!Functions.tap(visualPos, visualSize, mx, my)) {
             return false;
         }
         return true;
@@ -203,10 +227,15 @@ open class LElement(
             onMouseHold = localJson.LgetBoolean("isActive", false)
             onMouseHoldScript = localJson.LgetString("ktscript", "")
         }
-        if (objs.hasKey("update")) {
-            val localJson = objs.LgetJSONObject("update")
-            update = localJson.LgetBoolean("isActive", false)
+        if (objs.hasKey("updateEvent")) {
+            val localJson = objs.LgetJSONObject("updateEvent")
+            updateEvent = localJson.LgetBoolean("isActive", false)
             updateScript = localJson.LgetString("ktscript", "")
+        }
+        if (objs.hasKey("createEvent")) {
+            val localJson = objs.LgetJSONObject("createEvent")
+            createEvent = localJson.LgetBoolean("isActive", false)
+            createScript = localJson.LgetString("ktscript", "")
         }
         setLayoutProperties(objs)
     }
@@ -223,12 +252,10 @@ open class LElement(
         if (json.hasKey("layoutDirection")) {
             layoutDirection = LayoutDirection.valueOf(json.LgetString("layoutDirection", "").uppercase())
         }
-        spacingX = json.LgetFloat("spacingX", spacingX)
-        spacingY = json.LgetFloat("spacingY", spacingY)
+        spacing = json.getVec2("spacing", spacing)
         columns = json.LgetInt("columns", columns)
         rows = json.LgetInt("rows", rows)
-        contentDeltaX = json.LgetFloat("contentDeltaX", 0f)
-        contentDeltaY = json.LgetFloat("contentDeltaY", 0f)
+        contentDelta = json.getVec2("contentDelta", contentDelta)
         reverseX = json.LgetBoolean("reverseX", false)
         reverseY = json.LgetBoolean("reverseY", false)
         alignCenterX = json.LgetBoolean("alignCenterX", false)
@@ -272,30 +299,17 @@ open class LElement(
 
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LElement {
-            val x = json.LgetFloat("x", 0f)
-            val y = json.LgetFloat("y", 0f)
-            val width = json.LgetFloat("width", 0f)
-            val height = json.LgetFloat("height", 0f)
-            val alignX = json.LgetFloat("alignX", 0f)
-            val alignY = json.LgetFloat("alignY", 0f)
-            val percentWidth = json.LgetFloat("percentWidth", 0f)
-            val percentHeight = json.LgetFloat("percentHeight", 0f)
-            val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
-            val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
-            val maxWidth = json.LgetFloat("maxWidth", Float.MAX_VALUE)
-            val maxHeight = json.LgetFloat("maxHeight", Float.MAX_VALUE)
-            val minWidth = json.LgetFloat("minWidth", 0f)
-            val minHeight = json.LgetFloat("minHeight", 0f)
+            val pos = json.getVec2("pos", Vec2(0f))
+            val wh = json.getVec2("wh", Vec2(0f))
+            val align = json.getVec2("align", Vec2(0f))
+            val percentWidth = json.LgetFloat("percentWidth", -1f)
+            val percentHeight = json.LgetFloat("percentHeight", -1f)
+            val offsetByWH = json.getVec2("offsetByWH", Vec2(0f))
             val tag = json.LgetString("tag", "")
 
 
             var ret = LElement(
-                gameController, x, y, width, height, alignX, alignY, parentCanvas,
-                percentWidth, percentHeight,
-                offsetByWidth, offsetByHeight,
-                maxWidth, maxHeight,
-                minWidth, minHeight,
-                tag
+                gameController, pos, wh, align, parentCanvas, percentWidth, percentHeight, offsetByWH, tag
             )
             ret.gameController = gameController
             ret.checkChilds(json)
@@ -306,51 +320,33 @@ open class LElement(
     open fun updateSprites() {}
 
 
-    open fun updateGridVisuals(nx: Float, ny: Float) {
-        PX = nx
-        PY = ny
+    open fun updateGridVisuals(newPos: Vec2) {
+        visualPos = newPos
 
-        SX = if (percentWidth != -1f)
-            parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
-        else
-            parentCanvas.applyCanvasSizeX(width)
-        SY = if (percentHeight != -1f)
-            parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
-        else
-            parentCanvas.applyCanvasSizeY(height)
+        visualSize.x =
+            if (percentWidth != -1f) parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
+            else parentCanvas.applyCanvasSizeX(wh.x)
+        visualSize.y =
+            if (percentHeight != -1f) parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
+            else parentCanvas.applyCanvasSizeY(wh.y)
 
     }
 
     open fun updateVisuals() {
-        PX = parentCanvas.applyCanvasPosX(x, alignX)
-        PY = parentCanvas.applyCanvasPosY(y, alignY)
-        SX = if (percentWidth != -1f)
-            parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
-        else
-            parentCanvas.applyCanvasSizeX(width)
-        SY = if (percentHeight != -1f)
-            parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
-        else
-            parentCanvas.applyCanvasSizeY(height)
+        visualPos = parentCanvas.applyCanvasPos(pos, align)
 
-        if (maxWidth != 0f && SX > maxWidth) {
-            SX = maxWidth
-        }
-        if (maxHeight != 0f && SY > maxHeight) {
-            SY = maxHeight
-        }
-        if (minWidth != 0f && SX < minWidth) {
-            SX = minWidth
-        }
-        if (minHeight != 0f && SY < minHeight) {
-            SY = minHeight
-        }
+        visualSize.x =
+            if (percentWidth != -1f) parentCanvas.applyCanvasSizeX(parentCanvas.canvasSizePercentX(percentWidth))
+            else parentCanvas.applyCanvasSizeX(wh.x)
+        visualSize.y =
+            if (percentHeight != -1f) parentCanvas.applyCanvasSizeY(parentCanvas.canvasSizePercentY(percentHeight))
+            else parentCanvas.applyCanvasSizeY(wh.y)
 
-        PX += offsetByWidth * SX
-        PY += offsetByHeight * SY
 
-        elementCanvas.pos = Vec2(PX, PY)
-        elementCanvas.wh = Vec2(SX, SY)
+        visualPos = visualPos + offsetByWH * visualSize
+
+        elementCanvas.pos = visualPos
+        elementCanvas.wh = visualSize
     }
 
     open fun renderElement(mainRender: MainRender) {
@@ -374,10 +370,18 @@ open class LElement(
 
     fun debugRender(mainRender: MainRender) {
         elementCanvas.debugRender(mainRender)
-        mainRender.lg.fill(255f,0f)
-        mainRender.lg.pg.stroke(255f,0f,0f)
+        mainRender.lg.fill(255f, 0f)
+        mainRender.lg.pg.stroke(255f, 0f, 0f)
         mainRender.lg.pg.strokeWeight(4f)
-        mainRender.lg.setBlock(PX, PY, SX, SY)
+        mainRender.lg.setBlock(visualPos, visualSize)
         mainRender.lg.pg.noStroke()
+        mainRender.lg.fill(255f, 0f, 0f, 255f)
+        mainRender.lg.setTextAlign(-1, -1)
+        mainRender.lg.setText(
+            "visualPos ${visualPos.x}, ${visualPos.y}\nvisualSize ${visualSize.x}, ${visualSize.y}\nwh ${wh.x}, ${wh.y}\nParentScale ${parentCanvas.scale}, ${parentCanvas.localScale}\npwh ${percentWidth}, ${percentHeight}",
+            visualPos - Vec2(visualSize.x, -visualSize.y) / 2f + Vec2(10f, 185f),
+            25f
+        )
+
     }
 }

@@ -1,11 +1,9 @@
 {
-  "textAlignX": 0,
-  "textAlignY": 0,
-  "fontSize": 40,
-  "x": 0,
-  "y": 0,
-  "width": 200,
-  "height": 20,
   "type": "LText",
+  "pos": [0, 0],
+  "wh": [200, 20],
+  "align": [0, 0],
+  "textAlign": [0, 0],
+  "fontSize": 40,
   "tag": "scrTag"
 }

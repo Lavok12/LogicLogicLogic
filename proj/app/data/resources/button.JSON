@@ -1,22 +1,10 @@
 {
-    "x": 0,
-    "y": 0,
-    "width": 300,
-    "height": 120,
     "type": "LButton",
+    "pos": [0, 0],
+    "wh": [300, 120],
     "tag": "text",
     "text": "Start",
-    "textColor": [
-        255,
-        255,
-        255,
-        255
-    ],
+    "textColor": [255, 255, 255, 255],
     "textSize": 50,
-    "panelColor": [
-        180,
-        150,
-        100,
-        255
-    ]
+    "panelColor": [180, 150, 100, 255]
 }

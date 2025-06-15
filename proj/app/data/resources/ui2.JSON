@@ -1,59 +1,38 @@
 {
     "tag": "panel",
-    "x": 0,
-    "y": 0,
     "type": "LPanel",
-    "height": 860,
-    "width": 1560,
-    "panelColor": [
-        120,
-        120,
-        120,
-        255
-    ],
+    "pos": [0, 0],
+    "wh": [1560, 860],
+    "panelColor": [120, 120, 120, 255],
     "childs": [
         {
-            "extends": [
-                "button"
-            ],
+            "extends": ["button"],
             "tag": "b1",
-            "y": 160,
+            "pos": [0, 160],
             "onMouseDown": {
                 "isActive": true,
                 "ktscript": "startGame"
             }
         },
         {
-            "extends": [
-                "button"
-            ],
+            "extends": ["button"],
             "tag": "b2",
-            "y": -160
+            "pos": [0, -160]
         },
         {
-            "extends": [
-                "black"
-            ],
+            "extends": ["black"],
             "tag": "b3",
-            "y": -160,
-            "x": 100
+            "pos": [100, -160]
         },
         {
             "type": "LTextField",
-            "x": 0,
-            "y": 0,
-            "width": 800,
-            "height": 100,
+            "pos": [0, 0],
+            "wh": [800, 100],
             "multiline": true,
             "text": "enter_name",
             "textTranslate": true,
             "fontSize": 32,
-            "textColor": [
-                255,
-                255,
-                255,
-                255
-            ],
+            "textColor": [255, 255, 255, 255],
             "tag": "nicknameField"
         }
     ]

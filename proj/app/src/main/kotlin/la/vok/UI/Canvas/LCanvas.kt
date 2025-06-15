@@ -100,11 +100,17 @@ class LCanvas (
     }
 
     fun deactivate() {
-        gameController.lCanvasController.remove(this)
         for (LElement in elements) {
             LElement.deactivate()
         }
     }
+
+    fun activate() {
+        for (LElement in elements) {
+            LElement.activate()
+        }
+    }
+
 
     fun tick() {
         for (i in elements.size - 1 downTo 0) {
@@ -129,14 +135,14 @@ class LCanvas (
             LayoutDirection.HORIZONTAL -> {
                 var dx = 0f
                 if (parent.alignCenterX) {
-                    dx = (elements.size-1) * parent.spacingX * scale.x * localScale.x / 2
+                    dx = (elements.size-1) * parent.spacing.x * scale.x * localScale.x / 2
                 }
                 for (LElement in if (!parent.reverseX) {elements} else {elements.reversed()}) {
                     i++
                     LElement.updateGridVisuals(
-                        pos.x + (parent.contentDeltaX + i * parent.spacingX) * scale.x * localScale.x - dx
+                        Vec2(pos.x + (parent.contentDelta.x + i * parent.spacing.x) * scale.x * localScale.x - dx
                         ,
-                        pos.y + (parent.contentDeltaY) * scale.y * localScale.y
+                        pos.y + (parent.contentDelta.y) * scale.y * localScale.y)
                     )
                     LElement.render(gameController.mainRender)
                 }
@@ -144,14 +150,14 @@ class LCanvas (
             LayoutDirection.VERTICAL -> {
                 var dy = 0f
                 if (parent.alignCenterX) {
-                    dy = (elements.size-1) * parent.spacingY * scale.y * localScale.y / 2
+                    dy = (elements.size-1) * parent.spacing.y * scale.y * localScale.y / 2
                 }
                 for (LElement in if (!parent.reverseY) {elements} else {elements.reversed()}) {
                     i++
                     LElement.updateGridVisuals(
-                        pos.x + (parent.contentDeltaX) * scale.x * localScale.x
+                        Vec2(pos.x + (parent.contentDelta.x) * scale.x * localScale.x
                         ,
-                        pos.y + (parent.contentDeltaY + i * parent.spacingY) * scale.y * localScale.y - dy
+                        pos.y + (parent.contentDelta.y + i * parent.spacing.y) * scale.y * localScale.y - dy)
                     )
                     LElement.render(gameController.mainRender)
                 }
@@ -182,6 +188,12 @@ class LCanvas (
     }
     fun applyCanvasSizeY(h: Float): Float {
         return h * scale.y * localScale.y
+    }
+    fun applyCanvasPos(x: Vec2, align: Vec2 = Vec2(0f)): Vec2 {
+        return (x * scale * localScale + pos + align * wh/2f)
+    }
+    fun applyCanvasSize(w: Vec2): Vec2 {
+        return w * scale * localScale
     }
     fun applyCanvasTextSize(s: Float): Float {
         return s * textScale

@@ -1,13 +1,8 @@
 package la.vok.LoadData
 
 import la.vok.LavokLibrary.*
-import la.vok.Storages.Storage
 import la.vok.Storages.Settings
-import processing.core.PApplet
-import processing.core.PImage
 import processing.data.JSONObject
-import la.vok.UI.Canvas.*
-import la.vok.UI.Scenes.*
 import la.vok.GameController.GameController
 
 class UILoader(var gameController: GameController) {
@@ -68,7 +63,7 @@ class UIDataElement(var path: String, var addData: ArrayList<String> = ArrayList
     fun loadJson(): JSONObject {
         val json = Functions.loadJSONObject(path)
         for (i in addData) {
-            json.add(Functions.loadJSONObject(i))
+            json.addReplaceIfAllFloat(Functions.loadJSONObject(i))
         }
         return json
     }

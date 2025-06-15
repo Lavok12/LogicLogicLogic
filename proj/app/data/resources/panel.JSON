@@ -1,14 +1,8 @@
 {
     "tag": "endButton",
-    "x": 0,
-    "y": 0,
     "type": "LPanel",
+    "pos": [0, 0],
     "percentHeight": 50,
     "percentWidth": 100,
-    "panelColor": [
-        200,
-        100,
-        50,
-        90
-    ]
+    "panelColor": [200, 100, 50, 90]
 }

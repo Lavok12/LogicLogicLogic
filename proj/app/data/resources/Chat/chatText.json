@@ -1,11 +1,8 @@
 {
-  "textAlignX": -1,
-  "textAlignY": 0,
+  "textAlign": [-1, 0],
   "fontSize": 30,
-  "x": 0,
-  "y": 0,
-  "width": 200,
-  "height": 20,
+  "pos": [0,0],
+  "wh": [200,20],
   "type": "LText",
   "tag": "chatMessage"
 }

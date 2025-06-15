@@ -35,18 +35,16 @@ class MainRender(var gameController: GameController) {
         if (LScene != null) {
             gameController.lCanvasController.remove(LScene!!.canvas)
         }
-        LScene?.deactivate()
         scene.checkLoaded()
         scene.addTagsToCanvas();
         LScene = scene
-        gameController.lCanvasController.add(LScene!!.canvas)
+            gameController.lCanvasController.add(LScene!!.canvas)
     }
     
     fun continueScene(scene: LScene) {
         if (LScene != null) {
             gameController.lCanvasController.remove(LScene!!.canvas)
         }
-        LScene?.deactivate()
         scene.checkLoaded()
         LScene = scene
         gameController.lCanvasController.add(LScene!!.canvas)

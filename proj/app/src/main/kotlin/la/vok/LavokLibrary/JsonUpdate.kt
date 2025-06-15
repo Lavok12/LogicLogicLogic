@@ -50,6 +50,34 @@ fun JSONArray.add(obj: JSONArray): JSONArray {
     return this
 }
 
+fun JSONObject.addReplaceIfAllFloat(obj: JSONObject): JSONObject {
+    for (key in obj.keys()) {
+        val value = obj.get(key as String)
+        when (value) {
+            is String -> this.setString(key, value)
+            is Int -> this.setInt(key, value)
+            is Float -> this.setFloat(key, value)
+            is Double -> this.setDouble(key, value)
+            is Boolean -> this.setBoolean(key, value)
+            is JSONArray -> {
+                if (this.hasKey(key) && !this.getJSONArray(key).isVector()) {
+                    this.setJSONArray(key, this.getJSONArray(key).add(value))
+                } else {
+                    this.setJSONArray(key, value)
+                }
+            }
+            is JSONObject -> {
+                if (this.hasKey(key)) {
+                    this.setJSONObject(key, this.getJSONObject(key).addReplaceIfAllFloat(value))
+                } else {
+                    this.setJSONObject(key, value)
+                }
+            }
+        }
+    }
+    return this
+}
+
 
 fun JSONObject.LgetInt(key: String, default: Int = 0): Int {
     if (!this.hasKey(key)) return default
@@ -318,4 +346,27 @@ fun JSONArray.getVec4(index: Int, default: Vec4 = Vec4(0f, 0f, 0f, 0f)): Vec4 {
     } catch (e: Exception) {
         default
     }
+}
+
+fun JSONArray.isVector(): Boolean {
+    val size = this.size()
+    if (size !in 2..4) return false // Только Vec2, Vec3, Vec4
+
+    for (i in 0 until size) {
+        val value = this.get(i)
+        when (value) {
+            is Number -> continue // Уже число — ок
+            is String -> {
+                // Пытаемся преобразовать строку в число
+                try {
+                    value.toFloat()
+                } catch (e: NumberFormatException) {
+                    return false
+                }
+            }
+            else -> return false // Ни число, ни строка — не вектор
+        }
+    }
+
+    return true
 }

@@ -10,18 +10,16 @@ import la.vok.LavokLibrary.*
 import la.vok.GameController.GameController
 import la.vok.UI.*
 import la.vok.InputController.MouseController
+import la.vok.LavokLibrary.Vectors.Vec2
 import la.vok.UI.Canvas.*
 import la.vok.UI.Scenes.*
 
 
 class LTextField(
     gameController: GameController,
-    x: Float = 0f,
-    y: Float = 0f,
-    width: Float = 200f,
-    height: Float = 100f,
-    alignX: Float = 0f,
-    alignY: Float = 0f,
+    pos: Vec2 = Vec2(0f, 0f),
+    wh: Vec2 = Vec2(200f, 100f),
+    align: Vec2 = Vec2(0f, 0f),
     parentCanvas: LCanvas = Storage.gameController.getCanvas(),
     var text: String = "Text",
     var inputString: String = "",
@@ -30,19 +28,20 @@ class LTextField(
     var fontSize: Float = 30f,
     var textColor: Color = Color(180, 180, 180),
     var inputTextColor: Color = Color(255, 255, 255),
-    var textDeltaX: Float = 0f,
-    var textDeltaY: Float = 0f,
-    var textPosAlignX: Float = 0f,
-    var textPosAlignY: Float = 0f,
+    var textDelta: Vec2 = Vec2(0f, 0f),
+    var textPosAlign: Vec2 = Vec2(0f, 0f),
     var panelColor: Color = Color(100, 100, 100, 255),
     var borderRadius: Float = 0f,
     tag: String = ""
 ) : LElement(
-    gameController, x, y, width, height, alignX, alignY, parentCanvas,
-    -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, tag
+    gameController,
+    pos, wh,
+    align,
+    parentCanvas,
+    -1f, -1f, Vec2(0f),
+    tag
 ) {
-    private var TPX: Float = 0f
-    private var TPY: Float = 0f
+    private var textVisualPos: Vec2 = Vec2(0f)
     private var textSize: Float = 0f
 
     var isEditing = false
@@ -61,23 +60,19 @@ class LTextField(
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LTextField {
             var ret = LTextField(
                 gameController = gameController,
-                x = json.LgetFloat("x", 0f),
-                y = json.LgetFloat("y", 0f),
-                width = json.LgetFloat("width", 200f),
-                height = json.LgetFloat("height", 100f),
-                alignX = json.LgetFloat("alignX", 0f),
-                alignY = json.LgetFloat("alignY", 0f),
+                pos = json.getVec2("pos", Vec2(0f)),
+                wh = json.getVec2("wh", Vec2(0f)),
+                align = json.getVec2("align", Vec2(0f)),
                 parentCanvas = parentCanvas,
                 text = json.LgetString("text", "Text"),
+                inputString = json.LgetString("inputString", ""),
                 multiline = json.LgetBoolean("text", false),
                 textTranslate = json.LgetBoolean("textTranslate", true),
                 fontSize = json.LgetFloat("fontSize", 30f),
                 textColor = Functions.getColorFromJSON(json, "textColor", Color(180, 180, 180)),
                 inputTextColor = Functions.getColorFromJSON(json, "textColor", Color(255, 255, 255)),
-                textDeltaX = json.LgetFloat("textDeltaX", 0f),
-                textDeltaY = json.LgetFloat("textDeltaY", 0f),
-                textPosAlignX = json.LgetFloat("textPosAlignX", 0f),
-                textPosAlignY = json.LgetFloat("textPosAlignY", 0f),
+                textDelta = json.getVec2("textDelta", Vec2(0f)),
+                textPosAlign = json.getVec2("textPosAlign", Vec2(0f)),
                 panelColor = Functions.getColorFromJSON(json, "panelColor", Color(100, 100, 100, 255)),
                 borderRadius = json.LgetFloat("borderRadius", 0f),
                 tag = json.LgetString("tag", "")
@@ -142,12 +137,14 @@ class LTextField(
     fun newChar(char: Char) {}
 
     fun standartVisuals() {
-        TPX = PX + textDeltaX * parentCanvas.scale.x + SX * textPosAlignX / 2 - width / 2 + textSize
-        TPY = PY + textDeltaY * parentCanvas.scale.y + SY * textPosAlignY / 2 + height / 2 - textSize
+        textVisualPos = visualPos + textDelta * parentCanvas.scale  * parentCanvas.localScale
+        textVisualPos.x -= wh.x / 2f
+        textVisualPos.x += 15f
+        textVisualPos.y -= fontSize / 4f
         textSize = parentCanvas.applyCanvasTextSize(fontSize * parentCanvas.textScale)
     }
-    override fun updateGridVisuals(nx: Float, ny: Float) {
-        super.updateGridVisuals(nx, ny)
+    override fun updateGridVisuals(newPos: Vec2) {
+        super.updateGridVisuals(newPos)
         standartVisuals()
     }
     override fun updateVisuals() {
@@ -211,8 +208,8 @@ class LTextField(
     
         // Отрисовка фона
         RenderElements.renderBlock(
-            posX = PX, posY = PY,
-            width = SX, height = SY,
+            pos = visualPos,
+            wh = visualSize,
             borderRadius = borderRadius,
             mainRender = mainRender,
             clr = panelColor
@@ -232,9 +229,9 @@ class LTextField(
     
         // Текст
         
-        lg.setTextAlign(-1, 1)
+        lg.setTextAlign(-1, -1)
         lg.pg.fill(textColor.red.toFloat(), textColor.green.toFloat(), textColor.blue.toFloat(), textColor.alpha.toFloat())
-        lg.setText(displayText, TPX, TPY, textSize)
+        lg.setText(displayText, textVisualPos, textSize)
     
         // Курсор
         if (isEditing) {
@@ -247,7 +244,7 @@ class LTextField(
             var lineStart = 0
             val start = range.first
             val end = range.last + 1
-            val cursorY = TPY + textSize * 0.2f
+            val cursorY = textVisualPos.y + textSize * 0.2f
     
             for ((i, line) in lines.withIndex()) {
                 val lineEnd = lineStart + line.length
@@ -259,8 +256,8 @@ class LTextField(
     
                 val selStart = (start - lineStart).coerceIn(0, line.length)
                 val selEnd = (end - lineStart).coerceIn(0, line.length)
-                val x1 = TPX + mainRender.lg.getTextWidth(line.substring(0, selStart), textSize)
-                val x2 = TPX + mainRender.lg.getTextWidth(line.substring(0, selEnd), textSize)
+                val x1 = textVisualPos.x + mainRender.lg.getTextWidth(line.substring(0, selStart), textSize)
+                val x2 = textVisualPos.x + mainRender.lg.getTextWidth(line.substring(0, selEnd), textSize)
     
                 val y = cursorY - i * lineHeight * 1.2f
                 mainRender.lg.fill(100f, 150f, 255f, 120f)
@@ -291,8 +288,8 @@ class LTextField(
             }
         }
     
-        val cursorX = TPX + mainRender.lg.getTextWidth(lines[lineIndex].substring(0, charIndexInLine), textSize)
-        val cursorY = TPY + textSize * 0.2f - (lineIndex * lineHeight) * 1.2f
+        val cursorX = textVisualPos.x + mainRender.lg.getTextWidth(lines[lineIndex].substring(0, charIndexInLine), textSize)
+        val cursorY = textVisualPos.y + textSize * 0.2f - (lineIndex * lineHeight) * 1.2f
     
         mainRender.lg.fill(50f, 150f, 220f, 160f)
         mainRender.lg.setBlock(
@@ -306,7 +303,7 @@ class LTextField(
 
     fun getCursorPositionAt(mouseX: Float, mouseY: Float): Int {
         val lines = inputString.split('\n')
-        var yOffset = TPY + textSize * 0.2f
+        var yOffset = textVisualPos.y + textSize * 0.2f
         val lineHeight = textSize * 1.3f
         var currentPos = 0
     
@@ -318,7 +315,7 @@ class LTextField(
                 for (j in 0..line.length) {
                     val sub = line.substring(0, j)
                     val width = gameController.mainRender.lg.getTextWidth(sub, textSize)
-                    val charX = TPX + width
+                    val charX = textVisualPos.y + width
                     if (mouseX < charX) {
                         return currentPos + j
                     }

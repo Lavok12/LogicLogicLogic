@@ -24,6 +24,7 @@ object initializeAll {
         Storage.gameController.startInit(); 
         Storage.gameController.initLoaders();
         Storage.gameController.initScenes();
+        Storage.gameController.scriptsPreLoad()
         Storage.main.frameRate(60f)
         Storage.main.noiseSeed(Functions.rand(0, 255000000).toLong())
         Storage.gameController.initMenu();

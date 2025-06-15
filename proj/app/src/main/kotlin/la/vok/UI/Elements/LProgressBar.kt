@@ -7,20 +7,16 @@ import la.vok.UI.Scenes.*
 import la.vok.Storages.Storage
 import la.vok.LoadData.LSprite
 import java.awt.Color
-import la.vok.UI.Canvas.*
-import la.vok.UI.Scenes.*
-import la.vok.LavokLibrary.*;
+import la.vok.LavokLibrary.*
+import la.vok.LavokLibrary.Vectors.Vec2
 import processing.data.JSONObject
 import la.vok.GameController.GameController
 
 class LProgressBar(
     gameController: GameController,
-    x: Float = 0f,
-    y: Float = 0f,
-    width: Float = 200f,
-    height: Float = 40f,
-    alignX: Float = 0f,
-    alignY: Float = 0f,
+    pos: Vec2 = Vec2(0f),
+    wh: Vec2 = Vec2(200f, 40f),
+    align: Vec2 = Vec2(0f),
     parentCanvas: LCanvas = Storage.gameController.getCanvas(),
     var progress: Float = 0f,
     var smooth: Boolean = true,
@@ -32,27 +28,16 @@ class LProgressBar(
     var fillImageKey: String = "",
     var backgroundImageKey: String = "",
     var imagePadding: Float = 2f,
-    var paddingX: Float = 4f,
-    var paddingY: Float = 4f,
-    var scaleX: Float = 1f,
-    var scaleY: Float = 1f,
+    var padding: Vec2 = Vec2(4f),
+    var scale: Vec2 = Vec2(1f),
     var postImageKey: String = "",
-    offsetByWidth: Float = 0f,
-    offsetByHeight: Float = 0f,
+    offsetByWH: Vec2 = Vec2(0f),
     percentWidth: Float = -1f,
     percentHeight: Float = -1f,
-    maxWidth: Float = 0f,
-    maxHeight: Float = 0f,
-    minWidth: Float = 0f,
-    minHeight: Float = 0f,
     tag: String = ""
 ) : LElement(
-    gameController, x, y, width, height, alignX, alignY, parentCanvas,
-    percentWidth, percentHeight,
-    offsetByWidth, offsetByHeight,
-    maxWidth, maxHeight,
-    minWidth, minHeight,
-    tag
+    gameController, pos, wh, align, parentCanvas,
+    percentWidth, percentHeight, offsetByWH, tag
 ) {
 
     var fillSprite: LSprite? = null
@@ -61,12 +46,9 @@ class LProgressBar(
 
     companion object {
         fun JSONToElement(json: JSONObject, parentCanvas: LCanvas, gameController: GameController): LProgressBar {
-            val x = json.LgetFloat("x", 0f)
-            val y = json.LgetFloat("y", 0f)
-            val width = json.LgetFloat("width", 200f)
-            val height = json.LgetFloat("height", 40f)
-            val alignX = json.LgetFloat("alignX", 0f)
-            val alignY = json.LgetFloat("alignY", 0f)
+            val pos = json.getVec2("pos", Vec2(0f))
+            val wh = json.getVec2("wh", Vec2(200f, 40f))
+            val align = json.getVec2("align", Vec2(0f))
             val progress = json.LgetFloat("progress", 0f)
             val smooth = json.LgetBoolean("smooth", true)
             val steps = json.LgetInt("steps", 10)
@@ -77,47 +59,35 @@ class LProgressBar(
             val fillImageKey = json.LgetString("fillImageKey", "")
             val backgroundImageKey = json.LgetString("backgroundImageKey", "")
             val imagePadding = json.LgetFloat("imagePadding", 2f)
-            val paddingX = json.LgetFloat("paddingX", 4f)
-            val paddingY = json.LgetFloat("paddingY", 4f)
-            val scaleX = json.LgetFloat("scaleX", 1f)
-            val scaleY = json.LgetFloat("scaleY", 1f)
-            val offsetByWidth = json.LgetFloat("offsetByWidth", 0f)
-            val offsetByHeight = json.LgetFloat("offsetByHeight", 0f)
+            val padding = json.getVec2("padding", Vec2(4f))
+            val scale = json.getVec2("scale", Vec2(1f))
+            val offsetByWH = json.getVec2("offsetByWH", Vec2(0f))
             val percentWidth = json.LgetFloat("percentWidth", -1f)
             val percentHeight = json.LgetFloat("percentHeight", -1f)
-            val maxWidth = json.LgetFloat("maxWidth", 0f)
-            val maxHeight = json.LgetFloat("maxHeight", 0f)
-            val minWidth = json.LgetFloat("minWidth", 0f)
-            val minHeight = json.LgetFloat("minHeight", 0f)
+            val maxWH = json.getVec2("maxWH", Vec2(0f))
+            val minWH = json.getVec2("minWH", Vec2(0f))
             val tag = json.LgetString("tag", "")
             val postImageKey = json.LgetString("postImageKey", "")
-    
-            var ret = LProgressBar(
-                gameController, x, y, width, height,
-                alignX, alignY, parentCanvas,
+
+            val ret = LProgressBar(
+                gameController, pos, wh, align, parentCanvas,
                 progress, smooth, steps,
                 fillColor, gradientColor, backgroundColor,
                 borderRadius,
                 fillImageKey, backgroundImageKey,
-                imagePadding, paddingX, paddingY,
-                scaleX, scaleY,
+                imagePadding, padding, scale,
                 postImageKey,
-                offsetByWidth, offsetByHeight,
-                percentWidth, percentHeight,
-                maxWidth, maxHeight,
-                minWidth, minHeight,
-                tag
+                offsetByWH, percentWidth, percentHeight, tag
             )
-            ret.gameController = gameController;
-            ret.checkChilds(json);
+            ret.gameController = gameController
+            ret.checkChilds(json)
             ret.setEvents(json)
-            return ret;
+            return ret
         }
     }
-    
 
     init {
-        updateSprites();
+        updateSprites()
     }
 
     override fun updateSprites() {
@@ -135,72 +105,80 @@ class LProgressBar(
 
     override fun renderElement(mainRender: MainRender) {
         val lg = mainRender.lg
-        // Внутренние размеры с учётом padding
-        val innerX = PX + paddingX
-        val innerY = PY
-        val innerW = SX - 2 * paddingX
-        val innerH = SY - 2 * paddingY
-
         val currentProgress = progress.coerceIn(0f, 1f)
+
+        val vs = visualSize
+        val ps = visualPos
+
+        val innerW = vs.x - 2 * padding.x
+        val innerH = vs.y - 2 * padding.y
+
+        val innerPos = Vec2(
+            ps.x - vs.x / 2 + padding.x,
+            ps.y - vs.y / 2 + padding.y
+        )
 
         // 1. Фон
         RenderElements.renderBlock(
-            PX, PY, SX * scaleX, SY * scaleY,
-            backgroundColor,
-            borderRadius,
-            mainRender,
-            backgroundSprite?.img
+            pos = ps,
+            wh = vs * scale,
+            clr = backgroundColor,
+            borderRadius = borderRadius,
+            mainRender = mainRender,
+            image = backgroundSprite?.img
         )
 
-        // 2. Заливка (пошагово или плавно)
+        // 2. Прогресс
         if (steps > 0 && !smooth) {
             val stepWidth = (innerW - (imagePadding - 1) * steps) / steps
             val filledSteps = (currentProgress * steps).toInt()
-            
+
             for (i in 0 until filledSteps) {
-                var fcolor = fillColor
-                if (gradientColor != null) {
-                    fcolor = fillColor * (1 - i.toFloat() / steps) + gradientColor!! * (i.toFloat() / steps)
-                }
+                val t = i.toFloat() / steps
+                val fcolor = if (gradientColor != null)
+                    fillColor * (1 - t) + gradientColor!! * t
+                else fillColor
+
                 if (fillSprite != null) {
-                    lg.pg.tint(fcolor.red.toFloat(), fcolor.green.toFloat(), fcolor.blue.toFloat(), fcolor.alpha.toFloat());
+                    lg.pg.tint(fcolor.red.toFloat(), fcolor.green.toFloat(), fcolor.blue.toFloat(), fcolor.alpha.toFloat())
                 }
-                val stepX = innerX + i * (stepWidth + imagePadding)
+
+                val stepX = innerPos.x + i * (stepWidth + imagePadding)
                 RenderElements.renderBlock(
-                    stepX - SX / 2 + stepWidth / 2,
-                    innerY,
-                    stepWidth,
-                    innerH,
-                    fcolor,
-                    borderRadius,
-                    mainRender,
-                    fillSprite?.img
+                    pos = Vec2(stepX + stepWidth / 2, innerPos.y + innerH / 2),
+                    wh = Vec2(stepWidth, innerH),
+                    clr = fcolor,
+                    borderRadius = borderRadius,
+                    mainRender = mainRender,
+                    image = fillSprite?.img
                 )
             }
         } else {
             val filledWidth = innerW * currentProgress
+
             if (fillSprite != null) {
-                lg.pg.tint(fillColor.red.toFloat(), fillColor.green.toFloat(), fillColor.blue.toFloat(), fillColor.alpha.toFloat());
+                lg.pg.tint(fillColor.red.toFloat(), fillColor.green.toFloat(), fillColor.blue.toFloat(), fillColor.alpha.toFloat())
             }
+
             RenderElements.renderBlock(
-                innerX - SX / 2 + filledWidth / 2,
-                innerY,
-                filledWidth,
-                innerH,
-                fillColor,
-                borderRadius,
-                mainRender,
-                fillSprite?.img
+                pos = Vec2(innerPos.x + filledWidth / 2, innerPos.y + innerH / 2),
+                wh = Vec2(filledWidth, innerH),
+                clr = fillColor,
+                borderRadius = borderRadius,
+                mainRender = mainRender,
+                image = fillSprite?.img
             )
         }
-        // 3. пост-изображение
+
+        // 3. Пост-изображение
         if (postSprite != null) {
             RenderElements.renderBlock(
-                PX, PY, SX * scaleX, SY * scaleY,
-                backgroundColor,
-                borderRadius,
-                mainRender,
-                postSprite?.img
+                pos = ps,
+                wh = vs * scale,
+                clr = backgroundColor,
+                borderRadius = borderRadius,
+                mainRender = mainRender,
+                image = postSprite?.img
             )
         }
     }

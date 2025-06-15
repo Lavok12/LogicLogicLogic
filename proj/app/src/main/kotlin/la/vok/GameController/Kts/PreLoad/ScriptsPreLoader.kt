@@ -7,7 +7,7 @@ import la.vok.Storages.Settings
 import la.vok.UI.Elements.LProgressBar
 import la.vok.UI.Elements.LText
 
-class ContentPreLoader(private val gameController: GameController) {
+class ScriptsPreLoader(private val gameController: GameController) {
 
     private lateinit var preloadList: Array<String>
     private var currentId = 0
@@ -15,12 +15,17 @@ class ContentPreLoader(private val gameController: GameController) {
     private var tickCounter = -1
 
     var isFinished = false
-        private set
 
-    fun loadFiles() {
-        val fileText = Functions.loadFile("kts_preload_list")
+    var endFunction: (() -> Unit)? = null
+    fun loadFile(scriptsList: String, function: () -> Unit) {
+        gameController.mainRender.setScene(gameController.scenesContainer.getScene("loading")!!)
+        isFinished = false
+        endFunction = function
+        val fileText = Functions.loadFile(scriptsList)
         preloadList = fileText.lines().filter { it.isNotBlank() }.toTypedArray()
         maxId = preloadList.size - 1
+        currentId = 0
+        tickCounter = -1
     }
 
     fun tick() {
@@ -58,7 +63,7 @@ class ContentPreLoader(private val gameController: GameController) {
             // Все скрипты скомпилированы
             if (currentId > maxId) {
                 isFinished = true
-                gameController.mainRender.setScene(gameController.scenesContainer.getScene("main")!!)
+                endFunction!!()
             }
         }
 

@@ -1,11 +1,9 @@
 {
     "tag": "disconnect",
-    "x": 0,
-    "y": 0,
     "type": "LText",
-    "height": 860,
-    "width": 860,
-    "TextAlignX": 0,
-    "TextAlignY": 0,
+    "pos": [0, 0],
+    "wh": [860, 860],
+    "textAlignX": 0,
+    "textAlignY": 0,
     "text": "disconnect"
 }

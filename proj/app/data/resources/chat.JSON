@@ -1,29 +1,18 @@
 {
     "tag": "chat",
-    "x": 450,
-    "y": 50,
-    "alignX": -1,
-    "alignY": -1,
     "type": "LTextField",
-    "width": 800,
-    "height": 50,
-    "panelColor": [
-        60,
-        60,
-        60,
-        255
-    ],
+    "pos": [450, 50],
+    "wh": [800, 50],
+    "align": [-1, -1],
+    "panelColor": [60, 60, 60, 255],
     "text": "",
     "childs": [
         {
-            "extends": [
-                "button"
-            ],
+            "extends": ["button"],
             "tag": "send",
-            "alignX": 1,
-            "x": 150,
-            "width": 150,
-            "height": 50,
+            "pos": [150, 0],
+            "wh": [150, 50],
+            "align": [1, 0],
             "text": "Отправить",
             "textTranslate": false,
             "onMouseDown": {

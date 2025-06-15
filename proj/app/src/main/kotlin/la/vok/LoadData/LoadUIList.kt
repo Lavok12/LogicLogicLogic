@@ -1,13 +1,11 @@
 package la.vok.LoadData
 
 import la.vok.LavokLibrary.*
-import la.vok.Storages.Storage
 import la.vok.GameController.GameController
 import la.vok.UI.Elements.*
 import processing.data.JSONObject
 import processing.data.JSONArray
 import la.vok.UI.Canvas.*
-import la.vok.UI.Scenes.*
 
 
 class LoadUIList(private val gameController: GameController) {
@@ -31,11 +29,11 @@ class LoadUIList(private val gameController: GameController) {
             for (i in 0 until extendsArray.size()) {
                 val extendJson = loadData(extendsArray.getString(i))
                 extendJson.remove("extends")
-                newJson.add(extendJson)
+                newJson.addReplaceIfAllFloat(extendJson)
             }
         }
 
-        newJson.add(json)
+        newJson.addReplaceIfAllFloat(json)
         resolveVariables(newJson)
         return newJson
     }

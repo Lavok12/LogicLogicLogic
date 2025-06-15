@@ -10,7 +10,7 @@ import la.vok.Storages.Storage
 import la.vok.InputController.*
 import la.vok.GameController.Client.Rendering.*
 import la.vok.GameController.Kts.KtsScriptManager
-import la.vok.GameController.Kts.PreLoad.ContentPreLoader
+import la.vok.GameController.Kts.PreLoad.ScriptsPreLoader
 import la.vok.UI.Canvas.LCanvasController
 import la.vok.UI.Canvas.LCanvas
 import la.vok.UI.Scenes.ScenesContainer
@@ -55,7 +55,7 @@ class GameController() {
     lateinit var ktsScriptManager: KtsScriptManager
     lateinit var commandsLoader: CommandsLoader
 
-    lateinit var contentPreLoader: ContentPreLoader
+    lateinit var scriptsPreLoader: ScriptsPreLoader
 
     var gameStarted: Boolean = false
 
@@ -65,6 +65,7 @@ class GameController() {
     var isClient: Boolean = false
     var isServer: Boolean = false
     var isLocal: Boolean = false
+
     init {
         println("GameController initialized")
     }
@@ -74,13 +75,24 @@ class GameController() {
         this.isClient = isClient
         this.isServer = isServer
         this.isLocal = isLocal
+        gameStarted = true
+
+        Storage.name = (getCanvas().findElementByTag("nicknameField") as LTextField).inputString
+        if (Storage.name == "") {
+            Storage.name = "lvk"
+        }
+
+        scriptsPreLoader.loadFile("kts_server_list", this::finalStartGame)
+    }
+
+    fun finalStartGame() {
         println("---")
         println("Game started")
         println("---")
-        gameStarted = true
         initServer()
         initClient()
     }
+
 
     fun startInit() {
         loadUIList = LoadUIList(this)
@@ -96,7 +108,7 @@ class GameController() {
         textFieldController = TextFieldController(this)
         lCanvasController = LCanvasController(this)
         ktsScriptManager = KtsScriptManager(this)
-        contentPreLoader = ContentPreLoader(this)
+        scriptsPreLoader = ScriptsPreLoader(this)
         commandsLoader = CommandsLoader(this)
     }
 
@@ -107,10 +119,6 @@ class GameController() {
     fun initClient() {
         if (isClient && clientState == ClientState.UNINITIALIZED) {
             clientState = ClientState.INITIALIZED
-            Storage.name = (getCanvas().findElementByTag("nicknameField") as LTextField).inputString
-            if (Storage.name == "") {
-                Storage.name = "lvk"
-            }
             clientController = ClientController(this, Settings.address)
             initGameScenes()
             mainRender.setScene(scenesContainer.getScene("game")!!)
@@ -159,8 +167,11 @@ class GameController() {
         scriptsLoader.loadData()
         scenesLoader.loadData()
         commandsLoader.loadData()
+    }
 
-        contentPreLoader.loadFiles()    }
+    fun contentPreLoaderEnded() {
+        mainRender.setScene(scenesContainer.getScene("main")!!)
+    }
 
     fun initGameScenes() {
         scenesContainer.addScene(scenesLoader.newScene("game", "game"))
@@ -169,9 +180,13 @@ class GameController() {
         scenesContainer = ScenesContainer()
         scenesContainer.addScene(LScene("", "", gameController = this))
         scenesContainer.addScene(scenesLoader.newScene("main", "main"))
-        scenesContainer.addScene(scenesLoader.newScene("loading", "loading"))
         scenesContainer.addScene(scenesLoader.newScene("disconnect", "disconnect"))
-        mainRender.setScene(scenesContainer.getScene("loading")!!)
+        scenesContainer.addScene(scenesLoader.newScene("loading", "loading"))
+        mainRender.setScene(scenesContainer.getScene("")!!)
+    }
+
+    fun scriptsPreLoad() {
+        scriptsPreLoader.loadFile("kts_preload_list", this::contentPreLoaderEnded)
     }
 
     fun getCanvas(): LCanvas {
@@ -211,7 +226,7 @@ class GameController() {
     }
 
     fun tick() {
-        contentPreLoader.tick()
+        scriptsPreLoader.tick()
         keyTracker.tick()
     }
 
