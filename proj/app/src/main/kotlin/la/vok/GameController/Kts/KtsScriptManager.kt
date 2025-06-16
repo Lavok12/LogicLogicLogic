@@ -69,7 +69,7 @@ class KtsScriptManager(private val gameController: GameController) {
     }
 
     fun compileScriptOnly(key: String): CompiledScript = runBlocking {
-        val file = File(Storage.main.dataPath(gameController.scriptsLoader.getKtsPath(key)))
+        val file = File(Storage.main.dataPath(gameController.loaders.scripts.getKtsPath(key)))
 
         compiledScripts.getOrPut(file.absolutePath) {
             println("Compiling script: ${file.absolutePath}")

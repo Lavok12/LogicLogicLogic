@@ -6,7 +6,7 @@ when (commandObject.configuratorId) {
             "Список доступных команд",
             Settings.systemMessage
         )
-        var commandsLoader = gameController.commandsLoader
+        var commandsLoader = gameController.loaders.commands
         for (i in commandsLoader.commandsFilesLoader.commandsMap.keys) {
             var commandData = commandsLoader.commandsFilesLoader.commandsMap[i]!!
 
@@ -26,8 +26,8 @@ when (commandObject.configuratorId) {
     }
 
     1 -> {
-        var commandsLoader = gameController.commandsLoader
-        var commandData = gameController.commandsLoader.getCommand(commandObject.args.getOrNull(0)!!)!!
+        var commandsLoader = gameController.loaders.commands
+        var commandData = commandsLoader.getCommand(commandObject.args.getOrNull(0)!!)!!
 
         gameController.serverController.serverChatController.addLocalMessage(
             commandObject.senderId,
